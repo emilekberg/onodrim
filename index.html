@@ -1,0 +1,22 @@
+<html>
+<head>
+    <script src='./node_modules/systemjs/dist/system.js'></script>
+    <style type='text/css'>
+        canvas {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+    <div id='main'></div>
+    <script>
+        System.defaultJSExtensions = true;
+        System.config({
+
+        });
+        System.import('./dist/app').then(function(app) {
+            //app.start();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "target": "es2015",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "outDir": "dist",
+        "preserveConstEnums": false,
+        "strictNullChecks": false
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
