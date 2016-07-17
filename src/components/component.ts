@@ -10,13 +10,22 @@ export default class Component {
 
     setEntity(entity:Entity):void {
         this._entity = entity;
-        this._checkRequiredComponents();
+        //this._checkRequiredComponents();
     }
     private _checkRequiredComponents():void {
         for(let i = 0; i < this._requiredComponents.length; i++) {
             if (!this._entity.hasComponent(this._requiredComponents[i])) {
                 console.error(this._entity.constructor.name, "is missing required component", this._requiredComponents[i].name.toString());
             }
+        }
+    }
+
+    parseJSON(json:Object) {
+
+    }
+    getJSON():Object {
+        return {
+
         }
     }
 }

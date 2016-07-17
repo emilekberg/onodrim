@@ -15,8 +15,10 @@ export default class GraphicsComponent extends RenderComponent {
     fixedUpdate() {
 
     }
-    render(delta:number, ctx:CanvasRenderingContext2D) {
-        super.render(delta, ctx);
+    render(delta:number, ctx:CanvasRenderingContext2D):boolean {
+        if (!super.render(delta, ctx)) {
+            return false;
+        }
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -25,5 +27,6 @@ export default class GraphicsComponent extends RenderComponent {
         ctx.lineTo(this.width, 0);
         ctx.stroke();
         ctx.closePath();
+        return true;
     }
 }

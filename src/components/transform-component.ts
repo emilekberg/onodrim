@@ -19,6 +19,12 @@ export default class TransformComponent extends Component {
     protected _children:Array<TransformComponent>;
     protected _parent:TransformComponent;
 
+    get parent():TransformComponent {
+        return this._parent;
+    }
+    get entity():Entity {
+        return this._entity;
+    }
     get position():Point {
         return this._position;
     }

@@ -3,11 +3,11 @@ import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Texture from '../resources/texture'
 export default class SpriteComponent extends RenderComponent {
-    texture: Texture;
-    _x:number;
-    _y:number;
-    _w:number;
-    _h:number;
+    protected _texture: Texture;
+    protected _x:number;
+    protected _y:number;
+    protected _w:number;
+    protected _h:number;
     constructor(entity:Entity) {
         super(entity);
         this._x = 0;
@@ -16,12 +16,17 @@ export default class SpriteComponent extends RenderComponent {
         this._h = 0;
     }
 
-    setTexture(texture) {
-        this.texture = texture;
+    setTexture(texture:Texture) {
+        this._texture = texture;
+        this._w = this._texture.image.width;
+        this._w = this._texture.image.height;
     }
 
-    render(delta:number, ctx:CanvasRenderingContext2D) {
-        super.render(delta, ctx);
-        ctx.drawImage(this.texture.image, this._x, this._y);
+    render(delta:number, ctx:CanvasRenderingContext2D):boolean {
+        if (!super.render(delta, ctx)) {
+            return false;
+        }
+        ctx.drawImage(this._texture.image, this._x, this._y);
+        return true;
     }
 }
