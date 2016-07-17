@@ -2,20 +2,36 @@ import Component from './component'
 import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Matrix from '../math/matrix'
+import RenderSystem from '../systems/render-system'
 export default class RenderComponent extends Component {
     protected _transform:TransformComponent;
     alpha:number;
     visible:boolean;
     protected _renderedMatrix:Matrix;
+    protected _depth:number;
     
+    get depth():number {
+        return this._depth;
+    }
+    set depth(value:number) {
+        if (this._depth !== value) {
+            this.requireDepthSort = true;
+        }
+        this._depth = value;
+    }
+    public requireDepthSort;
     constructor(entity:Entity) {
         super(entity);
+        this._depth = 0;
         this._renderedMatrix = new Matrix();
         this.alpha = 1;
         this.visible = true;
         this._transform = this._entity.getComponent<TransformComponent>(TransformComponent);
+        this.requireDepthSort = true;
+        RenderSystem.Renderers.push(this);
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
+        this.requireDepthSort = false;
         let m1 = this._transform.previousTransform;
         let m2 = this._transform.transform;
 

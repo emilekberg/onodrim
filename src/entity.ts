@@ -5,7 +5,7 @@ export default class Entity {
     protected _components:Array<Component>;
     protected _name:string;
     constructor() {
-        this._id = Core.Entities.push(this)-1;
+        //this._id = Core.Entities.push(this)-1;
         this._components = [];
     }
 

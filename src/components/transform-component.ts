@@ -5,6 +5,7 @@ import Matrix from '../math/matrix'
 import Constants from '../math/constants'
 import Entity from '../entity'
 export default class TransformComponent extends Component {
+    private _firstUpdate:boolean;
     protected _position:Point;
     protected _origo:Point;
     protected _scale:Point;
@@ -100,6 +101,7 @@ export default class TransformComponent extends Component {
         this._sr = 0;
         this._transform = new Matrix();
         this._previousTransform = new Matrix();
+        this._firstUpdate = true;
     }
 
     addChild(child:TransformComponent) {
@@ -128,17 +130,22 @@ export default class TransformComponent extends Component {
     }
 
     fixedUpdate(dirty) {
+        
         this._isDirty = this._isDirty || dirty;
         this._entity.fixedUpdate();
         this._previousTransform.copyFrom(this._transform);
         if (this._isDirty) {
             this.updateTransform();
         }
-        
+        if (this._firstUpdate) {
+            this._previousTransform.copyFrom(this._transform);
+            this._firstUpdate = false;
+        }
         for(let i = 0; i < this._children.length; i++) {
             this._children[i].fixedUpdate(this._isDirty);
         }
         this._isDirty = false;
+        
     }
     update() {
         this._entity.update();
