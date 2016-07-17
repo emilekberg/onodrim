@@ -16,15 +16,16 @@ ResourceManager.loadImages([
     let core = new Core();
     let entity = new GameObject();
     let sprite = new SpriteComponent(entity);
+    entity.transform.scaleX = 0.5;
     entity.addComponent(sprite);
     sprite.setTexture(new Texture(value[0].url));
     sprite.alpha = 1;
     let entity2 = new GameObject();
-    entity.transform.addChild(entity2.transform);
     let sprite2 = new SpriteComponent(entity2);
     entity2.addComponent(sprite2);
     sprite2.setTexture(new Texture(value[1].url));
     sprite2.alpha = 1;
+    sprite2.x = sprite.width * 0.5;
     core.start();
 
 });

@@ -4,14 +4,21 @@ import Entity from '../entity'
 import Texture from '../resources/texture'
 export default class SpriteComponent extends RenderComponent {
     protected _texture: Texture;
-    protected _x:number;
-    protected _y:number;
+    x:number;
+    y:number;
     protected _w:number;
     protected _h:number;
+
+    get width():number {
+        return this._w * this._renderedMatrix.a;
+    }
+    get height():number {
+        return this._h * this._renderedMatrix.d;
+    }
     constructor(entity:Entity) {
         super(entity);
-        this._x = 0;
-        this._y = 0;
+        this.x = 0;
+        this.y = 0;
         this._w = 0;
         this._h = 0;
     }
@@ -22,11 +29,11 @@ export default class SpriteComponent extends RenderComponent {
         this._w = this._texture.image.height;
     }
 
-    render(delta:number, ctx:CanvasRenderingContext2D):boolean {
-        if (!super.render(delta, ctx)) {
-            return false;
+    render(delta:number, ctx:CanvasRenderingContext2D) {
+        if (!this.isVisible()) {
+            return;
         }
-        ctx.drawImage(this._texture.image, this._x, this._y);
-        return true;
+        super.render(delta, ctx);
+        ctx.drawImage(this._texture.image, this.x, this.y);
     }
 }
