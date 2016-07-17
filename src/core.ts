@@ -26,7 +26,7 @@ export default class Core {
         if (Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime)
             this._fixedUpdate();
-            this.nextFixedUpdateTime += this.fixedUpdateTime;
+            this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
         }
         this._update();
         this._render();    
@@ -62,4 +62,6 @@ export default class Core {
         let delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
         this.renderer.render(delta);
     }   
+
+
 }

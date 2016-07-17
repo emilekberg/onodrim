@@ -1,3 +1,4 @@
+//heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
 export default class Matrix {
     static Identity:Matrix = new Matrix();
     a:number;

@@ -3,6 +3,8 @@ import Entity from '../entity'
 export default class GraphicsComponent extends RenderComponent {
 
     color:string;
+    x:number;
+    y:number;
     width:number;
     height:number;
     constructor(entity:Entity) {

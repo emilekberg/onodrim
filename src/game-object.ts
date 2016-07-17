@@ -12,6 +12,6 @@ export default class GameObject extends Entity {
 
     fixedUpdate() {
         this.transform.rotation += Time.deltaTime;
-        this.transform.x = Math.sin((performance.now()/1000)) * 100;
+        this.transform.x = 400 +(Math.sin((performance.now()/1000)) * 100);
     }
 }

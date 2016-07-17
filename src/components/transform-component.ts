@@ -1,13 +1,10 @@
+// heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
 import Component from './component'
 import Point from '../math/point'
 import Matrix from '../math/matrix'
 import Constants from '../math/constants'
 import Entity from '../entity'
 export default class TransformComponent extends Component {
-    static get IDENTITY() {
-        return [1,0,0,1,0,0];
-    }
-
     protected _position:Point;
     protected _origo:Point;
     protected _scale:Point;
@@ -94,7 +91,7 @@ export default class TransformComponent extends Component {
         this._rotation = 0;
         this._rotationCache = 0;
         this._cr = 1;
-        this._sr = 1;
+        this._sr = 0;
         this._transform = new Matrix();
         this._previousTransform = new Matrix();
     }
@@ -147,18 +144,15 @@ export default class TransformComponent extends Component {
     updateTransform() {
         var a, b, c, d, tx, ty;
         var pt = this._parent ? this._parent._transform : Matrix.Identity;
-        //var wt = this._transform;
-
         if (this._rotation % Constants.PI_2) {
             if (this._rotation !== this._rotationCache) {
                 this._rotationCache = this._rotation;
                 this._sr = Math.sin(this._rotation);
                 this._cr = Math.cos(this._rotation)
             }
-
             a = this._cr * this._scale.x;
             b = this._sr * this._scale.x;
-            c = this._sr * this._scale.y;
+            c = -this._sr * this._scale.y;
             d = this._cr * this._scale.y;
             tx = this._position.x;
             ty = this._position.y;
@@ -189,11 +183,5 @@ export default class TransformComponent extends Component {
             this._transform.tx = tx * pt.a + ty * pt.c + pt.tx;
             this._transform.ty = tx * pt.b + ty * pt.d + pt.ty;
         }
-        
-
-        /*this._nextTransform.set(this._scale.x, this._rotation, this._rotation, this._scale.y, this._position.x, this._position.y);
-        if (this._parent) {
-            this._nextTransform.merge(this._parent.nextTransform)
-        }*/
     }
 }

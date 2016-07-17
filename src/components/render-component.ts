@@ -14,6 +14,7 @@ export default class RenderComponent extends Component {
         let m1 = this._transform.previousTransform;
         let m2 = this._transform.transform;
         //ctx.setTransform(m1.a, m1.b, m1.c, m1.d, m1.tx, m1.ty);
+        //return;
         var a, b, c, d, tx, ty;
         a = this.lerp(delta, m1.a, m1.a-m2.a, 1);
         b = this.lerp(delta, m1.b, m1.b-m2.b, 1);
