@@ -31,7 +31,9 @@ export default class RenderComponent extends Component {
         RenderSystem.Renderers.push(this);
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        this.requireDepthSort = false;
+        this.interpolateRenderMatrix(delta, ctx);
+    }   
+    interpolateRenderMatrix(delta:number, ctx:CanvasRenderingContext2D) {
         let m1 = this._transform.previousTransform;
         let m2 = this._transform.transform;
 
@@ -50,7 +52,7 @@ export default class RenderComponent extends Component {
             this._renderedMatrix.ty
         );
         ctx.globalAlpha = this.alpha;
-    }   
+    }
     isVisible():boolean {
         return this.visible && this.alpha > 0;
     }

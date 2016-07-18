@@ -7,6 +7,7 @@ import GraphicsComponent from './components/graphics-component'
 import Texture from './resources/texture'
 import Core from './core'
 import ResourceManager from './resources/resource-manager'
+import Point from './math/point'
 
 import Scene from './scene'
 
@@ -21,19 +22,23 @@ export default class MyScene extends Scene {
         sprite.alpha = 1;
         //entity.transform.origo.x = sprite.width * 0.5;
         //entity.transform.origo.y = sprite.height * 0.5;
-        entity.transform.x = sprite.width * 0.5;
-        entity.transform.y = sprite.height * 0.5;
-        let entity2 = new GameObject();
+        entity.transform.x = 400;
+        entity.transform.y = 300;
+        sprite.offset = new Point(0.5, 0.5);
+        let entity2 = new Entity();
+        entity2.addComponent(new TransformComponent(entity2));
         let sprite2 = new SpriteComponent(entity2);
         entity2.addComponent(sprite2);
         sprite2.setTexture(new Texture('assets/square.png'));
         sprite2.alpha = 1;
-        entity2.transform.x = 400;
-        entity2.transform.y = 300;
-        sprite2.depth = -1;
+        //entity2.getComponent<TransformComponent>(TransformComponent).x = 400;
+        //entity2.getComponent<TransformComponent>(TransformComponent).y = 300;
         
+        sprite2.texture.rect.w = 64;
+        sprite2.offset = new Point(0.5, 0.5);
         this.addEntity(entity);
         this.addEntity(entity2);
+        entity.transform.addChild(entity2.getComponent<TransformComponent>(TransformComponent));
     }
 }
 ResourceManager.loadImages([

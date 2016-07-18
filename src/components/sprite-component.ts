@@ -12,6 +12,10 @@ export default class SpriteComponent extends RenderComponent {
 
     protected _offset:Point;
 
+    get texture():Texture {
+        return this._texture;
+    }
+
     set offset(value:Point) {
         this._offset = value;
     }
@@ -43,10 +47,18 @@ export default class SpriteComponent extends RenderComponent {
         if (!this.isVisible()) {
             return;
         }
-        super.render(delta, ctx);
-        let dx, dy;
-        dx = -this._texture.image.width*this._offset.x;
-        dy = -this._texture.image.height*this._offset.y;
-        ctx.drawImage(this._texture.image, dx, dy);
+        this.interpolateRenderMatrix(delta, ctx);
+        ctx.drawImage(
+            this._texture.image, 
+            this._texture.rect.x, 
+            this._texture.rect.y, 
+            this._texture.rect.w, 
+            this._texture.rect.h, 
+            -this._texture.rect.w*this._offset.x, 
+            -this._texture.rect.h*this._offset.y, 
+            this._texture.rect.w, 
+            this._texture.rect.h
+        );
+        this.requireDepthSort = false;
     }
 }

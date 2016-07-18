@@ -19,7 +19,7 @@ export default class GraphicsComponent extends RenderComponent {
         if (!this.isVisible()) {
             return;
         }
-        super.render(delta, ctx);
+        this.interpolateRenderMatrix(delta, ctx);
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -28,5 +28,6 @@ export default class GraphicsComponent extends RenderComponent {
         ctx.lineTo(this.width, 0);
         ctx.stroke();
         ctx.closePath();
+        this.requireDepthSort = false;
     }
 }

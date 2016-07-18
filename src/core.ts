@@ -26,12 +26,12 @@ export default class Core {
         requestAnimationFrame(this.tick);
     }
     tick() {
-        Time.update();
         if (Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime)
             this._fixedUpdate();
             this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
         }
+        Time.update();
         this._update();
         this._render();    
         requestAnimationFrame(this.tick);
@@ -40,13 +40,10 @@ export default class Core {
     protected _fixedUpdate() {
         Scene.CurrentScene.fixedUpdate();
         for(let i = 0; i < Scene.CurrentScene.entities.length; i++) {
-            let transform = Scene.CurrentScene.entities[i].getComponent<TransformComponent>(TransformComponent);
-            if (transform) {
-                if (!transform.hasParent())
-                    transform.fixedUpdate(false);
-            }
-            else {
-                Scene.CurrentScene.entities[i].fixedUpdate();
+            Scene.CurrentScene.entities[i].fixedUpdate();
+            let components = Scene.CurrentScene.entities[i].getAllComponents();
+            for(let i = 0; i < components.length; i++) {
+                components[i].fixedUpdate();
             }
         }
     }
@@ -54,12 +51,10 @@ export default class Core {
     protected _update() {
         Scene.CurrentScene.update();
         for(let i = 0; i < Scene.CurrentScene.entities.length; i++) {
-            let transform = Scene.CurrentScene.entities[i].getComponent<TransformComponent>(TransformComponent);
-            if (transform) {
-                transform.update();
-            }
-            else {
-                Scene.CurrentScene.entities[i].update();
+            Scene.CurrentScene.entities[i].update();
+            let components = Scene.CurrentScene.entities[i].getAllComponents();
+            for(let i = 0; i < components.length; i++) {
+                components[i].update();
             }
         }
     }

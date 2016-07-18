@@ -20,6 +20,14 @@ export default class Component {
         }
     }
 
+    fixedUpdate() {
+
+    }
+
+    update() {
+
+    }
+
     parseJSON(json:Object) {
 
     }

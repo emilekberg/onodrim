@@ -31,53 +31,53 @@ export default class TransformComponent extends Component {
     }
     set position(value:Point) {
         this._position = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get x():number {
         return this._position.x;
     }
     set x(value:number) {
         this._position.x = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get y():number {
         return this._position.y;
     }
     set y(value:number) {
         this._position.y = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get scale():Point {
         return this._scale;
     }
     set scale(value:Point) {
         this._scale = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get scaleX():number {
         return this._scale.x;
     }
     set scaleX(value:number) {
         this._scale.x = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get scaleY():number {
         return this._scale.y;
     }
     set scaleY(value:number) {
         this._scale.y = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get origo():Point {
         return this._origo;
     }
     set origo(value:Point) {
         this._origo = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     set rotation(value:number) {
         this._rotation = value;
-        this._isDirty = true;
+        this.setDirty();
     }
     get rotation():number {
         return this._rotation;
@@ -129,23 +129,19 @@ export default class TransformComponent extends Component {
         return this._parent != null;
     }
 
-    fixedUpdate(dirty) {
-        
-        this._isDirty = this._isDirty || dirty;
-        this._entity.fixedUpdate();
+    fixedUpdate() {
         this._previousTransform.copyFrom(this._transform);
         if (this._isDirty) {
             this.updateTransform();
+            for(let i = 0; i < this._children.length; i++) {
+                this._children[i].setDirty();
+            }
         }
         if (this._firstUpdate) {
             this._previousTransform.copyFrom(this._transform);
             this._firstUpdate = false;
         }
-        for(let i = 0; i < this._children.length; i++) {
-            this._children[i].fixedUpdate(this._isDirty);
-        }
         this._isDirty = false;
-        
     }
     update() {
         this._entity.update();
@@ -196,5 +192,8 @@ export default class TransformComponent extends Component {
             this._transform.tx = tx * pt.a + ty * pt.c + pt.tx;
             this._transform.ty = tx * pt.b + ty * pt.d + pt.ty;
         }
+    }
+    private setDirty() {
+        this._isDirty = true;
     }
 }
