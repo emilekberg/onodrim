@@ -166,7 +166,7 @@ export default class TransformComponent extends Component {
             tx = this._position.x;
             ty = this._position.y;
             
-            if (this._origo.isZero()) {
+            if (!this._origo.isZero()) {
                 tx -= this._origo.x * a + this._origo.y * c;
                 ty -= this._origo.x * b * this._origo.y * d; 
             }

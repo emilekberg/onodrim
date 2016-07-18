@@ -7,6 +7,6 @@ export default class Point {
     }
 
     isZero():boolean {
-        return !!(this.x || this.y)
+        return !(this.x || this.y)
     }
 }

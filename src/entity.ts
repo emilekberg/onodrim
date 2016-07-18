@@ -7,6 +7,7 @@ export default class Entity {
 
     constructor() {
         //this._id = Core.Entities.push(this)-1;
+        this._name = "entity";
         this._components = [];
     }
 
@@ -17,26 +18,26 @@ export default class Entity {
 
     hasComponent(componentType:Function):boolean {
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i] instanceof (componentType as any)) {
+            if (this._components[i] instanceof (componentType)) {
                 return true;
             }
         }
         return false;
     }
 
-    getComponent<T extends Component>(componentType:any):T {
+    getComponent<T extends Component>(componentType:Function):T {
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i] instanceof (componentType as any)) {
+            if (this._components[i] instanceof (componentType)) {
                 return this._components[i] as T;
             }
         }
         return null;
     }
 
-    getComponents<T extends Component>(componentType:Component):Array<T> {
+    getComponents<T extends Component>(componentType:Function):Array<T> {
         var components = new Array<T>();
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i]instanceof (componentType as any)) {
+            if (this._components[i] instanceof (componentType)) {
                 components.push(this._components[i] as T);
             }
         }
