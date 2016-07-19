@@ -26,7 +26,7 @@ export default class RenderComponent extends Component {
         this._renderedMatrix = new Matrix();
         this.alpha = 1;
         this.visible = true;
-        this._transform = this._entity.getComponent<TransformComponent>(TransformComponent);
+        this._transform = this._entity.getComponent(TransformComponent);
         this.requireDepthSort = true;
         RenderSystem.Renderers.push(this);
     }

@@ -28,7 +28,7 @@ export default class Scene {
 
     addEntity(entity:Entity) {
         this.entities.push(entity);
-        let renderer = entity.getComponent<RenderComponent>(RenderComponent);
+        let renderer = entity.getComponent(RenderComponent);
         if (renderer !== null) {
             this.renderers.push(renderer);
         }

@@ -31,14 +31,14 @@ export default class MyScene extends Scene {
         entity2.addComponent(sprite2);
         sprite2.setTexture(new Texture('assets/square.png'));
         sprite2.alpha = 1;
-        //entity2.getComponent<TransformComponent>(TransformComponent).x = 400;
-        //entity2.getComponent<TransformComponent>(TransformComponent).y = 300;
+        //entity2.getComponent(TransformComponent).x = 400;
+        //entity2.getComponent(TransformComponent).y = 300;
         
         sprite2.texture.rect.w = 64;
         sprite2.offset = new Point(0.5, 0.5);
         this.addEntity(entity);
         this.addEntity(entity2);
-        entity.transform.addChild(entity2.getComponent<TransformComponent>(TransformComponent));
+        entity.transform.addChild(entity2.getComponent(TransformComponent));
     }
 }
 ResourceManager.loadImages([
