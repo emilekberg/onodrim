@@ -26,7 +26,7 @@ export default class Core {
         requestAnimationFrame(this.tick);
     }
     tick() {
-        if (Time.now() >= this.nextFixedUpdateTime) {
+        while(Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime)
             this._fixedUpdate();
             this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;

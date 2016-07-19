@@ -15,7 +15,7 @@ const settings = {
 }
 connect().use(serveStatic(settings.root)).listen(settings.port, function(){
     console.log('Server running on ' + settings.port + '...');
-    if (settings.openBrowser) {
+    if(settings.openBrowser) {
         open('http:/localhost:' + settings.port + '');
     }
 });

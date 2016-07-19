@@ -125,7 +125,7 @@ export default class TransformComponent extends Component {
     }
     removeChild(child:TransformComponent) {
         let index = this._children.indexOf(child);
-        if (index === -1) {
+        if(index === -1) {
             return;
         }
         this._children.splice(index, 1);
@@ -140,13 +140,13 @@ export default class TransformComponent extends Component {
 
     fixedUpdate() {
         this._previousTransform.copyFrom(this._transform);
-        if (this._isDirty) {
+        if(this._isDirty) {
             this.updateTransform();
             for(let i = 0; i < this._children.length; i++) {
                 this._children[i].setDirty();
             }
         }
-        if (this._firstUpdate) {
+        if(this._firstUpdate) {
             this._previousTransform.copyFrom(this._transform);
             this._firstUpdate = false;
         }
