@@ -3,6 +3,11 @@ import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Matrix from '../math/matrix'
 import RenderSystem from '../systems/render-system'
+export interface RenderComponentTemplate {
+    alpha?:number;
+    visible?:boolean;
+    depth?:number;
+}
 export default class RenderComponent extends Component {
     protected _transform:TransformComponent;
     alpha:number;
@@ -20,12 +25,13 @@ export default class RenderComponent extends Component {
         this._depth = value;
     }
     public requireDepthSort;
-    constructor(entity:Entity) {
+    constructor(entity:Entity, template:RenderComponentTemplate = {}) {
         super(entity);
-        this._depth = 0;
+        this._depth  =  template.depth   || 0;
+        this.alpha   =  template.alpha   || 1;
+        this.visible =	template.visible || true;
         this._renderedMatrix = new Matrix();
-        this.alpha = 1;
-        this.visible = true;
+        
         this._transform = this._entity.getComponent(TransformComponent);
         this.requireDepthSort = true;
         RenderSystem.Renderers.push(this);

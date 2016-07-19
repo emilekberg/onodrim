@@ -1,8 +1,14 @@
-import RenderComponent from './render-component'
+import RenderComponent, {RenderComponentTemplate} from './render-component'
 import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Texture from '../resources/texture'
 import Point from '../math/point'
+export interface SpriteComponentTemplate extends RenderComponentTemplate {
+    x?: number;
+    y?: number;
+    texture?: Texture;
+    offset?:Point;
+}
 export default class SpriteComponent extends RenderComponent {
     protected _texture: Texture;
     x:number;
@@ -28,13 +34,17 @@ export default class SpriteComponent extends RenderComponent {
     get height():number {
         return this._h * this._renderedMatrix.d;
     }
-    constructor(entity:Entity) {
-        super(entity);
-        this.x = 0;
-        this.y = 0;
+    constructor(entity:Entity, template:SpriteComponentTemplate = {}) {
+        super(entity, template);
+        this.x       = template.x      || 0;
+        this.y       = template.y      || 0;
+        this._offset = template.offset || new Point();
         this._w = 0;
         this._h = 0;
-        this._offset = new Point();
+        
+        if (template.texture) {
+            this.setTexture(template.texture);
+        }
     }
 
     setTexture(texture:Texture) {
@@ -44,7 +54,7 @@ export default class SpriteComponent extends RenderComponent {
     }
 
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        if (!this.isVisible()) {
+        if (!this.isVisible() ||!this._texture) {
             return;
         }
         this.interpolateRenderMatrix(delta, ctx);

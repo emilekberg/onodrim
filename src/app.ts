@@ -3,6 +3,7 @@ import GameObject from './game-object';
 import RenderComponent from './components/render-component'
 import TransformComponent from './components/transform-component'
 import SpriteComponent from './components/sprite-component'
+import AnimationComponent from './components/animation-component'
 import GraphicsComponent from './components/graphics-component'
 import Texture from './resources/texture'
 import Core from './core'
@@ -10,35 +11,37 @@ import ResourceManager from './resources/resource-manager'
 import Point from './math/point'
 
 import Scene from './scene'
+import Rect from './math/rect'
 
 
 export default class MyScene extends Scene {
     constructor() {
         super();
         let entity = new GameObject();
-        let sprite = new SpriteComponent(entity);
+        let sprite = new SpriteComponent(entity, {
+            alpha: 1,
+            offset: new Point(0.5, 0.5)
+        });
         entity.addComponent(sprite);
-        sprite.setTexture(new Texture('assets/star.png'));
-        sprite.alpha = 1;
-        //entity.transform.origo.x = sprite.width * 0.5;
-        //entity.transform.origo.y = sprite.height * 0.5;
+        sprite.setTexture(new Texture('assets/star.png'), );
         entity.transform.x = 400;
         entity.transform.y = 300;
-        sprite.offset = new Point(0.5, 0.5);
+
+
         let entity2 = new Entity();
         entity2.addComponent(new TransformComponent(entity2));
-        let sprite2 = new SpriteComponent(entity2);
+        let sprite2 = AnimationComponent.CreateFromRect(entity2,{
+            texture: new Texture('assets/SlimeA.png'),
+            autoStart: true,
+            fps: 24
+        }, new Rect(0, 0, 16, 16));
         entity2.addComponent(sprite2);
-        sprite2.setTexture(new Texture('assets/square.png'));
-        sprite2.alpha = 1;
-        //entity2.getComponent(TransformComponent).x = 400;
-        //entity2.getComponent(TransformComponent).y = 300;
-        
-        sprite2.texture.rect.w = 64;
         sprite2.offset = new Point(0.5, 0.5);
         this.addEntity(entity);
         this.addEntity(entity2);
-        entity.transform.addChild(entity2.getComponent(TransformComponent));
+        entity2.getComponent(TransformComponent).x = 400;
+        entity2.getComponent(TransformComponent).y = 300;
+        //entity.transform.addChild(entity2.getComponent(TransformComponent));
     }
 }
 ResourceManager.loadImages([

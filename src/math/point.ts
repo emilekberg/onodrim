@@ -1,4 +1,8 @@
-export default class Point {
+export interface PointTemplate {
+    x:number;
+    y:number;
+}
+export default class Point implements PointTemplate {
     x: number;
     y: number;
     constructor(x:number=0, y:number=0) {

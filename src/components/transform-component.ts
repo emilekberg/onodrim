@@ -1,9 +1,17 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
 import Component from './component'
-import Point from '../math/point'
+import Point, {PointTemplate} from '../math/point'
 import Matrix from '../math/matrix'
 import Constants from '../math/constants'
 import Entity from '../entity'
+export interface TransformComponentTemplate {
+    position?:PointTemplate;
+    scale?:PointTemplate;
+    origo?:PointTemplate;
+    rotation?:number;
+
+
+}
 export default class TransformComponent extends Component {
     private _firstUpdate:boolean;
     protected _position:Point;
@@ -88,20 +96,21 @@ export default class TransformComponent extends Component {
     get previousTransform():Matrix {
         return this._previousTransform;
     }
-    constructor(entity:Entity) {
+    constructor(entity:Entity, template:TransformComponentTemplate = {}) {
         super(entity);
         this._children = new Array<TransformComponent>();
-        this._position = new Point(0,0);
-        this._origo = new Point(0,0);
-        this._scale = new Point(1, 1);
-        this._parent = null;
-        this._rotation = 0;
+        this._position = template.position ? new Point(template.position.x,template.position.y) : new Point();
+        this._origo = template.origo ? new Point(template.origo.x,template.origo.y) : new Point();
+        this._scale = template.origo ? new Point(template.origo.x,template.origo.y) : new Point(1,1);
+        this._rotation = template.rotation || 0;
         this._rotationCache = 0;
+        this._parent = null;
         this._cr = 1;
         this._sr = 0;
         this._transform = new Matrix();
         this._previousTransform = new Matrix();
         this._firstUpdate = true;
+        this._isDirty = true;
     }
 
     addChild(child:TransformComponent) {
