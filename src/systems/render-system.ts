@@ -25,19 +25,19 @@ export default class RenderSystem {
         this.ctx.clearRect(0, 0, this.width, this.height);
         for(let i = 0; i < Scene.CurrentScene.renderers.length; i++) {
             let renderer = Scene.CurrentScene.renderers[i];
-            if (renderer) {
-                if (renderer.requireDepthSort && !resort) {
+            if(renderer) {
+                if(renderer.requireDepthSort && !resort) {
                     resort = true;
                 }
                 renderer.render(delta, this.ctx);
             }
         }
-        if (resort) {
+        if(resort) {
              Scene.CurrentScene.renderers.sort((a, b) => {
-                 if (a.depth > b.depth) {
+                 if(a.depth > b.depth) {
                      return 1;
                  }
-                 if (a.depth < b.depth) {
+                 if(a.depth < b.depth) {
                      return -1;
                  }
                  return 0;

@@ -16,7 +16,7 @@ export default class GraphicsComponent extends RenderComponent {
 
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        if (!this.isVisible()) {
+        if(!this.isVisible()) {
             return;
         }
         this.interpolateRenderMatrix(delta, ctx);

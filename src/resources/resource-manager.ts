@@ -6,7 +6,7 @@ export default class ResourceManager {
     protected static _images:{[id:string]:HTMLImageElement} = {};
     static loadImage(url:string):Promise<ImageLoadedEvent> {
         return new Promise((resolve, reject) => {
-            if (this.isImageLoaded(url)) {
+            if(this.isImageLoaded(url)) {
                 resolve(this._images[url]);
             }
             let image = new Image();

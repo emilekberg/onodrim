@@ -18,7 +18,7 @@ export default class Entity {
 
     hasComponent(componentType:Function):boolean {
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i] instanceof (componentType)) {
+            if(this._components[i] instanceof (componentType)) {
                 return true;
             }
         }
@@ -27,7 +27,7 @@ export default class Entity {
 
     getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T {
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i] instanceof (componentType)) {
+            if(this._components[i] instanceof (componentType)) {
                 return this._components[i] as T;
             }
         }
@@ -37,7 +37,7 @@ export default class Entity {
     getComponents<T extends Component>(componentType:{ new (...args:any[]):T;}):Array<T> {
         var components = new Array<T>();
         for(let i = 0; i < this._components.length; i++) {
-            if (this._components[i] instanceof (componentType)) {
+            if(this._components[i] instanceof (componentType)) {
                 components.push(this._components[i] as T);
             }
         }

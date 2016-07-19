@@ -114,11 +114,11 @@ export default class TransformComponent extends Component {
     }
 
     addChild(child:TransformComponent) {
-        if (this.isChild(child)) {
+        if(this.isChild(child)) {
             return;
         }
         this._children.push(child);
-        if (child.hasParent()) {
+        if(child.hasParent()) {
             child._parent.removeChild(child);
         }
         child._parent = this;
@@ -162,8 +162,8 @@ export default class TransformComponent extends Component {
     updateTransform() {
         var a, b, c, d, tx, ty;
         var pt = this._parent ? this._parent._transform : Matrix.Identity;
-        if (this._rotation % Constants.PI_2) {
-            if (this._rotation !== this._rotationCache) {
+        if(this._rotation % Constants.PI_2) {
+            if(this._rotation !== this._rotationCache) {
                 this._rotationCache = this._rotation;
                 this._sr = Math.sin(this._rotation);
                 this._cr = Math.cos(this._rotation)
@@ -175,7 +175,7 @@ export default class TransformComponent extends Component {
             tx = this._position.x;
             ty = this._position.y;
             
-            if (!this._origo.isZero()) {
+            if(!this._origo.isZero()) {
                 tx -= this._origo.x * a + this._origo.y * c;
                 ty -= this._origo.x * b * this._origo.y * d; 
             }

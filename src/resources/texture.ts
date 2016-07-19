@@ -6,7 +6,7 @@ export default class Texture {
     url:string;
     rect:Rect;
     constructor(url:string) {
-        if (ResourceManager.isImageLoaded(url)) {
+        if(ResourceManager.isImageLoaded(url)) {
             this.image = ResourceManager.getImage(url);
         }
         else {

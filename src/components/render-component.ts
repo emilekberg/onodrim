@@ -19,7 +19,7 @@ export default class RenderComponent extends Component {
         return this._depth;
     }
     set depth(value:number) {
-        if (this._depth !== value) {
+        if(this._depth !== value) {
             this.requireDepthSort = true;
         }
         this._depth = value;

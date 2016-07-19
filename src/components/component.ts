@@ -14,7 +14,7 @@ export default class Component {
     }
     private _checkRequiredComponents():void {
         for(let i = 0; i < this._requiredComponents.length; i++) {
-            if (!this._entity.hasComponent(this._requiredComponents[i])) {
+            if(!this._entity.hasComponent(this._requiredComponents[i])) {
                 console.error(this._entity.constructor.name, "is missing required component", this._requiredComponents[i].name.toString());
             }
         }

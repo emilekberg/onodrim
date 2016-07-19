@@ -20,7 +20,7 @@ export default class Core {
         this.tick = this.tick.bind(this);
     }
     start() {
-        if (Scene.CurrentScene === null) {
+        if(Scene.CurrentScene === null) {
             Scene.AddScene(new Scene());
         }
         requestAnimationFrame(this.tick);

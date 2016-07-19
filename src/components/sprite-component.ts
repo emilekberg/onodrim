@@ -42,7 +42,7 @@ export default class SpriteComponent extends RenderComponent {
         this._w = 0;
         this._h = 0;
         
-        if (template.texture) {
+        if(template.texture) {
             this.setTexture(template.texture);
         }
     }
@@ -54,7 +54,7 @@ export default class SpriteComponent extends RenderComponent {
     }
 
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        if (!this.isVisible() ||!this._texture) {
+        if(!this.isVisible() ||!this._texture) {
             return;
         }
         this.interpolateRenderMatrix(delta, ctx);

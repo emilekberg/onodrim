@@ -19,10 +19,10 @@ export default class AnimationComponent extends SpriteComponent {
         let frames:Array<Rect> = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
-                if (y*x + x < frameStart) {
+                if(y*x + x < frameStart) {
                     continue;
                 }
-                if ((frames.length >= numberOfFrames && numberOfFrames != -1)) {
+                if((frames.length >= numberOfFrames && numberOfFrames != -1)) {
                     return frames;
                 }
                 frames.push(new Rect(x, y, frameSize.w, frameSize.h));                
@@ -65,7 +65,7 @@ export default class AnimationComponent extends SpriteComponent {
         this._state = State.STOPPED;
         this._currentFrame = 0;
         this.loop = false;
-        if (template.autoStart) {
+        if(template.autoStart) {
             this.play();
         }
     }
@@ -101,7 +101,7 @@ export default class AnimationComponent extends SpriteComponent {
     }
 
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        if (!this.isVisible() || !this._texture ||this._numberOfFrames == 0) {
+        if(!this.isVisible() || !this._texture ||this._numberOfFrames == 0) {
             return;
         }
         this.interpolateRenderMatrix(delta, ctx);

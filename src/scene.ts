@@ -4,7 +4,7 @@ export default class Scene {
     static Scenes:Array<Scene> = [];
     static CurrentScene:Scene = null;
     static ChangeScene(scene:Scene) {
-        if (this.CurrentScene !== null) {
+        if(this.CurrentScene !== null) {
             this.CurrentScene.changeFrom();        
         }
         this.CurrentScene = scene;
@@ -29,7 +29,7 @@ export default class Scene {
     addEntity(entity:Entity) {
         this.entities.push(entity);
         let renderer = entity.getComponent(RenderComponent);
-        if (renderer !== null) {
+        if(renderer !== null) {
             this.renderers.push(renderer);
         }
     }
