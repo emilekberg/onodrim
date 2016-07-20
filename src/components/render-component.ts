@@ -2,7 +2,7 @@ import Component from './component'
 import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Matrix from '../math/matrix'
-import RenderSystem from '../systems/canvas/render-system'
+import RenderSystem from '../systems/render-system'
 export interface RenderComponentTemplate {
     alpha?:number;
     visible?:boolean;

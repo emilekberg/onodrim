@@ -1,8 +1,8 @@
 import SpriteComponent, {SpriteComponentTemplate} from './sprite-component'
-import Entity from '../../entity'
-import Rect from '../../math/rect'
-import Texture from '../../resources/texture'
-import Time from '../../time'
+import Entity from '../entity'
+import Rect from '../math/rect'
+import Texture from '../resources/texture'
+import Time from '../time'
 interface AnimationComponentTemplate extends SpriteComponentTemplate {
     fps?: number;
     frames?: Array<Rect>;
