@@ -1,8 +1,8 @@
-import RenderComponent, {RenderComponentTemplate} from './render-component'
-import TransformComponent from './transform-component'
-import Entity from '../entity'
-import Texture from '../resources/texture'
-import Point from '../math/point'
+import RenderComponent, {RenderComponentTemplate} from '../render-component'
+import TransformComponent from '../transform-component'
+import Entity from '../../entity'
+import Texture from '../../resources/texture'
+import Point from '../../math/point'
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;

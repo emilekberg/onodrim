@@ -1,4 +1,4 @@
-import RenderSystem from './systems/render-system'
+import RenderSystem from './systems/canvas/render-system'
 import TransformComponent from './components/transform-component'
 
 import Time from './time'

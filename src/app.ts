@@ -2,9 +2,9 @@ import Entity from './entity';
 import GameObject from './game-object';
 import RenderComponent from './components/render-component'
 import TransformComponent from './components/transform-component'
-import SpriteComponent from './components/sprite-component'
-import AnimationComponent from './components/animation-component'
-import GraphicsComponent from './components/graphics-component'
+import SpriteComponent from './components/canvas/sprite-component'
+import AnimationComponent from './components/canvas/animation-component'
+import GraphicsComponent from './components/canvas/graphics-component'
 import Texture from './resources/texture'
 import Core from './core'
 import ResourceManager from './resources/resource-manager'

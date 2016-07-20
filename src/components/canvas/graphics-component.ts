@@ -1,5 +1,5 @@
-import RenderComponent from './render-component'
-import Entity from '../entity'
+import RenderComponent from '../render-component'
+import Entity from '../../entity'
 export default class GraphicsComponent extends RenderComponent {
 
     color:string;
