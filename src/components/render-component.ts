@@ -2,7 +2,7 @@ import Component from './component'
 import TransformComponent from './transform-component'
 import Entity from '../entity'
 import Matrix from '../math/matrix'
-import RenderSystem from '../systems/render-system'
+import Renderer from '../systems/renderer'
 export interface RenderComponentTemplate {
     alpha?:number;
     visible?:boolean;
@@ -34,7 +34,7 @@ export default class RenderComponent extends Component {
         
         this._transform = this._entity.getComponent(TransformComponent);
         this.requireDepthSort = true;
-        RenderSystem.Renderers.push(this);
+        Renderer.Renderers.push(this);
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
         this.interpolateRenderMatrix(delta, ctx);

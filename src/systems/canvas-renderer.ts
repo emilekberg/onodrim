@@ -1,8 +1,8 @@
-import RenderComponent from '../components/render-component'
 import Core from '../core'
 import Scene from '../scene'
-export default class RenderSystem {
-    static Renderers:Array<RenderComponent> = [];
+import {RendererSystem} from './renderer'
+export default class CanvasRenderer implements RendererSystem {
+    
     ctx:CanvasRenderingContext2D;
     canvas:HTMLCanvasElement;
     width:number;

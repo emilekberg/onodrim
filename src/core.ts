@@ -1,4 +1,4 @@
-import RenderSystem from './systems/render-system'
+import Renderer, {RendererSystem} from './systems/renderer'
 import TransformComponent from './components/transform-component'
 
 import Time from './time'
@@ -6,7 +6,7 @@ import Entity from './entity'
 import Scene from './scene'
 export default class Core {
     static Entities:Array<Entity> = [];
-    renderer: RenderSystem;
+    renderer: RendererSystem;
     currentFixedUpdateTime:number;
     nextFixedUpdateTime:number;
     fixedUpdateTime:number;
@@ -16,7 +16,7 @@ export default class Core {
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        this.renderer = new RenderSystem();
+        this.renderer = Renderer.createCanvasRenderer();
         this.tick = this.tick.bind(this);
     }
     start() {
