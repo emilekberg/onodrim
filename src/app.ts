@@ -20,14 +20,29 @@ export default class MyScene extends Scene {
         let entity = new GameObject();
         let sprite = new SpriteComponent(entity, {
             alpha: 1,
-            offset: new Point(0.5, 0.5)
+            offset: new Point(0.5, 0.5),
+            x: 0,
+            y: 0
         });
         entity.addComponent(sprite);
-        sprite.setTexture(new Texture('assets/star.png'), );
-        entity.transform.x = 400;
-        entity.transform.y = 300;
+        sprite.setTexture(new Texture('assets/tile.png'), );
+        entity.transform.x = 0;
+        entity.transform.y = 20;
+        this.addEntity(entity);
 
-
+        entity = new GameObject();
+        sprite = new SpriteComponent(entity, {
+            alpha: 1,
+            offset: new Point(0.5, 0.5),
+            x: 0,
+            y: 0
+        });
+        entity.addComponent(sprite);
+        sprite.setTexture(new Texture('assets/square.png'), );
+        entity.transform.x = 200;
+        entity.transform.y = 0;
+        this.addEntity(entity);
+        /*
         let entity2 = new Entity();
         entity2.addComponent(new TransformComponent(entity2));
         let sprite2 = AnimationComponent.CreateFromRect(entity2,{
@@ -40,14 +55,15 @@ export default class MyScene extends Scene {
         this.addEntity(entity);
         this.addEntity(entity2);
         entity2.getComponent(TransformComponent).x = 400;
-        entity2.getComponent(TransformComponent).y = 300;
+        entity2.getComponent(TransformComponent).y = 300;*/
         //entity.transform.addChild(entity2.getComponent(TransformComponent));
     }
 }
 ResourceManager.loadImages([
     'assets/star.png',
     'assets/SlimeA.png',
-    'assets/square.png'
+    'assets/square.png',
+    'assets/tile.png'
 ]).then((value) => {
     let core = new Core();
     let scene = new MyScene();

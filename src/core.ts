@@ -16,7 +16,7 @@ export default class Core {
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        this.renderer = Renderer.createCanvasRenderer();
+        this.renderer = Renderer.createRenderer();
         this.tick = this.tick.bind(this);
     }
     start() {
@@ -29,7 +29,7 @@ export default class Core {
         while(Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime)
             this._fixedUpdate();
-            this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
+            this.nextFixedUpdateTime += this.fixedUpdateTime;
         }
         Time.update();
         this._update();

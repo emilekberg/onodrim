@@ -39,6 +39,9 @@ export default class RenderComponent extends Component {
     render(delta:number, ctx:CanvasRenderingContext2D) {
         this.interpolateRenderMatrix(delta, ctx);
     }   
+    renderWebGL(delta:number, gl:WebGLRenderingContext) {
+        
+    }
     interpolateRenderMatrix(delta:number, ctx:CanvasRenderingContext2D) {
         let m1 = this._transform.previousTransform;
         let m2 = this._transform.transform;

@@ -19,7 +19,7 @@ export default class Renderer {
     }
     static isWebGLSupported() {
         try{
-            var canvas = document.createElement( 'canvas' ); 
+            var canvas = document.createElement('canvas'); 
             let WebGLRenderingContextExist = !!WebGLRenderingContext;
             let WebGLContextExistsInCanvas = !!canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
             return  WebGLRenderingContextExist && WebGLContextExistsInCanvas;
