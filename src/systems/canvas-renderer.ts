@@ -12,7 +12,7 @@ export default class CanvasRenderer implements RendererSystem {
         this.ctx = this.canvas.getContext('2d', {alpha: false});
 
         this.width = 800;
-        this.height = 600;
+        this.height = 300;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         document.body.appendChild(this.canvas);

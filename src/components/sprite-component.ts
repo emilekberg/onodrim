@@ -4,6 +4,7 @@ import Entity from '../entity'
 import Texture from '../resources/texture'
 import Point from '../math/point'
 import WebGLRenderer from '../systems/webgl-renderer'
+import Matrix from '../math/matrix'
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
@@ -53,6 +54,15 @@ export default class SpriteComponent extends RenderComponent {
         }
     }
 
+    updateTransform() {
+        this._matrix
+            .identity()
+            .translate(-this._texture.rect.w*this._offset.x, -this._texture.rect.h*this._offset.y)
+            .rotate(this._transform.state.rotation)
+            .scale(this._transform.state.scaleX,this._transform.state.scaleY)
+            .translate(this._transform.state.x, this._transform.state.y);
+    }
+
     setTexture(texture:Texture) {
         this._texture = texture;
         this._w = this._texture.image.width;
@@ -68,14 +78,22 @@ export default class SpriteComponent extends RenderComponent {
             return;
         }
         this.interpolateRenderMatrix(delta, ctx);
+        ctx.setTransform(
+            this._renderedMatrix.a,
+            this._renderedMatrix.b,
+            this._renderedMatrix.c,
+            this._renderedMatrix.d,
+            this._renderedMatrix.tx,
+            this._renderedMatrix.ty
+        );
         ctx.drawImage(
             this._texture.image, 
             this._texture.rect.x, 
             this._texture.rect.y, 
             this._texture.rect.w, 
             this._texture.rect.h, 
-            -this._texture.rect.w*this._offset.x, 
-            -this._texture.rect.h*this._offset.y, 
+            0,//-this._texture.rect.w*this._offset.x, 
+            0,//-this._texture.rect.h*this._offset.y, 
             this._texture.rect.w, 
             this._texture.rect.h
         );
@@ -126,6 +144,9 @@ export default class SpriteComponent extends RenderComponent {
     }
 
     renderWebGL(delta:number, gl:WebGLRenderingContext) {
+        //http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
+        //http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
+        //http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta, null)
 
         gl.activeTexture(gl.TEXTURE0);
@@ -137,32 +158,17 @@ export default class SpriteComponent extends RenderComponent {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
         gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-        gl.vertexAttrib2fv(this.positionLocation, new Float32Array([this._transform.x, this._transform.y]));
-
-        gl.uniformMatrix3fv(this.matrixLocation, false, new Float32Array([
-            this._renderedMatrix.a,
-            this._renderedMatrix.b,
-            0,
-            this._renderedMatrix.c,
-            this._renderedMatrix.d,
-            0,
-            this._renderedMatrix.tx,
-            this._renderedMatrix.ty,
-            1
-        ]));
+        gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
     interpolateRenderMatrix(delta:number, ctx:CanvasRenderingContext2D) {
-        let m1 = this._transform.previousTransform;
-        let m2 = this._transform.transform;
+        let m1 = this._oldMatrix;
+        let m2 = this._matrix;
 
-        this._renderedMatrix.a = this.lerp(delta, m1.a, m1.a-m2.a, 1);
-        this._renderedMatrix.b = this.lerp(delta, m1.b, m1.b-m2.b, 1);
-        this._renderedMatrix.c = this.lerp(delta, m1.c, m1.c-m2.c, 1);
-        this._renderedMatrix.d = this.lerp(delta, m1.d, m1.d-m2.d, 1);
-        this._renderedMatrix.tx = this.lerp(delta, m1.tx, m1.tx-m2.tx, 1);
-        this._renderedMatrix.ty = this.lerp(delta, m1.ty, m1.ty-m2.ty, 1);
+        for(let i = 0; i < this._matrix.values.length; i++) {
+            this._renderedMatrix.values[i] = this.lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
+        }
     }
 }

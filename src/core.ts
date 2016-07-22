@@ -11,12 +11,18 @@ export default class Core {
     nextFixedUpdateTime:number;
     fixedUpdateTime:number;
 
-    constructor() {
+    constructor(webgl:boolean) {
         this.fixedUpdateTime = 1/30;
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        this.renderer = Renderer.createRenderer();
+        if (webgl) {
+            this.renderer = Renderer.createWebGLRenderer();
+        }
+        else {
+            this.renderer = Renderer.createCanvasRenderer();
+        }
+        
         this.tick = this.tick.bind(this);
     }
     start() {

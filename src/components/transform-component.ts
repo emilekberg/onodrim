@@ -12,6 +12,16 @@ export interface TransformComponentTemplate {
 
 
 }
+interface TransformState {
+    x:number;
+    y:number;
+    scaleX:number;
+    scaleY:number;
+    rotation:number;
+    origoX:number;
+    origoY:number;
+    dirty:boolean;
+}
 export default class TransformComponent extends Component {
     private _firstUpdate:boolean;
     protected _position:Point;
@@ -27,6 +37,9 @@ export default class TransformComponent extends Component {
 
     protected _children:Array<TransformComponent>;
     protected _parent:TransformComponent;
+
+    state:TransformState;
+    previousTransformState:TransformState;
 
     get parent():TransformComponent {
         return this._parent;
@@ -111,6 +124,26 @@ export default class TransformComponent extends Component {
         this._previousTransform = new Matrix();
         this._firstUpdate = true;
         this._isDirty = true;
+        this.state = {
+            x: this._position.x,
+            y: this._position.y,
+            origoX: this._origo.x,
+            origoY: this._origo.y,
+            scaleX: this._scale.x,
+            scaleY: this._scale.y,
+            rotation: this._rotation,
+            dirty: true
+        };
+        this.previousTransformState = {
+            x: this._position.x,
+            y: this._position.y,
+            origoX: this._origo.x,
+            origoY: this._origo.y,
+            scaleX: this._scale.x,
+            scaleY: this._scale.y,
+            rotation: this._rotation,
+            dirty: false
+        };
     }
 
     addChild(child:TransformComponent) {
@@ -139,15 +172,17 @@ export default class TransformComponent extends Component {
     }
 
     fixedUpdate() {
-        this._previousTransform.copyFrom(this._transform);
+        this._previousTransform.copy(this._transform);
         if(this._isDirty) {
-            this.updateTransform();
+            //this.updateTransform();
+            this.swapState();
+            this.setState();
             for(let i = 0; i < this._children.length; i++) {
                 this._children[i].setDirty();
             }
         }
         if(this._firstUpdate) {
-            this._previousTransform.copyFrom(this._transform);
+            this._previousTransform.copy(this._transform);
             this._firstUpdate = false;
         }
         this._isDirty = false;
@@ -160,7 +195,13 @@ export default class TransformComponent extends Component {
     }
 
     updateTransform() {
-        var a, b, c, d, tx, ty;
+        this._transform
+            .identity()
+            .rotate(this._rotation)
+            .scale(this._scale.x, this._scale.y)
+            .translate(this._position.x, this._position.y);
+        //this._transform.copy(offset.multiply(rotation).multiply(scale).multiply(translation));
+        /*var a, b, c, d, tx, ty;
         var pt = this._parent ? this._parent._transform : Matrix.Identity;
         if(this._rotation % Constants.PI_2) {
             if(this._rotation !== this._rotationCache) {
@@ -200,9 +241,30 @@ export default class TransformComponent extends Component {
             this._transform.d  = d  * pt.d;
             this._transform.tx = tx * pt.a + ty * pt.c + pt.tx;
             this._transform.ty = tx * pt.b + ty * pt.d + pt.ty;
-        }
+        }*/
     }
     private setDirty() {
         this._isDirty = true;
+    }
+
+    setState() {
+        this.state.x = this._position.x;
+        this.state.y = this._position.y;
+        this.state.scaleX = this._scale.x;
+        this.state.scaleY = this._scale.y;
+        this.state.rotation = this._rotation;
+        this.state.origoX = this._origo.x;
+        this.state.origoY = this._origo.y;
+        this.state.dirty = this._isDirty;
+    }
+    swapState() {
+        this.previousTransformState.x = this.state.x;
+        this.previousTransformState.y = this.state.y;
+        this.previousTransformState.scaleX = this.state.scaleX;
+        this.previousTransformState.scaleY = this.state.scaleY;
+        this.previousTransformState.rotation = this.state.rotation;
+        this.previousTransformState.origoX = this.state.origoX;
+        this.previousTransformState.origoY = this.state.origoY;
+
     }
 }

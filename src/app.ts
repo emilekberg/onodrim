@@ -26,7 +26,7 @@ export default class MyScene extends Scene {
         });
         entity.addComponent(sprite);
         sprite.setTexture(new Texture('assets/tile.png'), );
-        entity.transform.x = 0;
+        entity.transform.x = 20;
         entity.transform.y = 20;
         this.addEntity(entity);
 
@@ -41,6 +41,8 @@ export default class MyScene extends Scene {
         sprite.setTexture(new Texture('assets/square.png'), );
         entity.transform.x = 200;
         entity.transform.y = 0;
+        entity.transform.scaleX = 0.5;
+        entity.transform.scaleY = 0.5;
         this.addEntity(entity);
         /*
         let entity2 = new Entity();
@@ -65,9 +67,17 @@ ResourceManager.loadImages([
     'assets/square.png',
     'assets/tile.png'
 ]).then((value) => {
-    let core = new Core();
-    let scene = new MyScene();
+    let core:Core;
+    let scene:Scene;;
+    ///*
+    core = new Core(true);
+    scene = new MyScene();
     Scene.ChangeScene(scene);
-    core.start();
+    core.start();//*/
+    /*
+    core = new Core(false);
+    scene = new MyScene();
+    Scene.ChangeScene(scene);
+    core.start();//*/
 });
 
