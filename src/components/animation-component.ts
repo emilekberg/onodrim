@@ -104,7 +104,15 @@ export default class AnimationComponent extends SpriteComponent {
         if(!this.isVisible() || !this._texture ||this._numberOfFrames == 0) {
             return;
         }
-        this.interpolateRenderMatrix(delta, ctx);
+        this.interpolateRenderMatrix(delta);
+        ctx.setTransform(
+            this._renderedMatrix.a,
+            this._renderedMatrix.b,
+            this._renderedMatrix.c,
+            this._renderedMatrix.d,
+            this._renderedMatrix.tx,
+            this._renderedMatrix.ty
+        );
         let rect = this._frames[this._currentFrame];
         ctx.drawImage(
             this._texture.image, 
@@ -112,8 +120,8 @@ export default class AnimationComponent extends SpriteComponent {
             rect.y, 
             rect.w, 
             rect.h, 
-            -rect.w*this._offset.x, 
-            -rect.h*this._offset.y, 
+            0,//-rect.w*this._offset.x, 
+            0,//-rect.h*this._offset.y, 
             rect.w, 
             rect.h
         );

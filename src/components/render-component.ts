@@ -54,19 +54,19 @@ export default class RenderComponent extends Component {
             .translate(this._transform.state.x, this._transform.state.y);
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
-        this.interpolateRenderMatrix(delta, ctx);
+        this.interpolateRenderMatrix(delta);
     }   
     renderWebGL(delta:number, gl:WebGLRenderingContext) {
        
     }
-    interpolateRenderMatrix(delta:number, ctx:CanvasRenderingContext2D) {
+    interpolateRenderMatrix(delta:number) {
         let m1 = this._oldMatrix;
         let m2 = this._matrix;
 
         for(let i = 0; i < this._matrix.values.length; i++) {
             this._renderedMatrix.values[i] = this.lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
-        ctx.setTransform(
+        /*tx.setTransform(
             this._renderedMatrix.a,
             this._renderedMatrix.b,
             this._renderedMatrix.c,
@@ -74,7 +74,7 @@ export default class RenderComponent extends Component {
             this._renderedMatrix.tx,
             this._renderedMatrix.ty
         );
-        ctx.globalAlpha = this.alpha;
+        ctx.globalAlpha = this.alpha;*/
     }
     isVisible():boolean {
         return this.visible && this.alpha > 0;

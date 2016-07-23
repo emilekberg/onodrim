@@ -19,7 +19,7 @@ export default class GraphicsComponent extends RenderComponent {
         if(!this.isVisible()) {
             return;
         }
-        this.interpolateRenderMatrix(delta, ctx);
+        this.interpolateRenderMatrix(delta);
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(0, 0);

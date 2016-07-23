@@ -12,6 +12,10 @@ export interface SpriteComponentTemplate extends RenderComponentTemplate {
     offset?:Point;
 }
 export default class SpriteComponent extends RenderComponent {
+    static vertexBuffer:WebGLBuffer;
+    static vertexLocation:number;
+    static texCoordBuffer:WebGLBuffer;
+    static texCoordLocation:number;
     protected _texture: Texture;
     x:number;
     y:number;
@@ -20,11 +24,8 @@ export default class SpriteComponent extends RenderComponent {
 
     protected _offset:Point;
 
-    positionLocation:number;
-    vertexBuffer:WebGLBuffer;
-    texCoordLocation:number;
-    texCoordBuffer:WebGLBuffer;
     matrixLocation:WebGLUniformLocation;
+    sizeLocation:WebGLUniformLocation;
     get texture():Texture {
         return this._texture;
     }
@@ -77,7 +78,7 @@ export default class SpriteComponent extends RenderComponent {
         if(!this.isVisible() ||!this._texture) {
             return;
         }
-        this.interpolateRenderMatrix(delta, ctx);
+        this.interpolateRenderMatrix(delta);
         ctx.setTransform(
             this._renderedMatrix.a,
             this._renderedMatrix.b,
@@ -101,31 +102,9 @@ export default class SpriteComponent extends RenderComponent {
     }
 
     initGL(gl:WebGLRenderingContext, program:WebGLProgram) {
-        this.positionLocation = gl.getAttribLocation(program, 'a_position');
-        this.texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-        this.matrixLocation = gl.getUniformLocation(program, 'u_matrix');
         
-        this.texCoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
-        this.setVerticeBufferData(gl, 0, 0, this.texture.rect.w, this.texture.rect.h);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            0.0,  0.0,
-            1.0,  0.0,
-            0.0,  1.0,
-            0.0,  1.0,
-            1.0,  0.0,
-            1.0,  1.0
-        ]), gl.STATIC_DRAW);
-
-        gl.enableVertexAttribArray(this.texCoordLocation);
-        gl.vertexAttribPointer(this.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-  
-        this.vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.enableVertexAttribArray(this.positionLocation);
-        gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        this.setVerticeBufferData(gl, this.x, this.y, this.texture.rect.w, this.texture.rect.h);
+        this.matrixLocation = gl.getUniformLocation(program, 'u_matrix');
+        this.sizeLocation = gl.getUniformLocation(program, 'u_size');
     }
 
     setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -147,27 +126,22 @@ export default class SpriteComponent extends RenderComponent {
         //http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
         //http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
         //http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
-        this.interpolateRenderMatrix(delta, null)
+        this.interpolateRenderMatrix(delta)
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
-        gl.vertexAttribPointer(this.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0);
-
+        
+        gl.uniform2f(this.sizeLocation, this.texture.rect.w, this.texture.rect.h);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
-    interpolateRenderMatrix(delta:number, ctx:CanvasRenderingContext2D) {
+    interpolateRenderMatrix(delta:number) {
         let m1 = this._oldMatrix;
         let m2 = this._matrix;
 
-        for(let i = 0; i < this._matrix.values.length; i++) {
+        for(let i = 0; i < Matrix.count; i++) {
             this._renderedMatrix.values[i] = this.lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
     }

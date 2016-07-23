@@ -1,6 +1,7 @@
 //heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
 export default class Matrix {
-    static Identity:Matrix = new Matrix();
+    static identity:Matrix = new Matrix();
+    static count:number = 9;
     private static tmp:Matrix = new Matrix();
     values:Float32Array;
     
@@ -50,7 +51,7 @@ export default class Matrix {
     }
 
     copy(matrix:Matrix) {
-        for(let i = 0; i < matrix.values.length; i++) {
+        for(let i = 0; i < Matrix.count; i++) {
             this.values[i] = matrix.values[i];
         }
         return this;

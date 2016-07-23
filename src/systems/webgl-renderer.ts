@@ -42,32 +42,30 @@ export default class WebGLRenderer implements RendererSystem {
     static program:WebGLProgram = null;
     shaderProgram:WebGLProgram;
 
-
-    texture:Texture;
-    positionLocation:number;
-    resolutionLocation:WebGLUniformLocation;
-    vertexBuffer:WebGLBuffer;
-    texCoordLocation:number;
-    texCoordBuffer:WebGLBuffer;
     constructor() {
         this.width = 800;
         this.height = 300;
         
         this.initGL();
         this.initShaders();
-        this.initDebugData();
+        this.initDefaultBuffers();
         document.body.appendChild(this.canvas);
     }
     initGL() {
         let canvas = this.canvas = document.createElement('Canvas') as HTMLCanvasElement;
-        let gl = WebGLRenderer.gl = this.gl = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl');
+        let opts:WebGLContextAttributes = {
+            premultipliedAlpha: true,
+            alpha: false,
+            antialias: true
+        }
+        let gl = WebGLRenderer.gl = this.gl = this.canvas.getContext('webgl', opts) || this.canvas.getContext('experimental-webgl', opts);
         canvas.width = this.width;
         canvas.height = this.height;
         gl.clearColor(0,0,0,1);
         gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LEQUAL); 
-        gl.viewport(0, 0, this.width, this.height);       
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.depthFunc(gl.LEQUAL);       
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.viewport(0, 0, this.width, this.height);
     }
 
     initShaders() {
@@ -82,21 +80,33 @@ export default class WebGLRenderer implements RendererSystem {
             console.error('Unable to initialize the shader program:' + gl.getProgramInfoLog(program));
         }
         gl.useProgram(program);
-        
+
+
+        let resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
+        gl.uniform2f(resolutionLocation, this.width, this.height);
     }
 
-    
-
-    initDebugData() {
+    initDefaultBuffers() {
         let gl = this.gl;
-        this.texture = new Texture('./assets/tile.png');
-        this.positionLocation = gl.getAttribLocation(this.shaderProgram, 'a_position');
-        this.texCoordLocation = gl.getAttribLocation(this.shaderProgram, 'a_texCoord');
-        this.resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
-        gl.uniform2f(this.resolutionLocation, this.width, this.height);
 
-        this.texCoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+        SpriteComponent.vertexLocation = gl.getAttribLocation(this.shaderProgram, 'a_position');
+        SpriteComponent.vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.vertexBuffer );
+        gl.enableVertexAttribArray(SpriteComponent.vertexLocation);
+        gl.vertexAttribPointer(SpriteComponent.vertexLocation, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            0, 0,
+            1, 0,
+            0, 1,
+            0, 1,
+            1, 0,
+            1, 1
+        ]), gl.STATIC_DRAW);
+
+        SpriteComponent.texCoordLocation = gl.getAttribLocation(this.shaderProgram, 'a_texCoord');
+        SpriteComponent.texCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             0.0,  0.0,
             1.0,  0.0,
@@ -106,18 +116,8 @@ export default class WebGLRenderer implements RendererSystem {
             1.0,  1.0
         ]), gl.STATIC_DRAW);
 
-        gl.enableVertexAttribArray(this.texCoordLocation);
-        gl.vertexAttribPointer(this.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-        
-        
-
-        this.vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.enableVertexAttribArray(this.positionLocation);
-        gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        this.setGLRectangle(gl, 0, 0, this.texture.rect.w, this.texture.rect.h);
-        
+        gl.enableVertexAttribArray(SpriteComponent.texCoordLocation);
+        gl.vertexAttribPointer(SpriteComponent.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
     }
 
     setGLRectangle(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -136,26 +136,35 @@ export default class WebGLRenderer implements RendererSystem {
     }
 
     render(delta) {
+        let resort = false;
         let gl = this.gl;
-        gl.viewport(0, 0, this.width, this.height);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.vertexBuffer);
+        gl.vertexAttribPointer(SpriteComponent.vertexLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.texCoordBuffer);
+        gl.vertexAttribPointer(SpriteComponent.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
         for(let i = 0; i < Scene.CurrentScene.renderers.length; i++) {
             let renderer = Scene.CurrentScene.renderers[i];
             if(renderer) {
+                if(renderer.requireDepthSort && !resort) {
+                    resort = true;
+                }
                 renderer.renderWebGL(delta, gl);
             }
         }
-        /*gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
-        gl.vertexAttribPointer(this.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        gl.drawArrays(gl.TRIANGLES, 0, 6);*/
         gl.flush();
+        if(resort) {
+             Scene.CurrentScene.renderers.sort((a, b) => {
+                 if(a.depth > b.depth) {
+                     return 1;
+                 }
+                 if(a.depth < b.depth) {
+                     return -1;
+                 }
+                 return 0;
+             });
+        }
     }
 
 }
