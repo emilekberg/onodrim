@@ -26,8 +26,8 @@ export default class MyScene extends Scene {
         });
         entity.addComponent(sprite);
         sprite.setTexture(new Texture('assets/tile.png'), );
-        entity.transform.x = 20;
-        entity.transform.y = 20;
+        entity.transform.x = 200;
+        entity.transform.y = 10;
         this.addEntity(entity);
 
         entity = new GameObject();
@@ -35,7 +35,8 @@ export default class MyScene extends Scene {
             alpha: 1,
             offset: new Point(0.5, 0.5),
             x: 0,
-            y: 0
+            y: 0,
+            depth: -1
         });
         entity.addComponent(sprite);
         sprite.setTexture(new Texture('assets/square.png'), );
@@ -44,9 +45,9 @@ export default class MyScene extends Scene {
         entity.transform.scaleX = 0.5;
         entity.transform.scaleY = 0.5;
         this.addEntity(entity);
-        /*
-        let entity2 = new Entity();
-        entity2.addComponent(new TransformComponent(entity2));
+        
+        let entity2 = new GameObject();
+        //entity2.addComponent(new TransformComponent(entity2));
         let sprite2 = AnimationComponent.CreateFromRect(entity2,{
             texture: new Texture('assets/SlimeA.png'),
             autoStart: true,
@@ -57,7 +58,7 @@ export default class MyScene extends Scene {
         this.addEntity(entity);
         this.addEntity(entity2);
         entity2.getComponent(TransformComponent).x = 400;
-        entity2.getComponent(TransformComponent).y = 300;*/
+        entity2.getComponent(TransformComponent).y = 100;
         //entity.transform.addChild(entity2.getComponent(TransformComponent));
     }
 }

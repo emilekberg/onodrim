@@ -54,7 +54,7 @@ export default class WebGLRenderer implements RendererSystem {
     initGL() {
         let canvas = this.canvas = document.createElement('Canvas') as HTMLCanvasElement;
         let opts:WebGLContextAttributes = {
-            premultipliedAlpha: true,
+            premultipliedAlpha: false,
             alpha: false,
             antialias: true
         }
@@ -64,6 +64,8 @@ export default class WebGLRenderer implements RendererSystem {
         gl.clearColor(0,0,0,1);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);       
+        gl.enable( gl.BLEND );
+        gl.blendEquation( gl.FUNC_ADD );
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.viewport(0, 0, this.width, this.height);
     }

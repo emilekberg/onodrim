@@ -32,8 +32,6 @@ export default class TransformComponent extends Component {
     protected _cr:number;
     protected _sr:number;
     protected _isDirty:boolean;
-    protected _transform:Matrix;
-    protected _previousTransform:Matrix;
 
     protected _children:Array<TransformComponent>;
     protected _parent:TransformComponent;
@@ -103,12 +101,6 @@ export default class TransformComponent extends Component {
     get rotation():number {
         return this._rotation;
     }
-    get transform():Matrix {
-        return this._transform;
-    }
-    get previousTransform():Matrix {
-        return this._previousTransform;
-    }
     constructor(entity:Entity, template:TransformComponentTemplate = {}) {
         super(entity);
         this._children = new Array<TransformComponent>();
@@ -120,8 +112,6 @@ export default class TransformComponent extends Component {
         this._parent = null;
         this._cr = 1;
         this._sr = 0;
-        this._transform = new Matrix();
-        this._previousTransform = new Matrix();
         this._firstUpdate = true;
         this._isDirty = true;
         this.state = {
@@ -142,7 +132,7 @@ export default class TransformComponent extends Component {
             scaleX: this._scale.x,
             scaleY: this._scale.y,
             rotation: this._rotation,
-            dirty: false
+            dirty: true
         };
     }
 
@@ -172,20 +162,20 @@ export default class TransformComponent extends Component {
     }
 
     fixedUpdate() {
-        this._previousTransform.copy(this._transform);
+        this.swapState();
         if(this._isDirty) {
-            //this.updateTransform();
-            this.swapState();
             this.setState();
             for(let i = 0; i < this._children.length; i++) {
                 this._children[i].setDirty();
             }
+            this._isDirty = false;
         }
         if(this._firstUpdate) {
-            this._previousTransform.copy(this._transform);
+            this.swapState();
+            this.setState();
             this._firstUpdate = false;
         }
-        this._isDirty = false;
+        
     }
     update() {
         this._entity.update();
@@ -195,11 +185,11 @@ export default class TransformComponent extends Component {
     }
 
     updateTransform() {
-        this._transform
+        /*this._transform
             .identity()
             .rotate(this._rotation)
             .scale(this._scale.x, this._scale.y)
-            .translate(this._position.x, this._position.y);
+            .translate(this._position.x, this._position.y);*/
         //this._transform.copy(offset.multiply(rotation).multiply(scale).multiply(translation));
         /*var a, b, c, d, tx, ty;
         var pt = this._parent ? this._parent._transform : Matrix.Identity;
@@ -255,7 +245,7 @@ export default class TransformComponent extends Component {
         this.state.rotation = this._rotation;
         this.state.origoX = this._origo.x;
         this.state.origoY = this._origo.y;
-        this.state.dirty = this._isDirty;
+        this.state.dirty = true;
     }
     swapState() {
         this.previousTransformState.x = this.state.x;
@@ -265,6 +255,6 @@ export default class TransformComponent extends Component {
         this.previousTransformState.rotation = this.state.rotation;
         this.previousTransformState.origoX = this.state.origoX;
         this.previousTransformState.origoY = this.state.origoY;
-
+        this.previousTransformState.dirty = this.state.dirty;
     }
 }

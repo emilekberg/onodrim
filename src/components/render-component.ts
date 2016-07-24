@@ -40,11 +40,11 @@ export default class RenderComponent extends Component {
         Renderer.Renderers.push(this);
     }
     fixedUpdate() {
-        if (this._transform.state.dirty) {
+        //if (this._transform.state.dirty) {
             this._oldMatrix.copy(this._matrix);
             this.updateTransform();
             this._transform.state.dirty = false;
-        }
+        //}
     }
     updateTransform() {
         this._matrix

@@ -26,6 +26,8 @@ export default class SpriteComponent extends RenderComponent {
 
     matrixLocation:WebGLUniformLocation;
     sizeLocation:WebGLUniformLocation;
+    textureOffsetLocation:WebGLUniformLocation;
+    alphaLocation:WebGLUniformLocation;
     get texture():Texture {
         return this._texture;
     }
@@ -105,6 +107,8 @@ export default class SpriteComponent extends RenderComponent {
         
         this.matrixLocation = gl.getUniformLocation(program, 'u_matrix');
         this.sizeLocation = gl.getUniformLocation(program, 'u_size');
+        this.textureOffsetLocation = gl.getUniformLocation(program, 'u_texCoordOffset');
+        this.alphaLocation = gl.getUniformLocation(program, 'u_alpha');
     }
 
     setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -132,8 +136,9 @@ export default class SpriteComponent extends RenderComponent {
         gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
         
         gl.uniform2f(this.sizeLocation, this.texture.rect.w, this.texture.rect.h);
+        gl.uniform4f(this.textureOffsetLocation, 0, 0, 1, 1);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
-
+        gl.uniform1f(this.alphaLocation, this.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 

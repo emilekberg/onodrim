@@ -127,4 +127,37 @@ export default class AnimationComponent extends SpriteComponent {
         );
         this.requireDepthSort = false;
     }
+
+    renderWebGL(delta:number, gl:WebGLRenderingContext) {
+        //http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
+        //http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
+        //http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
+        this.interpolateRenderMatrix(delta)
+        let rect = this._frames[this._currentFrame];
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+        
+        gl.uniform2f(this.sizeLocation, rect.w, rect.h);
+        gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
+        gl.uniform4f(
+            this.textureOffsetLocation, 
+            rect.x/this.texture.rect.w, 
+            rect.y/this.texture.rect.h, 
+            rect.w/this.texture.rect.w, 
+            rect.h/this.texture.rect.h
+        );
+        gl.uniform1f(this.alphaLocation, this.alpha);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    updateTransform() {
+        let rect = this._frames[this._currentFrame];
+        this._matrix
+            .identity()
+            .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)
+            .rotate(this._transform.state.rotation)
+            .scale(this._transform.state.scaleX,this._transform.state.scaleY)
+            .translate(this._transform.state.x, this._transform.state.y);
+    }
 }

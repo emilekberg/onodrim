@@ -143,24 +143,24 @@ export default class Matrix {
         ]);
     }
     static multiply(a:Matrix, b:Matrix):Matrix {
-        var a00 = a.values[0*3+0];
-        var a01 = a.values[0*3+1];
-        var a02 = a.values[0*3+2];
-        var a10 = a.values[1*3+0];
-        var a11 = a.values[1*3+1];
-        var a12 = a.values[1*3+2];
-        var a20 = a.values[2*3+0];
-        var a21 = a.values[2*3+1];
-        var a22 = a.values[2*3+2];
-        var b00 = b.values[0*3+0];
-        var b01 = b.values[0*3+1];
-        var b02 = b.values[0*3+2];
-        var b10 = b.values[1*3+0];
-        var b11 = b.values[1*3+1];
-        var b12 = b.values[1*3+2];
-        var b20 = b.values[2*3+0];
-        var b21 = b.values[2*3+1];
-        var b22 = b.values[2*3+2];
+        let a00 = a.values[0*3+0];
+        let a01 = a.values[0*3+1];
+        let a02 = a.values[0*3+2];
+        let a10 = a.values[1*3+0];
+        let a11 = a.values[1*3+1];
+        let a12 = a.values[1*3+2];
+        let a20 = a.values[2*3+0];
+        let a21 = a.values[2*3+1];
+        let a22 = a.values[2*3+2];
+        let b00 = b.values[0*3+0];
+        let b01 = b.values[0*3+1];
+        let b02 = b.values[0*3+2];
+        let b10 = b.values[1*3+0];
+        let b11 = b.values[1*3+1];
+        let b12 = b.values[1*3+2];
+        let b20 = b.values[2*3+0];
+        let b21 = b.values[2*3+1];
+        let b22 = b.values[2*3+2];
         return new Matrix([
             a00 * b00 + a01 * b10 + a02 * b20,
             a00 * b01 + a01 * b11 + a02 * b21,
