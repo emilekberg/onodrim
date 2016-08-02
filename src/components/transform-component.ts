@@ -12,16 +12,7 @@ export interface TransformComponentTemplate {
 
 
 }
-interface TransformState {
-    x:number;
-    y:number;
-    scaleX:number;
-    scaleY:number;
-    rotation:number;
-    origoX:number;
-    origoY:number;
-    dirty:boolean;
-}
+
 export default class TransformComponent extends Component {
     private _firstUpdate:boolean;
     protected _position:Point;
@@ -35,9 +26,6 @@ export default class TransformComponent extends Component {
 
     protected _children:Array<TransformComponent>;
     protected _parent:TransformComponent;
-
-    state:TransformState;
-    previousTransformState:TransformState;
 
     get parent():TransformComponent {
         return this._parent;
@@ -114,26 +102,6 @@ export default class TransformComponent extends Component {
         this._sr = 0;
         this._firstUpdate = true;
         this._isDirty = true;
-        this.state = {
-            x: this._position.x,
-            y: this._position.y,
-            origoX: this._origo.x,
-            origoY: this._origo.y,
-            scaleX: this._scale.x,
-            scaleY: this._scale.y,
-            rotation: this._rotation,
-            dirty: true
-        };
-        this.previousTransformState = {
-            x: this._position.x,
-            y: this._position.y,
-            origoX: this._origo.x,
-            origoY: this._origo.y,
-            scaleX: this._scale.x,
-            scaleY: this._scale.y,
-            rotation: this._rotation,
-            dirty: true
-        };
     }
 
     addChild(child:TransformComponent) {
@@ -162,99 +130,13 @@ export default class TransformComponent extends Component {
     }
 
     fixedUpdate() {
-        this.swapState();
-        if(this._isDirty) {
-            this.setState();
-            for(let i = 0; i < this._children.length; i++) {
-                this._children[i].setDirty();
-            }
-            this._isDirty = false;
-        }
-        if(this._firstUpdate) {
-            this.swapState();
-            this.setState();
-            this._firstUpdate = false;
-        }
-        
+
     }
     update() {
-        this._entity.update();
-        for(let i = 0; i < this._children.length; i++) {
-            this._children[i].update();
-        }
+
     }
 
-    updateTransform() {
-        /*this._transform
-            .identity()
-            .rotate(this._rotation)
-            .scale(this._scale.x, this._scale.y)
-            .translate(this._position.x, this._position.y);*/
-        //this._transform.copy(offset.multiply(rotation).multiply(scale).multiply(translation));
-        /*var a, b, c, d, tx, ty;
-        var pt = this._parent ? this._parent._transform : Matrix.Identity;
-        if(this._rotation % Constants.PI_2) {
-            if(this._rotation !== this._rotationCache) {
-                this._rotationCache = this._rotation;
-                this._sr = Math.sin(this._rotation);
-                this._cr = Math.cos(this._rotation)
-            }
-            a = this._cr * this._scale.x;
-            b = this._sr * this._scale.x;
-            c = -this._sr * this._scale.y;
-            d = this._cr * this._scale.y;
-            tx = this._position.x;
-            ty = this._position.y;
-            
-            if(!this._origo.isZero()) {
-                tx -= this._origo.x * a + this._origo.y * c;
-                ty -= this._origo.x * b * this._origo.y * d; 
-            }
-
-            this._transform.a  = a  * pt.a + b  * pt.c;
-            this._transform.b  = a  * pt.b + b  * pt.d;
-            this._transform.c  = c  * pt.a + d  * pt.c;
-            this._transform.d  = c  * pt.b + d  * pt.d;
-            this._transform.tx = tx * pt.a + ty * pt.c + pt.tx;
-            this._transform.ty = tx * pt.b + ty * pt.d + pt.ty;
-        }
-        else{
-            a  = this._scale.x;
-            d  = this._scale.y;
-
-            tx = this._position.x - this._origo.x * a;
-            ty = this._position.y - this._origo.y * d;
-
-            this._transform.a  = a  * pt.a;
-            this._transform.b  = a  * pt.b;
-            this._transform.c  = d  * pt.c;
-            this._transform.d  = d  * pt.d;
-            this._transform.tx = tx * pt.a + ty * pt.c + pt.tx;
-            this._transform.ty = tx * pt.b + ty * pt.d + pt.ty;
-        }*/
-    }
     private setDirty() {
         this._isDirty = true;
-    }
-
-    setState() {
-        this.state.x = this._position.x;
-        this.state.y = this._position.y;
-        this.state.scaleX = this._scale.x;
-        this.state.scaleY = this._scale.y;
-        this.state.rotation = this._rotation;
-        this.state.origoX = this._origo.x;
-        this.state.origoY = this._origo.y;
-        this.state.dirty = true;
-    }
-    swapState() {
-        this.previousTransformState.x = this.state.x;
-        this.previousTransformState.y = this.state.y;
-        this.previousTransformState.scaleX = this.state.scaleX;
-        this.previousTransformState.scaleY = this.state.scaleY;
-        this.previousTransformState.rotation = this.state.rotation;
-        this.previousTransformState.origoX = this.state.origoX;
-        this.previousTransformState.origoY = this.state.origoY;
-        this.previousTransformState.dirty = this.state.dirty;
     }
 }

@@ -8,15 +8,21 @@ export interface RenderComponentTemplate {
     visible?:boolean;
     depth?:number;
 }
+interface RenderState {
+    matrix:Matrix;
+    alpha:number
+}
 export default class RenderComponent extends Component {
     protected _transform:TransformComponent;
     alpha:number;
     visible:boolean;
     protected _renderedMatrix:Matrix;
     protected _depth:number;
-    protected _matrix:Matrix;
-    protected _oldMatrix:Matrix;
-    
+    //protected _matrix:Matrix;
+    //protected _oldMatrix:Matrix;
+    protected _oldRenderState:RenderState;
+    protected _renderState:RenderState;
+
     get depth():number {
         return this._depth;
     }
@@ -33,25 +39,36 @@ export default class RenderComponent extends Component {
         this.alpha   =  template.alpha   || 1;
         this.visible =	template.visible || true;
         this._renderedMatrix = new Matrix();
-        this._oldMatrix = new Matrix();
-        this._matrix = new Matrix();
+        this._oldRenderState = {
+            matrix: new Matrix(),
+            alpha: 1
+        }
+        this._renderState = {
+            matrix: new Matrix(),
+            alpha: 1
+        }
         this._transform = this._entity.getComponent(TransformComponent);
         this.requireDepthSort = true;
         Renderer.Renderers.push(this);
     }
     fixedUpdate() {
-        //if (this._transform.state.dirty) {
-            this._oldMatrix.copy(this._matrix);
-            this.updateTransform();
-            this._transform.state.dirty = false;
-        //}
+        this._oldRenderState.matrix.copy(this._renderState.matrix);
+        this._oldRenderState.alpha = this._renderState.alpha;
+        this.updateTransform();
+        this._renderState.alpha = this.alpha;
+    }
+    reset() {
+        this.updateTransform();
+        this._renderState.alpha = this.alpha;
+        this._oldRenderState.matrix.copy(this._renderState.matrix);
+        this._oldRenderState.alpha = this._renderState.alpha;
     }
     updateTransform() {
-        this._matrix
+        this._renderState.matrix
             .identity()
-            .rotate(this._transform.state.rotation)
-            .scale(this._transform.state.scaleX,this._transform.state.scaleY)
-            .translate(this._transform.state.x, this._transform.state.y);
+            .rotate(this._transform.rotation)
+            .scale(this._transform.scaleX,this._transform.scaleY)
+            .translate(this._transform.x, this._transform.y);
     }
     render(delta:number, ctx:CanvasRenderingContext2D) {
         this.interpolateRenderMatrix(delta);
@@ -60,10 +77,10 @@ export default class RenderComponent extends Component {
        
     }
     interpolateRenderMatrix(delta:number) {
-        let m1 = this._oldMatrix;
-        let m2 = this._matrix;
+        let m1 = this._oldRenderState.matrix;
+        let m2 = this._renderState.matrix;
 
-        for(let i = 0; i < this._matrix.values.length; i++) {
+        for(let i = 0; i < Matrix.count; i++) {
             this._renderedMatrix.values[i] = this.lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
         /*tx.setTransform(

@@ -58,12 +58,12 @@ export default class SpriteComponent extends RenderComponent {
     }
 
     updateTransform() {
-        this._matrix
+        this._renderState.matrix
             .identity()
             .translate(-this._texture.rect.w*this._offset.x, -this._texture.rect.h*this._offset.y)
-            .rotate(this._transform.state.rotation)
-            .scale(this._transform.state.scaleX,this._transform.state.scaleY)
-            .translate(this._transform.state.x, this._transform.state.y);
+            .rotate(this._transform.rotation)
+            .scale(this._transform.scaleX,this._transform.scaleY)
+            .translate(this._transform.x, this._transform.y);
     }
 
     setTexture(texture:Texture) {
@@ -95,8 +95,8 @@ export default class SpriteComponent extends RenderComponent {
             this._texture.rect.y, 
             this._texture.rect.w, 
             this._texture.rect.h, 
-            0,//-this._texture.rect.w*this._offset.x, 
-            0,//-this._texture.rect.h*this._offset.y, 
+            0,
+            0,
             this._texture.rect.w, 
             this._texture.rect.h
         );
@@ -138,13 +138,13 @@ export default class SpriteComponent extends RenderComponent {
         gl.uniform2f(this.sizeLocation, this.texture.rect.w, this.texture.rect.h);
         gl.uniform4f(this.textureOffsetLocation, 0, 0, 1, 1);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
-        gl.uniform1f(this.alphaLocation, this.alpha);
+        gl.uniform1f(this.alphaLocation, this._renderState.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
     interpolateRenderMatrix(delta:number) {
-        let m1 = this._oldMatrix;
-        let m2 = this._matrix;
+        let m1 = this._oldRenderState.matrix;
+        let m2 = this._renderState.matrix;
 
         for(let i = 0; i < Matrix.count; i++) {
             this._renderedMatrix.values[i] = this.lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
