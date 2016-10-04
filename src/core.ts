@@ -1,53 +1,48 @@
-import Renderer, {RendererSystem} from './systems/renderer'
-import TransformComponent from './components/transform-component'
+import Entity from "./entity";
+import Renderer from "./systems/renderer";
+import Scene from "./scene";
+import Time from "./time";
 
-import Time from './time'
-import Entity from './entity'
-import Scene from './scene'
 export default class Core {
-    static Entities:Array<Entity> = [];
-    renderer: RendererSystem;
-    currentFixedUpdateTime:number;
-    nextFixedUpdateTime:number;
-    fixedUpdateTime:number;
+    public static ENTITIES: Array<Entity> = [];
+    public renderer: Renderer;
+    public currentFixedUpdateTime: number;
+    public nextFixedUpdateTime: number;
+    public fixedUpdateTime: number;
 
-    constructor(webgl:boolean) {
+    constructor() {
         this.fixedUpdateTime = 1/30;
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        if (webgl) {
-            this.renderer = Renderer.createWebGLRenderer();
-        }
-        else {
-            this.renderer = Renderer.createCanvasRenderer();
-        }
-        
+        this.renderer = new Renderer();
         this.tick = this.tick.bind(this);
     }
-    start() {
-        if(Scene.CurrentScene === null) {
+
+    public start() {
+        if(Scene.CURRENT_SCENE === null) {
             Scene.AddScene(new Scene());
         }
         requestAnimationFrame(this.tick);
     }
-    tick() {
+
+    public tick() {
         while(Time.now() >= this.nextFixedUpdateTime) {
-            Time.setFixedUpdateTime(this.fixedUpdateTime)
+            Time.setFixedUpdateTime(this.fixedUpdateTime);
             this._fixedUpdate();
             this.nextFixedUpdateTime += this.fixedUpdateTime;
         }
         Time.update();
         this._update();
-        this._render();    
+        this._render();
         requestAnimationFrame(this.tick);
     }
 
     protected _fixedUpdate() {
-        Scene.CurrentScene.fixedUpdate();
-        for(let i = 0; i < Scene.CurrentScene.entities.length; i++) {
-            Scene.CurrentScene.entities[i].fixedUpdate();
-            let components = Scene.CurrentScene.entities[i].getAllComponents();
+        Scene.CURRENT_SCENE.fixedUpdate();
+        for(let i = 0; i < Scene.CURRENT_SCENE.entities.length; i++) {
+            Scene.CURRENT_SCENE.entities[i].fixedUpdate();
+            let components = Scene.CURRENT_SCENE.entities[i].getAllComponents();
             for(let i = 0; i < components.length; i++) {
                 components[i].fixedUpdate();
             }
@@ -55,10 +50,10 @@ export default class Core {
     }
 
     protected _update() {
-        Scene.CurrentScene.update();
-        for(let i = 0; i < Scene.CurrentScene.entities.length; i++) {
-            Scene.CurrentScene.entities[i].update();
-            let components = Scene.CurrentScene.entities[i].getAllComponents();
+        Scene.CURRENT_SCENE.update();
+        for(let i = 0; i < Scene.CURRENT_SCENE.entities.length; i++) {
+            Scene.CURRENT_SCENE.entities[i].update();
+            let components = Scene.CURRENT_SCENE.entities[i].getAllComponents();
             for(let i = 0; i < components.length; i++) {
                 components[i].update();
             }
@@ -68,7 +63,5 @@ export default class Core {
     protected _render() {
         let delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
         this.renderer.render(delta);
-    }   
-
-
-}
+    }
+};

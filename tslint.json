@@ -1,0 +1,26 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+        "ordered-imports": false,
+        "variable-name": [
+            true,
+            "allow-leading-underscore"
+        ],
+        "whitespace": [
+            false
+        ],
+        "one-line": [
+            false
+        ],
+        "trailing-comma": false,
+        "typedef-whitespace": [
+            false
+        ],
+        "interface-name": [
+            false
+        ],
+        "object-literal-sort-keys": false,
+        "object-literal-shorthand": false,
+        "no-bitwise": false
+    }
+}

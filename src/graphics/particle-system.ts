@@ -1,8 +1,7 @@
-import Entity from '../entity'
-import TransformComponent from '../components/transform-component'
-import ParticlePool from './particle-pool'
-import Particle from './particle'
-import Scene from '../scene'
+import Entity from "../entity";
+import TransformComponent from "../components/transform-component";
+import ParticlePool from "./particle-pool";
+import Particle from "./particle";
 export const enum State {
     IDLE,
     STARTED,
@@ -10,14 +9,14 @@ export const enum State {
     PAUSED
 }
 export default class ParticleSystem extends Entity {
-    transform:TransformComponent;
-
+    public transform:TransformComponent;
+    public activeParticles:Array<Particle>;
     protected _state:State;
     protected _maxParticles:number;
     protected _particleCount:number;
     protected _pool:ParticlePool;
-    protected _particleConstructor:{new (...args:any[]):Particle}; 
-    activeParticles:Array<Particle>;
+    protected _particleConstructor:{new (...args:any[]):Particle};
+
     constructor() {
         super();
         this.transform = new TransformComponent(this);
@@ -30,23 +29,23 @@ export default class ParticleSystem extends Entity {
         this._createPool(0);
     }
 
-    init():void {
-
+    public init():void {
+        // TODO: implement
     }
-    start():void {
+    public start():void {
         this._state = State.STARTED;
     }
-    stop(immediately:boolean):void {
+    public stop(immediately:boolean):void {
         this._state = State.STOPPING;
         if (immediately) {
             this._state = State.IDLE;
-            for (var i = 0; i < this._particleCount;) {
+            for (let i = 0; i < this._particleCount;) {
                 this._pool.poolParticle(this.activeParticles.shift());
             }
             this._particleCount = 0;
         }
     }
-    fixedUpdate():void {
+    public fixedUpdate():void {
         switch(this._state) {
             case State.STARTED:
                 while(this._shouldFireParticle()) {
@@ -56,7 +55,7 @@ export default class ParticleSystem extends Entity {
                     this._state = State.STOPPING;
                 }
             case State.STOPPING:
-                for(var i = 0; i < this._particleCount;) {
+                for(let i = 0; i < this._particleCount;) {
                     let particle:Particle = this.activeParticles[i];
 
                     if(particle.fixedUpdate()) {
@@ -73,11 +72,12 @@ export default class ParticleSystem extends Entity {
                     this._state = State.IDLE;
                 }
                 break;
-
+            default:
+                break;
         }
     }
     protected _fireParticle():void {
-        var particle: Particle;
+        let particle: Particle;
         if(this._particleCount >= this._maxParticles) {
             this._pool.poolParticle(this.activeParticles.shift());
             particle = this._pool.requestParticle();
@@ -85,7 +85,7 @@ export default class ParticleSystem extends Entity {
         else {
             particle = this._pool.requestParticle();
             this._particleCount++;
-            
+
         }
         this.activeParticles.push(particle);
         this._initParticle(particle);
@@ -98,7 +98,7 @@ export default class ParticleSystem extends Entity {
         return this._particleCount < this._maxParticles;
     }
     protected _isAlive():boolean {
-        return (this._state === State.STARTED || this._state == State.STOPPING)
+        return (this._state === State.STARTED || this._state === State.STOPPING);
     }
     protected _shouldStop():boolean {
         return false;

@@ -3,14 +3,14 @@ export interface PointTemplate {
     y:number;
 }
 export default class Point implements PointTemplate {
-    x: number;
-    y: number;
-    constructor(x:number=0, y:number=0) {
+    public x:number;
+    public y:number;
+    constructor(x:number = 0, y:number = 0) {
         this.x = x;
         this.y = y;
     }
 
-    isZero():boolean {
-        return !(this.x || this.y)
+    public isZero():boolean {
+        return !(this.x || this.y);
     }
 }

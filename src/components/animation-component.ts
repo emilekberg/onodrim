@@ -1,39 +1,51 @@
-import SpriteComponent, {SpriteComponentTemplate} from './sprite-component'
-import Entity from '../entity'
-import Rect from '../math/rect'
-import Texture from '../resources/texture'
-import Time from '../time'
-interface AnimationComponentTemplate extends SpriteComponentTemplate {
+import SpriteComponent, {SpriteComponentTemplate} from "./sprite-component";
+import Entity from "../entity";
+import Rect from "../math/rect";
+import Texture from "../resources/texture";
+import Time from "../time";
+export interface AnimationComponentTemplate extends SpriteComponentTemplate {
     fps?: number;
     frames?: Array<Rect>;
     autoStart?:boolean;
     loop?:boolean;
 }
-const enum State {
+export const enum State {
     STOPPED,
     PLAYING,
     PAUSED
 }
 export default class AnimationComponent extends SpriteComponent {
-    static CreateFrames(texture:Texture, frameSize:Rect, margin:number = 0, frameStart:number=0, numberOfFrames=-1):Array<Rect> {
+    public static CreateFrames(texture:Texture,
+                               frameSize:Rect,
+                               margin:number = 0,
+                               frameStart:number=0,
+                               numberOfFrames=-1):Array<Rect> {
         let frames:Array<Rect> = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
                 if(y*x + x < frameStart) {
                     continue;
                 }
-                if((frames.length >= numberOfFrames && numberOfFrames != -1)) {
+                if((frames.length >= numberOfFrames && numberOfFrames !== -1)) {
                     return frames;
                 }
-                frames.push(new Rect(x, y, frameSize.w, frameSize.h));                
+                frames.push(new Rect(x, y, frameSize.w, frameSize.h));
             }
         }
         return frames;
     }
-    static CreateFromRect(entity:Entity, template:AnimationComponentTemplate, frameSize:Rect, margin:number = 0, frameStart:number=0, numberOfFrames=-1):AnimationComponent {
+
+    public static CreateFromRect(entity:Entity,
+                                 template:AnimationComponentTemplate,
+                                 frameSize:Rect,
+                                 margin:number = 0,
+                                 frameStart:number=0,
+                                 numberOfFrames=-1):AnimationComponent {
         template.frames = this.CreateFrames(template.texture, frameSize, margin, frameStart, numberOfFrames);
         return new AnimationComponent(entity, template);
     }
+    public loop:boolean;
+
     protected _fps:number;
     protected _numberOfFrames:number;
     protected _frames:Array<Rect>;
@@ -41,7 +53,7 @@ export default class AnimationComponent extends SpriteComponent {
     protected _nextFrameTime:number;
     protected _frameTime:number;
     protected _state:State;
-    loop:boolean;
+
     set fps(value:number) {
         this._fps = value;
         this._frameTime = 1/this._fps;
@@ -70,7 +82,7 @@ export default class AnimationComponent extends SpriteComponent {
         }
     }
 
-    update() {
+    public update() {
         switch(this._state) {
             case State.PLAYING:
                 this._playing();
@@ -82,82 +94,56 @@ export default class AnimationComponent extends SpriteComponent {
                 break;
         }
     }
-    _playing() {
-        while(Time.now() >= this._nextFrameTime) {
-            this._currentFrame = ((this._currentFrame + 1) % this._numberOfFrames);
-            this._nextFrameTime += this._frameTime;
-        }
-    }
-    play() {
+
+    public play() {
         this._state = State.PLAYING;
         this._nextFrameTime = Time.now() + this._frameTime;
     }
-    pause() {
+    public pause() {
         this._state = State.PAUSED;
     }
-    stop() {
+    public stop() {
         this._state = State.STOPPED;
         this._currentFrame = 0;
     }
 
-    render(delta:number, ctx:CanvasRenderingContext2D) {
-        if(!this.isVisible() || !this._texture ||this._numberOfFrames == 0) {
-            return;
-        }
+    public render(delta:number, gl:WebGLRenderingContext) {
+        // http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
+        // http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
+        // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta);
-        ctx.setTransform(
-            this._renderedMatrix.a,
-            this._renderedMatrix.b,
-            this._renderedMatrix.c,
-            this._renderedMatrix.d,
-            this._renderedMatrix.tx,
-            this._renderedMatrix.ty
-        );
-        let rect = this._frames[this._currentFrame];
-        ctx.drawImage(
-            this._texture.image, 
-            rect.x, 
-            rect.y, 
-            rect.w, 
-            rect.h, 
-            0,//-rect.w*this._offset.x, 
-            0,//-rect.h*this._offset.y, 
-            rect.w, 
-            rect.h
-        );
-        this.requireDepthSort = false;
-    }
-
-    renderWebGL(delta:number, gl:WebGLRenderingContext) {
-        //http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
-        //http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
-        //http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
-        this.interpolateRenderMatrix(delta)
         let rect = this._frames[this._currentFrame];
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-        
+
         gl.uniform2f(this.sizeLocation, rect.w, rect.h);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
         gl.uniform4f(
-            this.textureOffsetLocation, 
-            rect.x/this.texture.rect.w, 
-            rect.y/this.texture.rect.h, 
-            rect.w/this.texture.rect.w, 
+            this.textureOffsetLocation,
+            rect.x/this.texture.rect.w,
+            rect.y/this.texture.rect.h,
+            rect.w/this.texture.rect.w,
             rect.h/this.texture.rect.h
         );
         gl.uniform1f(this.alphaLocation, this.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
-    updateTransform() {
+    public updateTransform() {
         let rect = this._frames[this._currentFrame];
-        this._matrix
+        this._renderState.matrix
             .identity()
             .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)
-            .rotate(this._transform.state.rotation)
-            .scale(this._transform.state.scaleX,this._transform.state.scaleY)
-            .translate(this._transform.state.x, this._transform.state.y);
+            .rotate(this._transform.rotation)
+            .scale(this._transform.scaleX,this._transform.scaleY)
+            .translate(this._transform.x, this._transform.y);
+    }
+
+    protected _playing() {
+        while(Time.now() >= this._nextFrameTime) {
+            this._currentFrame = ((this._currentFrame + 1) % this._numberOfFrames);
+            this._nextFrameTime += this._frameTime;
+        }
     }
 }

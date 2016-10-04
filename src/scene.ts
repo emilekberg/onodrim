@@ -1,24 +1,26 @@
-import Entity from './entity'
-import RenderComponent from './components/render-component'
+import Entity from "./entity";
+import RenderComponent from "./components/render-component";
+
 export default class Scene {
-    static Scenes:Array<Scene> = [];
-    static CurrentScene:Scene = null;
-    static ChangeScene(scene:Scene) {
-        if(this.CurrentScene !== null) {
-            this.CurrentScene.changeFrom();        
+    public static SCENES:Array<Scene> = [];
+    public static CURRENT_SCENE:Scene = null;
+    public static ChangeScene(scene:Scene) {
+        if(this.CURRENT_SCENE !== null) {
+            this.CURRENT_SCENE.changeFrom();
         }
-        this.CurrentScene = scene;
-        this.CurrentScene.changeTo();
+        this.CURRENT_SCENE = scene;
+        this.CURRENT_SCENE.changeTo();
     }
-    static AddScene(scene:Scene) {
-        let id = this.Scenes.push(scene);
-        if(this.CurrentScene == null) {
-            this.CurrentScene = scene;
+
+    public static AddScene(scene:Scene) {
+        let id = this.SCENES.push(scene);
+        if(this.CURRENT_SCENE == null) {
+            this.CURRENT_SCENE = scene;
         }
         return id;
     }
-    entities:Array<Entity>;
-    renderers:Array<RenderComponent>;
+    public entities:Array<Entity>;
+    public renderers:Array<RenderComponent>;
     private _id:number;
     constructor() {
         this._id = Scene.AddScene(this);
@@ -26,7 +28,7 @@ export default class Scene {
         this.renderers = new Array<RenderComponent>();
     }
 
-    addEntity(entity:Entity) {
+    public addEntity(entity:Entity) {
         this.entities.push(entity);
         let renderer = entity.getComponent(RenderComponent);
         if(renderer !== null) {
@@ -34,17 +36,17 @@ export default class Scene {
         }
     }
 
-    changeFrom() {
-
+    public changeFrom() {
+        // TODO: implement;
     }
-    changeTo() {
-
+    public changeTo() {
+        // TODO: implement;
     }
 
-    fixedUpdate() {
-
+    public fixedUpdate() {
+        // TODO: implement;
     }
-    update() {
-        
+    public update() {
+        // TODO: implement;
     }
 }

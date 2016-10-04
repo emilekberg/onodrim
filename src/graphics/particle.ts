@@ -1,10 +1,10 @@
-import Entity from '../entity'
-import TransformComponent from '../components/transform-component'
-import SpriteComponent from '../components/sprite-component'
-import RenderComponent from '../components/render-component'
+import Entity from "../entity";
+import TransformComponent from "../components/transform-component";
+import SpriteComponent from "../components/sprite-component";
+import RenderComponent from "../components/render-component";
 export default class Particle extends Entity {
-    transform:TransformComponent;
-    renderComponent:RenderComponent;
+    public transform:TransformComponent;
+    public renderComponent:RenderComponent;
     constructor() {
         super();
         this.transform = new TransformComponent(this);
@@ -12,22 +12,22 @@ export default class Particle extends Entity {
         this.createRenderer();
     }
 
-    createRenderer() {
+    public createRenderer() {
         this.renderComponent = new SpriteComponent(this);
         this.addComponent(this.renderComponent);
     }
 
-    reset(owner) {
+    public reset(owner) {
         this.init(owner);
         this.renderComponent.reset();
     }
 
-    init(owner) {
+    public init(owner) {
         this.transform.x = 400;
         this.transform.y = 200;
     }
 
-    fixedUpdate():boolean {
+    public fixedUpdate():boolean {
         return this._isAlive();
     }
 

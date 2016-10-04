@@ -2,21 +2,26 @@
   "name": "orodrim",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/onodrim.js",
+  "types": "dist/onodrim.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd node_modules/typescript/bin && tsc",
     "watch": "cd node_modules/typescript/bin && tsc -w",
     "server": "node server",
-    "dev": "npm run watch & npm run server"
+    "dev": "npm run watch",
+    "prepublish": "tsc",
+    "gulp": "./node_modules/gulp/bin/gulp.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "connect": "^3.4.1",
-    "open": "0.0.5",
-    "serve-static": "^1.11.1",
-    "systemjs": "^0.19.31",
-    "typescript": "^2.0.0"
+    "gulp": "github:gulpjs/gulp#4.0",
+    "rollup": "^0.36.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-stream": "^1.14.0",
+    "typescript": "^2.0.3",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

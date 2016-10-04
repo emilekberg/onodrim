@@ -1,12 +1,12 @@
-import ResourceManager from './resource-manager'
-import Rect from '../math/rect'
-import WebGLRenderer from '../systems/webgl-renderer'
+import ResourceManager from "./resource-manager";
+import Rect from "../math/rect";
+import Renderer from "../systems/renderer";
 export default class Texture {
-    image: HTMLImageElement;
-    loaded:any;
-    url:string;
-    rect:Rect;
-    glTexture:WebGLTexture;
+    public image: HTMLImageElement;
+    public loaded:any;
+    public url:string;
+    public rect:Rect;
+    public glTexture:WebGLTexture;
     constructor(url:string) {
         if(ResourceManager.isImageLoaded(url)) {
             this.image = ResourceManager.getImage(url);
@@ -18,12 +18,12 @@ export default class Texture {
         this.url = url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
 
-        if (WebGLRenderer.gl) {
-            this.initGL(WebGLRenderer.gl);
+        if (Renderer.GL) {
+            this.createGLTexture(Renderer.GL);
         }
     }
 
-    initGL(gl:WebGLRenderingContext) {
+    public createGLTexture(gl:WebGLRenderingContext) {
         this.glTexture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

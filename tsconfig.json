@@ -1,14 +1,20 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "es2015",
         "target": "es2015",
+        "moduleResolution": "node",
         "noImplicitAny": false,
         "sourceMap": false,
         "outDir": "dist",
         "preserveConstEnums": false,
-        "strictNullChecks": false
+        "strictNullChecks": false,
+        "declaration": true,
+        "declarationDir": "dist"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "test",
+        "bin",
+        "dist"
     ]
 }

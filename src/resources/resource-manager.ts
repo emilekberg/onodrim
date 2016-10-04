@@ -1,32 +1,32 @@
-interface ImageLoadedEvent {
+export interface ImageLoadedEvent {
     url: string;
-    image: HTMLImageElement
+    image: HTMLImageElement;
 }
 export default class ResourceManager {
-    protected static _images:{[id:string]:HTMLImageElement} = {};
-    static loadImage(url:string):Promise<ImageLoadedEvent> {
+    public static loadImage(url:string):Promise<ImageLoadedEvent> {
         return new Promise((resolve, reject) => {
             if(this.isImageLoaded(url)) {
-                resolve(this._images[url]);
+                resolve(this._IMAGES[url]);
             }
             let image = new Image();
-            image.addEventListener('load', resolve.bind(null, {
+            image.addEventListener("load", resolve.bind(null, {
                 url: url,
                 image: image
             }));
             image.src = url;
-            this._images[url] = image;
+            this._IMAGES[url] = image;
         });
     }
-    static getImage(url:string) {
-        return this._images[url];
+    public static getImage(url:string) {
+        return this._IMAGES[url];
     }
-    static loadImages(url:Array<string>):Promise<Array<ImageLoadedEvent>> {
+    public static loadImages(url:Array<string>):Promise<Array<ImageLoadedEvent>> {
         return Promise.all(url.map((value) => {
             return this.loadImage(value);
         }));
     }
-    static isImageLoaded(url:string):boolean {
-        return this._images[url] !== undefined;
+    public static isImageLoaded(url:string):boolean {
+        return this._IMAGES[url] !== undefined;
     }
+    protected static _IMAGES:{[id:string]:HTMLImageElement} = {};
 }

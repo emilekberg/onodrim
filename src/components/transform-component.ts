@@ -1,20 +1,15 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
-import Component from './component'
-import Point, {PointTemplate} from '../math/point'
-import Matrix from '../math/matrix'
-import Constants from '../math/constants'
-import Entity from '../entity'
+import Component from "./component";
+import Point, {PointTemplate} from "../math/point";
+import Entity from "../entity";
 export interface TransformComponentTemplate {
     position?:PointTemplate;
     scale?:PointTemplate;
     origo?:PointTemplate;
     rotation?:number;
-
-
 }
 
 export default class TransformComponent extends Component {
-    private _firstUpdate:boolean;
     protected _position:Point;
     protected _origo:Point;
     protected _scale:Point;
@@ -26,6 +21,7 @@ export default class TransformComponent extends Component {
 
     protected _children:Array<TransformComponent>;
     protected _parent:TransformComponent;
+    private _firstUpdate:boolean;
 
     get parent():TransformComponent {
         return this._parent;
@@ -104,7 +100,7 @@ export default class TransformComponent extends Component {
         this._isDirty = true;
     }
 
-    addChild(child:TransformComponent) {
+    public addChild(child:TransformComponent) {
         if(this.isChild(child)) {
             return;
         }
@@ -114,7 +110,7 @@ export default class TransformComponent extends Component {
         }
         child._parent = this;
     }
-    removeChild(child:TransformComponent) {
+    public removeChild(child:TransformComponent) {
         let index = this._children.indexOf(child);
         if(index === -1) {
             return;
@@ -122,18 +118,18 @@ export default class TransformComponent extends Component {
         this._children.splice(index, 1);
         child._parent = null;
     }
-    isChild(transform:TransformComponent):boolean {
-        return this._children.indexOf(transform) != -1;
+    public isChild(transform:TransformComponent):boolean {
+        return this._children.indexOf(transform) !== -1;
     }
-    hasParent():boolean {
-        return this._parent != null;
+    public hasParent():boolean {
+        return this._parent !== null;
     }
 
-    fixedUpdate() {
-
+    public fixedUpdate() {
+        // TODO: implement
     }
-    update() {
-
+    public update() {
+        // TODO: implement
     }
 
     private setDirty() {

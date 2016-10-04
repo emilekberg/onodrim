@@ -1,5 +1,8 @@
-import Entity from './entity';
-import GameObject from './game-object';
+"use strict";
+//Onodrim.Resources.
+//var game = new Onodrim.Core(false);
+/*
+import GameObject from 'game-object';
 import RenderComponent from './components/render-component'
 import TransformComponent from './components/transform-component'
 import SpriteComponent from './components/sprite-component'
@@ -85,16 +88,10 @@ ResourceManager.loadImages([
 ]).then((value) => {
     let core:Core;
     let scene:Scene;;
-    ///*
     core = new Core(true);
     scene = new MyScene();
     Scene.ChangeScene(scene);
-    core.start();//*/
-    /*
-    core = new Core(false);
-    scene = new MyScene();
-    Scene.ChangeScene(scene);
-    core.start();//*/
+    core.start();
 });
 
 
@@ -130,7 +127,7 @@ class ImplParticleSystem extends ParticleSystem {
     protected _setParticleType() {
         this._particleConstructor = ImplParticle;
     }
-} 
+}
 
 const LifeTime = 2;
 class ImplParticle extends Particle {
@@ -169,3 +166,4 @@ class ImplParticle extends Particle {
         return (this.time < LifeTime)
     }
 }
+*/ 

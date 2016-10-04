@@ -1,18 +1,43 @@
-import Point from './point'
+import Point from "./point";
 export default class Vector2 extends Point {
     constructor(x:number, y:number) {
         super(x, y);
     }
 
-    length():number {
+    public length():number {
         return Math.sqrt((this.x*this.x)+(this.y*this.y));
     }
-    lengthSquared():number {
+
+    public lengthSquared():number {
         return (this.x*this.x)+(this.y*this.y);
     }
-    add(add:Vector2):Vector2 {
-        this.x += add.x;
-        this.y += add.y;
+
+    public equals(vector:Vector2):boolean {
+        return this.x === vector.x && this.y === vector.y;
+    }
+
+    public add(vector:Vector2):Vector2 {
+        this.x += vector.x;
+        this.y += vector.y;
         return this;
     }
+
+    public sub(vector:Vector2):Vector2 {
+        this.x -= vector.x;
+        this.y -= vector.y;
+        return this;
+    }
+
+    public multiply(vector:Vector2):Vector2 {
+        this.x *= vector.x;
+        this.y *= vector.y;
+        return this;
+    }
+
+    public divide(vector:Vector2):Vector2 {
+        this.x /= vector.x;
+        this.y /= vector.y;
+        return this;
+    }
+
 }
