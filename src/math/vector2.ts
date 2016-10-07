@@ -1,6 +1,6 @@
 import Point from "./point";
 export default class Vector2 extends Point {
-    constructor(x:number, y:number) {
+    constructor(x?:number, y?:number) {
         super(x, y);
     }
 

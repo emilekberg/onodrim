@@ -3,18 +3,19 @@
         "module": "es2015",
         "target": "es2015",
         "moduleResolution": "node",
-        "noImplicitAny": false,
-        "sourceMap": false,
+        "noImplicitAny": true,
+        "sourceMap": true,
         "outDir": "dist",
         "preserveConstEnums": false,
         "strictNullChecks": false,
         "declaration": true,
-        "declarationDir": "dist"
+        "declarationDir": "types"
     },
     "exclude": [
         "node_modules",
         "test",
         "bin",
-        "dist"
+        "dist",
+        "types"
     ]
 }

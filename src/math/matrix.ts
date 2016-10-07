@@ -112,7 +112,7 @@ export default class Matrix {
         return this;
     }
 
-    public multiply(b):Matrix {
+    public multiply(b:Matrix):Matrix {
         const a00 = this.values[0*3+0];
         const a01 = this.values[0*3+1];
         const a02 = this.values[0*3+2];

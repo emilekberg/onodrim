@@ -2,6 +2,7 @@ import Entity from "../entity";
 import TransformComponent from "../components/transform-component";
 import SpriteComponent from "../components/sprite-component";
 import RenderComponent from "../components/render-component";
+import ParticleSystem from "./particle-system";
 export default class Particle extends Entity {
     public transform:TransformComponent;
     public renderComponent:RenderComponent;
@@ -17,12 +18,12 @@ export default class Particle extends Entity {
         this.addComponent(this.renderComponent);
     }
 
-    public reset(owner) {
+    public reset(owner:ParticleSystem) {
         this.init(owner);
         this.renderComponent.reset();
     }
 
-    public init(owner) {
+    public init(owner:ParticleSystem) {
         this.transform.x = 400;
         this.transform.y = 200;
     }

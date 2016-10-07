@@ -1,7 +1,12 @@
 import Scene from "../scene";
 import SpriteComponent from "../components/sprite-component";
 import RenderComponent from "../components/render-component";
+import SpriteFrag from "../../shaders/sprite.frag";
+import SpriteVert from "../../shaders/sprite.vert";
 
+export const enum ShaderType {
+    Vert, Frag
+}
 export default class Renderer {
     public static RENDER_COMPONENTS:Array<RenderComponent> = [];
     public static GL:WebGLRenderingContext = null;
@@ -17,33 +22,22 @@ export default class Renderer {
             return false;
         }
     }
-    public static loadShader(url:string, gl:WebGLRenderingContext):WebGLShader {
-        let source = this._requestShaderSync(url);
+    public static createShader(shaderSource:string, shaderType:ShaderType, gl:WebGLRenderingContext):WebGLShader {
         let shader:WebGLShader;
-        if (url.indexOf(".frag") !== -1) {
+        if (shaderType === ShaderType.Frag) {
             shader = gl.createShader(gl.FRAGMENT_SHADER);
         }
-        else if (url.indexOf(".vert") !== -1) {
+        else if (shaderType === ShaderType.Vert) {
             shader = gl.createShader(gl.VERTEX_SHADER);
         }
-        else {
-            return null;
-        }
 
-        gl.shaderSource(shader, source);
+        gl.shaderSource(shader, shaderSource);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
             console.error("error while compiling the shader:", gl.getShaderInfoLog(shader));
             return null;
         }
         return shader;
-    }
-    public static _requestShaderSync(path: string):string {
-        let request = new XMLHttpRequest();
-        request.open("GET", path, false);
-        request.overrideMimeType("charset=utf-8");
-        request.send();
-        return request.response;
     }
 
     public gl:WebGLRenderingContext;
@@ -83,8 +77,8 @@ export default class Renderer {
 
     public initShaders() {
         let gl = this.gl;
-        let fragShader = Renderer.loadShader("./shaders/sprite.frag", gl);
-        let vertShader = Renderer.loadShader("./shaders/sprite.vert", gl);
+        let fragShader = Renderer.createShader(SpriteFrag, ShaderType.Frag, gl);
+        let vertShader = Renderer.createShader(SpriteVert, ShaderType.Vert, gl);
         let program = this.shaderProgram = Renderer.PROGRAM = gl.createProgram();
         gl.attachShader(program, vertShader);
         gl.attachShader(program, fragShader);
@@ -147,7 +141,7 @@ export default class Renderer {
         ]), gl.STATIC_DRAW);
     }
 
-    public render(delta) {
+    public render(delta:number) {
         let resort = false;
         let gl = this.gl;
 

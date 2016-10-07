@@ -1,7 +1,6 @@
 <html>
 <head>
     <script src="./node_modules/systemjs/dist/system.js"></script>
-    <script src="../bin/onodrim.js"></script>
     <style type="text/css">
         canvas {
             border: 1px solid gray;
@@ -13,9 +12,11 @@
     <script>
         System.defaultJSExtensions = true;
         System.config({
-
+            map: {
+                'onodrim': '../bin/onodrim.js'
+            }
         });
-        System.import("../dist/app").then(function(app) {
+        System.import("./app").then(function(app) {
             //app.start();
         });
     </script>
