@@ -13,12 +13,12 @@ export {
 }
 
 // Root Files
-import {default as Core} from "./core";
+import {default as Core, CoreConfig} from "./core";
 import {default as Entity} from "./entity";
 import {default as Game} from "./game";
 import {default as Time} from "./time";
 export {
-    Core,
+    Core, CoreConfig,
     Entity,
     Game,
     Time

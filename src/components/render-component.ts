@@ -83,10 +83,22 @@ export default class RenderComponent extends Component {
         let m1 = this._oldRenderState.matrix;
         let m2 = this._renderState.matrix;
 
+        let equal = true;
+        for(let i = 0; i < Matrix.count; i++) {
+            equal = m1.values[i] === m2.values[i];
+            if (equal === false) {
+                break;
+            }
+            this._renderedMatrix.values[i] = m1.values[i];
+        }
+        if (equal) {
+            return;
+        }
         for(let i = 0; i < Matrix.count; i++) {
             this._renderedMatrix.values[i] = lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
     }
+
     public isVisible():boolean {
         return this.visible && this.alpha > 0;
     }

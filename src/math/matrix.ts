@@ -173,4 +173,15 @@ export default class Matrix {
         );
         return this.multiply(Matrix.tmp);
     }
+
+    public equals(matrix:Matrix) {
+        let equal = true;
+        for(let i = 0; i < Matrix.count; i++) {
+            equal = matrix.values[i] === this.values[i];
+            if (equal === false) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

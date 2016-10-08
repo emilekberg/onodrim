@@ -114,8 +114,11 @@ export default class AnimationComponent extends SpriteComponent {
         this.interpolateRenderMatrix(delta);
         let rect = this._frames[this._currentFrame];
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+        if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            SpriteComponent.previousTexture = this.texture;
+        }
 
         gl.uniform2f(this.sizeLocation, rect.w, rect.h);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);

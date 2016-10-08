@@ -3,8 +3,7 @@ import Entity from "../entity";
 import Texture from "../resources/texture";
 import Point from "../math/point";
 import RenderSystem from "../system/render-system";
-import Matrix from "../math/matrix";
-import {lerp} from "../math/interpolation";
+
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
@@ -14,8 +13,11 @@ export interface SpriteComponentTemplate extends RenderComponentTemplate {
 export default class SpriteComponent extends RenderComponent {
     public static vertexBuffer:WebGLBuffer;
     public static vertexLocation:number;
+    public static vertexIndexBuffer:WebGLBuffer;
+    public static vertexIndexLocation:number;
     public static texCoordBuffer:WebGLBuffer;
     public static texCoordLocation:number;
+    public static previousTexture:Texture;
 
     public x:number;
     public y:number;
@@ -104,22 +106,17 @@ export default class SpriteComponent extends RenderComponent {
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta);
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+        if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            SpriteComponent.previousTexture = this.texture;
+        }
 
         gl.uniform2f(this.sizeLocation, this.texture.rect.w, this.texture.rect.h);
         gl.uniform4f(this.textureOffsetLocation, 0, 0, 1, 1);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
         gl.uniform1f(this.alphaLocation, this._renderState.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-    }
-
-    public interpolateRenderMatrix(delta:number) {
-        let m1 = this._oldRenderState.matrix;
-        let m2 = this._renderState.matrix;
-
-        for(let i = 0; i < Matrix.count; i++) {
-            this._renderedMatrix.values[i] = lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
-        }
+        // gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
     }
 }

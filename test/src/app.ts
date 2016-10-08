@@ -7,7 +7,10 @@ Onodrim.Resources.ResourceManager.loadImages([
     "assets/square.png",
     "assets/tile.png"
 ]).then((value) => {
-    let core:Onodrim.Core = new Onodrim.Core();
+    let core:Onodrim.Core = new Onodrim.Core({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
     let game:Game = new Game();
     core.start(game);
 });

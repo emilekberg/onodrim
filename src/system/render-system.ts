@@ -6,6 +6,10 @@ import SpriteVert from "../../shaders/sprite.vert";
 export const enum ShaderType {
     Vert, Frag
 }
+export interface RenderConfig {
+    width?:number;
+    height?:number;
+}
 export default class RenderSystem {
     public static SYSTEM_TYPE:string = "renderer";
     public static GL:WebGLRenderingContext = null;
@@ -46,10 +50,10 @@ export default class RenderSystem {
     public systemType:string;
     public shaderProgram:WebGLProgram;
     protected _renderComponents: Array<RenderComponent>;
-    constructor() {
+    constructor(config:RenderConfig = {}) {
         this.systemType = RenderSystem.SYSTEM_TYPE;
-        this.width = 800;
-        this.height = 300;
+        this.width = config.width || 800;
+        this.height = config.height || 300;
         this.initGL();
         this.initShaders();
         this.initDefaultBuffers();
@@ -88,6 +92,7 @@ export default class RenderSystem {
     }
 
     public initShaders() {
+        // kolla upp https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
         let gl = this.gl;
         let fragShader = RenderSystem.createShader(SpriteFrag, ShaderType.Frag, gl);
         let vertShader = RenderSystem.createShader(SpriteVert, ShaderType.Vert, gl);

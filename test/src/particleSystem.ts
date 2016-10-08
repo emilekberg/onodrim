@@ -1,13 +1,14 @@
 import {Graphics, Time, Components, Resources} from "onodrim";
 import * as Onodrim from "onodrim";
-const fireRate:number = 0.05;
+const fireRate:number = 0.01;
 export default class ParticleSystem extends Graphics.ParticleSystem {
     public delta:number;
     private _timer: number;
     private _particlesLeft:number;
     constructor() {
         super();
-        this._particlesLeft = 100000;
+        this._particlesLeft = 1000000;
+        this._maxParticles = 10000000000000;
         this._timer = 0;
     }
     public fixedUpdate() {
@@ -23,7 +24,7 @@ export default class ParticleSystem extends Graphics.ParticleSystem {
         this._particlesLeft--;
     }
     protected _shouldStop():boolean {
-        return this._particlesLeft <= 0;
+        return false; // this._particlesLeft <= 0;
     }
     protected _setParticleType() {
         this._particleConstructor = Particle;

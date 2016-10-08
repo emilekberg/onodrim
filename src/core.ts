@@ -3,6 +3,10 @@ import RenderSystem from "./system/render-system";
 import Time from "./time";
 import SystemManager from "./system/system-manager";
 import Game from "./game";
+export interface CoreConfig {
+    width?:number;
+    height?:number;
+}
 export default class Core {
     public static ENTITIES: Array<Entity> = [];
     public renderSystem: RenderSystem;
@@ -11,12 +15,12 @@ export default class Core {
     public fixedUpdateTime: number;
     public game:Game;
     protected _gameLoop:()=>void;
-    constructor() {
+    constructor(config?:CoreConfig) {
         this.fixedUpdateTime = 1/30;
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        SystemManager.addSystem(new RenderSystem());
+        SystemManager.addSystem(new RenderSystem(config));
         this.renderSystem = SystemManager.getSystem(RenderSystem);
         this._gameLoop = () => {
             this.gameLoop();
