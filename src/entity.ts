@@ -4,10 +4,24 @@ export default class Entity {
     protected _id:number;
     protected _components:Array<Component>;
     protected _name:string;
+    protected _isInWorld:boolean;
 
     constructor() {
         this._name = "entity";
         this._components = [];
+        this._isInWorld = false;
+    }
+
+    public addedToWorld() {
+        this._isInWorld = true;
+    }
+
+    public removedFromWorld() {
+        this._isInWorld = false;
+    }
+
+    public isInWorld():boolean {
+        return this._isInWorld;
     }
 
     public addComponent(component:Component) {

@@ -13,15 +13,19 @@ export default class Component {
         // this._checkRequiredComponents();
     }
 
-    public fixedUpdate() {
+    public getEntity():Entity|null {
+        return this._entity;
+    }
+
+    public fixedUpdate():void {
         // TODO: implement this
     }
 
-    public update() {
+    public update():void {
         // TODO: implement this
     }
 
-    public parseJSON(json:Object) {
+    public parseJSON(json:Object):void {
         // TODO: implement this
     }
     public getJSON():Object {

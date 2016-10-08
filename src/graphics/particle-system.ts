@@ -1,5 +1,5 @@
 import Entity from "../entity";
-import TransformComponent from "../components/transform-component";
+import Transform2DComponent from "../components/transform2d-component";
 import ParticlePool from "./particle-pool";
 import Particle from "./particle";
 export const enum State {
@@ -9,7 +9,7 @@ export const enum State {
     PAUSED
 }
 export default class ParticleSystem extends Entity {
-    public transform:TransformComponent;
+    public transform:Transform2DComponent;
     public activeParticles:Array<Particle>;
     protected _state:State;
     protected _maxParticles:number;
@@ -19,7 +19,7 @@ export default class ParticleSystem extends Entity {
 
     constructor() {
         super();
-        this.transform = new TransformComponent(this);
+        this.transform = new Transform2DComponent(this);
         this.addComponent(this.transform);
 
         this.activeParticles = new Array<Particle>();

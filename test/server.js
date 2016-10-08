@@ -1,29 +1,12 @@
-/*const connect = require('connect');
-const serveStatic = require('serve-static');
-const open = require('open');
-const path = require('path');
-const settings = {
-    root: path.resolve('../' + __dirname),
-    port: 9000,
-    openBrowser: false,
-    serveStatic: {
-        'index': [
-            'index.html'
-        ]
-    }
-}
-connect()
-    .use(serveStatic(settings.root, settings.serveStatic))
-    .listen(settings.port, function(){
-        console.log('Server running on ' + settings.port + '...');
-});*/
-
 var http = require('http');
-
 var finalhandler = require('finalhandler');
 var serveStatic = require('serve-static');
 
-var serve = serveStatic("../");
+var serve = serveStatic("../", {
+    'index': [
+        './index.html'
+    ]
+});
 
 var server = http.createServer(function(req, res) {
   var done = finalhandler(req, res);
@@ -31,3 +14,4 @@ var server = http.createServer(function(req, res) {
 });
 
 server.listen(8000);
+console.log('server listening to port 8000');

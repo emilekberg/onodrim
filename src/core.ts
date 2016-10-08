@@ -1,32 +1,35 @@
 import Entity from "./entity";
-import Renderer from "./systems/renderer";
-import Scene from "./scene";
+import RenderSystem from "./system/render-system";
 import Time from "./time";
-
+import SystemManager from "./system/system-manager";
+import Game from "./game";
 export default class Core {
     public static ENTITIES: Array<Entity> = [];
-    public renderer: Renderer;
+    public renderSystem: RenderSystem;
     public currentFixedUpdateTime: number;
     public nextFixedUpdateTime: number;
     public fixedUpdateTime: number;
-
+    public game:Game;
+    protected _gameLoop:()=>void;
     constructor() {
         this.fixedUpdateTime = 1/30;
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        this.renderer = new Renderer();
-        this.tick = this.tick.bind(this);
+        SystemManager.addSystem(new RenderSystem());
+        this.renderSystem = SystemManager.getSystem(RenderSystem);
+        this._gameLoop = () => {
+            this.gameLoop();
+        };
     }
 
-    public start() {
-        if(Scene.CURRENT_SCENE === null) {
-            Scene.AddScene(new Scene());
-        }
-        requestAnimationFrame(this.tick);
+    public start(game:Game = new Game()) {
+        this.game = game;
+        this.game.start();
+        requestAnimationFrame(this._gameLoop);
     }
 
-    public tick() {
+    public gameLoop() {
         while(Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime);
             this._fixedUpdate();
@@ -35,33 +38,35 @@ export default class Core {
         Time.update();
         this._update();
         this._render();
-        requestAnimationFrame(this.tick);
+        requestAnimationFrame(this._gameLoop);
     }
 
     protected _fixedUpdate() {
-        Scene.CURRENT_SCENE.fixedUpdate();
-        for(let i = 0; i < Scene.CURRENT_SCENE.entities.length; i++) {
-            Scene.CURRENT_SCENE.entities[i].fixedUpdate();
-            let components = Scene.CURRENT_SCENE.entities[i].getAllComponents();
-            for(let i = 0; i < components.length; i++) {
-                components[i].fixedUpdate();
+        this.game.fixedUpdate();
+        for(let i = 0; i < this.game.entities.length; i++) {
+            let entity = this.game.entities[i];
+            entity.fixedUpdate();
+            let components = entity.getAllComponents();
+            for(let j = 0; j < components.length; j++) {
+                components[j].fixedUpdate();
             }
         }
     }
 
     protected _update() {
-        Scene.CURRENT_SCENE.update();
-        for(let i = 0; i < Scene.CURRENT_SCENE.entities.length; i++) {
-            Scene.CURRENT_SCENE.entities[i].update();
-            let components = Scene.CURRENT_SCENE.entities[i].getAllComponents();
-            for(let i = 0; i < components.length; i++) {
-                components[i].update();
+        this.game.update();
+        for(let i = 0; i < this.game.entities.length; i++) {
+            let entity = this.game.entities[i];
+            entity.update();
+            let components = entity.getAllComponents();
+            for(let j = 0; j < components.length; j++) {
+                components[j].update();
             }
         }
     }
 
     protected _render() {
         let delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
-        this.renderer.render(delta);
+        this.renderSystem.render(delta);
     }
 };

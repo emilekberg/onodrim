@@ -1,8 +1,9 @@
 import Component from "./component";
-import TransformComponent from "./transform-component";
+import Transform2DComponent from "./transform2d-component";
 import Entity from "../entity";
 import Matrix from "../math/matrix";
-import Renderer from "../systems/renderer";
+import RenderSystem from "../system/render-system";
+import SystemManager from "../system/system-manager";
 import {lerp} from "../math/interpolation";
 export interface RenderComponentTemplate {
     alpha?:number;
@@ -18,7 +19,7 @@ export default class RenderComponent extends Component {
     public visible:boolean;
     public requireDepthSort:boolean;
 
-    protected _transform:TransformComponent;
+    protected _transform:Transform2DComponent;
     protected _renderedMatrix:Matrix;
     protected _depth:number;
     protected _oldRenderState:RenderState;
@@ -49,9 +50,12 @@ export default class RenderComponent extends Component {
             matrix: new Matrix(),
             alpha: 1
         };
-        this._transform = this._entity.getComponent(TransformComponent);
+        this._transform = this._entity.getComponent(Transform2DComponent);
         this.requireDepthSort = true;
-        Renderer.RENDER_COMPONENTS.push(this);
+        SystemManager.getSystem(RenderSystem).addComponentInstance(this);
+    }
+    public destroy():void {
+        SystemManager.getSystem(RenderSystem).removeComponentInstance(this);
     }
     public fixedUpdate() {
         this._oldRenderState.matrix.copy(this._renderState.matrix);
@@ -68,9 +72,9 @@ export default class RenderComponent extends Component {
     public updateTransform() {
         this._renderState.matrix
             .identity()
-            .rotate(this._transform.rotation)
-            .scale(this._transform.scaleX,this._transform.scaleY)
-            .translate(this._transform.x, this._transform.y);
+            .rotate(this._transform.worldRotation)
+            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
+            .translate(this._transform.worldX, this._transform.worldY);
     }
     public render(delta:number, gl:WebGLRenderingContext) {
         this.interpolateRenderMatrix(delta);

@@ -1,6 +1,6 @@
 import ResourceManager from "./resource-manager";
 import Rect from "../math/rect";
-import Renderer from "../systems/renderer";
+import RenderSystem from "../system/render-system";
 export default class Texture {
     public image: HTMLImageElement;
     public loaded:any;
@@ -18,8 +18,8 @@ export default class Texture {
         this.url = url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
 
-        if (Renderer.GL) {
-            this.createGLTexture(Renderer.GL);
+        if (RenderSystem.GL) {
+            this.createGLTexture(RenderSystem.GL);
         }
     }
 

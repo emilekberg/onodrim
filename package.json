@@ -1,5 +1,5 @@
 {
-  "name": "orodrim",
+  "name": "onodrim",
   "version": "1.0.0",
   "description": "",
   "main": "dist/onodrim.js",
@@ -11,19 +11,22 @@
     "bundle": "tsc && gulp",
     "server": "node server",
     "dev": "npm run watch",
-    "prepublish": "tsc",
     "gulp": "./node_modules/gulp/bin/gulp.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^3.0.2",
+    "merge2": "^1.0.2",
     "rollup": "^0.36.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-string": "^2.0.2",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-stream": "^1.14.0",
     "typescript": "^2.0.3",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
 }

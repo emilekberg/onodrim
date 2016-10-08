@@ -1,4 +1,3 @@
-import Scene from "../scene";
 import SpriteComponent from "../components/sprite-component";
 import RenderComponent from "../components/render-component";
 import SpriteFrag from "../../shaders/sprite.frag";
@@ -7,8 +6,8 @@ import SpriteVert from "../../shaders/sprite.vert";
 export const enum ShaderType {
     Vert, Frag
 }
-export default class Renderer {
-    public static RENDER_COMPONENTS:Array<RenderComponent> = [];
+export default class RenderSystem {
+    public static SYSTEM_TYPE:string = "renderer";
     public static GL:WebGLRenderingContext = null;
     public static PROGRAM:WebGLProgram = null;
     public static isWebGLSupported() {
@@ -44,18 +43,31 @@ export default class Renderer {
     public canvas:HTMLCanvasElement;
     public width:number;
     public height:number;
-
+    public systemType:string;
     public shaderProgram:WebGLProgram;
-
+    protected _renderComponents: Array<RenderComponent>;
     constructor() {
+        this.systemType = RenderSystem.SYSTEM_TYPE;
         this.width = 800;
         this.height = 300;
         this.initGL();
         this.initShaders();
         this.initDefaultBuffers();
+        this._renderComponents = [];
         document.body.appendChild(this.canvas);
     }
-    public initGL() {
+
+    public addComponentInstance(component:RenderComponent):void {
+        this._renderComponents.push(component);
+    }
+    public removeComponentInstance(component:RenderComponent):void {
+        let index = this._renderComponents.indexOf(component);
+        if (index !== -1) {
+            this._renderComponents.splice(index, 1);
+        }
+    }
+
+    public initGL():void {
         let canvas = this.canvas = document.createElement("Canvas") as HTMLCanvasElement;
         let opts:WebGLContextAttributes = {
             premultipliedAlpha: false,
@@ -63,7 +75,7 @@ export default class Renderer {
             antialias: true
         };
         let gl = this.canvas.getContext("webgl", opts) || this.canvas.getContext("experimental-webgl", opts);
-        Renderer.GL = this.gl = gl;
+        RenderSystem.GL = this.gl = gl;
         canvas.width = this.width;
         canvas.height = this.height;
         gl.clearColor(0,0,0,1);
@@ -77,9 +89,9 @@ export default class Renderer {
 
     public initShaders() {
         let gl = this.gl;
-        let fragShader = Renderer.createShader(SpriteFrag, ShaderType.Frag, gl);
-        let vertShader = Renderer.createShader(SpriteVert, ShaderType.Vert, gl);
-        let program = this.shaderProgram = Renderer.PROGRAM = gl.createProgram();
+        let fragShader = RenderSystem.createShader(SpriteFrag, ShaderType.Frag, gl);
+        let vertShader = RenderSystem.createShader(SpriteVert, ShaderType.Vert, gl);
+        let program = this.shaderProgram = RenderSystem.PROGRAM = gl.createProgram();
         gl.attachShader(program, vertShader);
         gl.attachShader(program, fragShader);
         gl.linkProgram(program);
@@ -150,9 +162,9 @@ export default class Renderer {
         gl.vertexAttribPointer(SpriteComponent.vertexLocation, 2, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.texCoordBuffer);
         gl.vertexAttribPointer(SpriteComponent.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-        for(let i = 0; i < Scene.CURRENT_SCENE.renderers.length; i++) {
-            let renderer = Scene.CURRENT_SCENE.renderers[i];
-            if(renderer) {
+        for(let i = 0; i < this._renderComponents.length; i++) {
+            let renderer = this._renderComponents[i];
+            if(renderer /*&& renderer.getEntity().isInWorld()*/) {
                 if(renderer.requireDepthSort && !resort) {
                     resort = true;
                 }
@@ -161,7 +173,7 @@ export default class Renderer {
         }
         gl.flush();
         if(resort) {
-             Scene.CURRENT_SCENE.renderers.sort((a, b) => {
+             this._renderComponents.sort((a, b) => {
                  if(a.depth > b.depth) {
                      return 1;
                  }

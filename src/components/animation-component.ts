@@ -135,9 +135,9 @@ export default class AnimationComponent extends SpriteComponent {
         this._renderState.matrix
             .identity()
             .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)
-            .rotate(this._transform.rotation)
-            .scale(this._transform.scaleX,this._transform.scaleY)
-            .translate(this._transform.x, this._transform.y);
+            .rotate(this._transform.worldRotation)
+            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
+            .translate(this._transform.worldX, this._transform.worldY);
     }
 
     protected _playing() {

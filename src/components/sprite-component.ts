@@ -2,7 +2,7 @@ import RenderComponent, {RenderComponentTemplate} from "./render-component";
 import Entity from "../entity";
 import Texture from "../resources/texture";
 import Point from "../math/point";
-import Renderer from "../systems/renderer";
+import RenderSystem from "../system/render-system";
 import Matrix from "../math/matrix";
 import {lerp} from "../math/interpolation";
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
@@ -64,16 +64,16 @@ export default class SpriteComponent extends RenderComponent {
         this._renderState.matrix
             .identity()
             .translate(-this._texture.rect.w*this._offset.x, -this._texture.rect.h*this._offset.y)
-            .rotate(this._transform.rotation)
-            .scale(this._transform.scaleX,this._transform.scaleY)
-            .translate(this._transform.x, this._transform.y);
+            .rotate(this._transform.worldRotation)
+            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
+            .translate(this._transform.worldX, this._transform.worldY);
     }
 
     public setTexture(texture:Texture) {
         this._texture = texture;
         this._w = this._texture.image.width;
         this._w = this._texture.image.height;
-        this.initGL(Renderer.GL, Renderer.PROGRAM);
+        this.initGL(RenderSystem.GL, RenderSystem.PROGRAM);
     }
 
     public initGL(gl:WebGLRenderingContext, program:WebGLProgram) {
