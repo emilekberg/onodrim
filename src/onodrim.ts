@@ -1,3 +1,7 @@
+/** 
+ * TODO: 
+ * http://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
+ */
 // Index files
 import * as Components from "./components";
 import * as Graphics from "./graphics";

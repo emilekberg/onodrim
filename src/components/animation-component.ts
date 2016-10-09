@@ -111,6 +111,8 @@ export default class AnimationComponent extends SpriteComponent {
         // http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
         // http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
+        return;
+        /*
         this.interpolateRenderMatrix(delta);
         let rect = this._frames[this._currentFrame];
 
@@ -131,6 +133,7 @@ export default class AnimationComponent extends SpriteComponent {
         );
         gl.uniform1f(this.alphaLocation, this.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        */
     }
 
     public updateTransform() {

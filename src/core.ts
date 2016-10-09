@@ -1,5 +1,5 @@
 import Entity from "./entity";
-import RenderSystem from "./system/render-system";
+import WebGLSystem from "./system/webgl/webgl-system";
 import Time from "./time";
 import SystemManager from "./system/system-manager";
 import Game from "./game";
@@ -9,7 +9,7 @@ export interface CoreConfig {
 }
 export default class Core {
     public static ENTITIES: Array<Entity> = [];
-    public renderSystem: RenderSystem;
+    public renderSystem: WebGLSystem;
     public currentFixedUpdateTime: number;
     public nextFixedUpdateTime: number;
     public fixedUpdateTime: number;
@@ -20,8 +20,8 @@ export default class Core {
         this.currentFixedUpdateTime = Time.now();
         this.nextFixedUpdateTime = 0;
 
-        SystemManager.addSystem(new RenderSystem(config));
-        this.renderSystem = SystemManager.getSystem(RenderSystem);
+        SystemManager.addSystem(new WebGLSystem(config));
+        this.renderSystem = SystemManager.getSystem(WebGLSystem);
         this._gameLoop = () => {
             this.gameLoop();
         };

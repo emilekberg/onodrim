@@ -3,7 +3,10 @@ const rollup = require('./gulp/rollup');
 const typescript = require('./gulp/typescript');
 
 function watch() {
-    gulp.watch('./src/**/*.ts', gulp.series(typescript.build, rollup.bundle));
+    gulp.watch([
+        './src/**/*.ts',
+        './shaders/**/*.*'
+        ], gulp.series(typescript.build, rollup.bundle));
 }
 
 gulp.task('default', gulp.series(typescript.build, rollup.bundle));

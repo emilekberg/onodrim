@@ -1,8 +1,7 @@
-import SpriteComponent from "../components/sprite-component";
-import RenderComponent from "../components/render-component";
-import SpriteFrag from "../../shaders/sprite.frag";
-import SpriteVert from "../../shaders/sprite.vert";
-
+import RenderComponent from "../../components/render-component";
+import SpriteFrag from "../../../shaders/sprite.frag";
+import SpriteVert from "../../../shaders/sprite.vert";
+import SpriteBatch from "./sprite-batch";
 export const enum ShaderType {
     Vert, Frag
 }
@@ -10,7 +9,7 @@ export interface RenderConfig {
     width?:number;
     height?:number;
 }
-export default class RenderSystem {
+export default class WebGLSystem {
     public static SYSTEM_TYPE:string = "renderer";
     public static GL:WebGLRenderingContext = null;
     public static PROGRAM:WebGLProgram = null;
@@ -49,9 +48,16 @@ export default class RenderSystem {
     public height:number;
     public systemType:string;
     public shaderProgram:WebGLProgram;
+
+    public rectVerticesBuffer:WebGLBuffer;
+    public rectVerticeColorBuffer:WebGLBuffer;
+    public cubeVertexIndexBuffer:WebGLBuffer;
+
+    public spriteBatch:SpriteBatch;
+
     protected _renderComponents: Array<RenderComponent>;
     constructor(config:RenderConfig = {}) {
-        this.systemType = RenderSystem.SYSTEM_TYPE;
+        this.systemType = WebGLSystem.SYSTEM_TYPE;
         this.width = config.width || 800;
         this.height = config.height || 300;
         this.initGL();
@@ -59,6 +65,8 @@ export default class RenderSystem {
         this.initDefaultBuffers();
         this._renderComponents = [];
         document.body.appendChild(this.canvas);
+
+        this.spriteBatch = new SpriteBatch();
     }
 
     public addComponentInstance(component:RenderComponent):void {
@@ -79,7 +87,7 @@ export default class RenderSystem {
             antialias: true
         };
         let gl = this.canvas.getContext("webgl", opts) || this.canvas.getContext("experimental-webgl", opts);
-        RenderSystem.GL = this.gl = gl;
+        WebGLSystem.GL = this.gl = gl;
         canvas.width = this.width;
         canvas.height = this.height;
         gl.clearColor(0,0,0,1);
@@ -94,9 +102,9 @@ export default class RenderSystem {
     public initShaders() {
         // kolla upp https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
         let gl = this.gl;
-        let fragShader = RenderSystem.createShader(SpriteFrag, ShaderType.Frag, gl);
-        let vertShader = RenderSystem.createShader(SpriteVert, ShaderType.Vert, gl);
-        let program = this.shaderProgram = RenderSystem.PROGRAM = gl.createProgram();
+        let fragShader = WebGLSystem.createShader(SpriteFrag, ShaderType.Frag, gl);
+        let vertShader = WebGLSystem.createShader(SpriteVert, ShaderType.Vert, gl);
+        let program = this.shaderProgram = WebGLSystem.PROGRAM = gl.createProgram();
         gl.attachShader(program, vertShader);
         gl.attachShader(program, fragShader);
         gl.linkProgram(program);
@@ -112,35 +120,38 @@ export default class RenderSystem {
     public initDefaultBuffers() {
         let gl = this.gl;
 
-        SpriteComponent.vertexLocation = gl.getAttribLocation(this.shaderProgram, "a_position");
-        SpriteComponent.vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.vertexBuffer );
-        gl.enableVertexAttribArray(SpriteComponent.vertexLocation);
-        gl.vertexAttribPointer(SpriteComponent.vertexLocation, 2, gl.FLOAT, false, 0, 0);
-
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        SpriteBatch.VERTEX_LOCATION = gl.getAttribLocation(this.shaderProgram, "a_position");
+        SpriteBatch.VERTEX_BUFFER = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER );
+        gl.enableVertexAttribArray(SpriteBatch.VERTEX_LOCATION );
+        gl.vertexAttribPointer(SpriteBatch.VERTEX_LOCATION , 2, gl.FLOAT, false, 0, 0);
+        /*
+        const vertices = [
             0, 0,
             1, 0,
             0, 1,
             0, 1,
             1, 0,
             1, 1
-        ]), gl.STATIC_DRAW);
-
-        SpriteComponent.texCoordLocation = gl.getAttribLocation(this.shaderProgram, "a_texCoord");
-        SpriteComponent.texCoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.texCoordBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        */
+        SpriteBatch.TEXCOORD_LOCATION = gl.getAttribLocation(this.shaderProgram, "a_texCoord");
+        SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
+        const texCoords = [
             0.0,  0.0,
             1.0,  0.0,
             0.0,  1.0,
             0.0,  1.0,
             1.0,  0.0,
             1.0,  1.0
-        ]), gl.STATIC_DRAW);
-
-        gl.enableVertexAttribArray(SpriteComponent.texCoordLocation);
-        gl.vertexAttribPointer(SpriteComponent.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
+        
+        gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_LOCATION);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_LOCATION, 2, gl.FLOAT, false, 0, 0);
+        
     }
 
     public setGLRectangle(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -162,20 +173,27 @@ export default class RenderSystem {
         let resort = false;
         let gl = this.gl;
 
+        // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.vertexBuffer);
-        gl.vertexAttribPointer(SpriteComponent.vertexLocation, 2, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteComponent.texCoordBuffer);
-        gl.vertexAttribPointer(SpriteComponent.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
+        // bind necessary buffers
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
+        gl.vertexAttribPointer(SpriteBatch.VERTEX_LOCATION, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_LOCATION, 2, gl.FLOAT, false, 0, 0);
+
+        // prepare until batch is full
+
         for(let i = 0; i < this._renderComponents.length; i++) {
             let renderer = this._renderComponents[i];
             if(renderer /*&& renderer.getEntity().isInWorld()*/) {
-                if(renderer.requireDepthSort && !resort) {
+                if(renderer.requireDepthSort) {
                     resort = true;
                 }
-                renderer.render(delta, gl);
+                renderer.render(delta, gl, this.spriteBatch);
             }
         }
+        this.spriteBatch.render(gl);
         gl.flush();
         if(resort) {
              this._renderComponents.sort((a, b) => {

@@ -1,12 +1,13 @@
 import ResourceManager from "./resource-manager";
 import Rect from "../math/rect";
-import RenderSystem from "../system/render-system";
+import WebGLSystem from "../system/webgl/webgl-system";
 export default class Texture {
     private static WEBGL_TEXTURES:{[id:string]:WebGLTexture} = {};
     public image: HTMLImageElement;
     public loaded:any;
     public url:string;
     public rect:Rect;
+    public glRect:Rect;
     public glTexture:WebGLTexture;
     constructor(url:string) {
         if(ResourceManager.isImageLoaded(url)) {
@@ -18,9 +19,9 @@ export default class Texture {
         }
         this.url = url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
-
+        this.glRect = new Rect(0,0,1,1);
         if (!Texture.WEBGL_TEXTURES[url]) {
-            this.createGLTexture(RenderSystem.GL);
+            this.createGLTexture(WebGLSystem.GL);
             Texture.WEBGL_TEXTURES[url] = this.glTexture;
         }
         else {

@@ -1,6 +1,6 @@
 import {Graphics, Time, Components, Resources} from "onodrim";
 import * as Onodrim from "onodrim";
-const fireRate:number = 0.01;
+const fireRate:number = 0.001;
 export default class ParticleSystem extends Graphics.ParticleSystem {
     public delta:number;
     private _timer: number;
@@ -53,6 +53,7 @@ class Particle extends Graphics.Particle {
         this.time = 0;
 
     }
+    
     public fixedUpdate(): boolean {
         this.transform.x += this.velocity.x;
         this.transform.y += this.velocity.y;

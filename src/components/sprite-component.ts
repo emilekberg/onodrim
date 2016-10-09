@@ -2,8 +2,8 @@ import RenderComponent, {RenderComponentTemplate} from "./render-component";
 import Entity from "../entity";
 import Texture from "../resources/texture";
 import Point from "../math/point";
-import RenderSystem from "../system/render-system";
-
+import WebGLSystem from "../system/webgl/webgl-system";
+import SpriteBatch from "../system/webgl/sprite-batch";
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
@@ -18,6 +18,7 @@ export default class SpriteComponent extends RenderComponent {
     public static texCoordBuffer:WebGLBuffer;
     public static texCoordLocation:number;
     public static previousTexture:Texture;
+
 
     public x:number;
     public y:number;
@@ -75,14 +76,14 @@ export default class SpriteComponent extends RenderComponent {
         this._texture = texture;
         this._w = this._texture.image.width;
         this._w = this._texture.image.height;
-        this.initGL(RenderSystem.GL, RenderSystem.PROGRAM);
+        this.initGL(WebGLSystem.GL, WebGLSystem.PROGRAM);
     }
 
     public initGL(gl:WebGLRenderingContext, program:WebGLProgram) {
-        this.matrixLocation = gl.getUniformLocation(program, "u_matrix");
+        /*this.matrixLocation = gl.getUniformLocation(program, "u_matrix");
         this.sizeLocation = gl.getUniformLocation(program, "u_size");
         this.textureOffsetLocation = gl.getUniformLocation(program, "u_texCoordOffset");
-        this.alphaLocation = gl.getUniformLocation(program, "u_alpha");
+        this.alphaLocation = gl.getUniformLocation(program, "u_alpha");*/
     }
 
     public setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -99,24 +100,36 @@ export default class SpriteComponent extends RenderComponent {
             x2, y2
         ]), gl.STATIC_DRAW);
     }
-
-    public render(delta:number, gl:WebGLRenderingContext) {
+ 
+    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         // http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
         // http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta);
 
         if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
+            batch.setTexture(this.texture.glTexture);
+            /*
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            */
             SpriteComponent.previousTexture = this.texture;
+            
         }
-
+        if (!batch.add({
+            x: this._transform.x,
+            y: this._transform.y,
+            w: this.texture.rect.w * this._transform.scaleX,
+            h: this.texture.rect.h * this._transform.scaleY
+        }, this.texture.glRect)) {
+            batch.render(gl);
+        }
+        /*
         gl.uniform2f(this.sizeLocation, this.texture.rect.w, this.texture.rect.h);
         gl.uniform4f(this.textureOffsetLocation, 0, 0, 1, 1);
         gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
         gl.uniform1f(this.alphaLocation, this._renderState.alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-        // gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
+        */
     }
 }

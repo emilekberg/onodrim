@@ -1,6 +1,7 @@
 import RenderComponent, {RenderComponentTemplate} from "../components/render-component";
 import Entity from "../entity";
 import ParticleSystem from "./particle-system";
+import SpriteBatch from "../system/webgl/sprite-batch";
 export interface ParticleComponentTemplate extends RenderComponentTemplate {
     x?:number;
     y?:number;
@@ -24,11 +25,11 @@ export default class ParticleComponent extends RenderComponent {
         this.system.update();
     }
 
-    public render(delta:number, gl:WebGLRenderingContext) {
+    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         for(let i = 0; i < this.system.activeParticles.length; i++) {
             let renderer = this.system.activeParticles[i].renderComponent;
             if(renderer) {
-                renderer.render(delta, gl);
+                renderer.render(delta, gl, batch);
             }
         }
     }

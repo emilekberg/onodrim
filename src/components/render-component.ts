@@ -2,7 +2,8 @@ import Component from "./component";
 import Transform2DComponent from "./transform2d-component";
 import Entity from "../entity";
 import Matrix from "../math/matrix";
-import RenderSystem from "../system/render-system";
+import WebGLSystem from "../system/webgl/webgl-system";
+import SpriteBatch from "../system/webgl/sprite-batch";
 import SystemManager from "../system/system-manager";
 import {lerp} from "../math/interpolation";
 export interface RenderComponentTemplate {
@@ -52,10 +53,10 @@ export default class RenderComponent extends Component {
         };
         this._transform = this._entity.getComponent(Transform2DComponent);
         this.requireDepthSort = true;
-        SystemManager.getSystem(RenderSystem).addComponentInstance(this);
+        SystemManager.getSystem(WebGLSystem).addComponentInstance(this);
     }
     public destroy():void {
-        SystemManager.getSystem(RenderSystem).removeComponentInstance(this);
+        SystemManager.getSystem(WebGLSystem).removeComponentInstance(this);
     }
     public fixedUpdate() {
         this._oldRenderState.matrix.copy(this._renderState.matrix);
@@ -76,7 +77,7 @@ export default class RenderComponent extends Component {
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(this._transform.worldX, this._transform.worldY);
     }
-    public render(delta:number, gl:WebGLRenderingContext) {
+    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         this.interpolateRenderMatrix(delta);
     }
     public interpolateRenderMatrix(delta:number) {
