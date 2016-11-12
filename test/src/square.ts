@@ -6,14 +6,14 @@ export default class Square extends GameObject {
         super();
         this._sprite = new Components.SpriteComponent(this, {
             alpha: 1,
-            offset: new Math.Point(0.5, 0.5),
+            offset: new Math.Point(0, 0),
             x: 0,
             y: 0,
             depth: -1,
-            texture: new Resources.Texture("assets/tile.png")
+            texture: new Resources.Texture("assets/square.png")
         });
         this.addComponent(this._sprite);
-        this.transform.scaleX = 2;
-        this.transform.scaleY = 2;
+        this.transform.scaleX = 1;
+        this.transform.scaleY = 1;
     }
 }

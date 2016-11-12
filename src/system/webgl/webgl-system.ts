@@ -66,7 +66,9 @@ export default class WebGLSystem {
         this._renderComponents = [];
         document.body.appendChild(this.canvas);
 
-        this.spriteBatch = new SpriteBatch();
+        this.spriteBatch = new SpriteBatch(this.gl, this.shaderProgram);
+        this.spriteBatch.createBuffers();
+        this.spriteBatch.fillDefaultBuffers();
     }
 
     public addComponentInstance(component:RenderComponent):void {
@@ -118,40 +120,14 @@ export default class WebGLSystem {
     }
 
     public initDefaultBuffers() {
-        let gl = this.gl;
+        // let gl = this.gl;
 
-        SpriteBatch.VERTEX_LOCATION = gl.getAttribLocation(this.shaderProgram, "a_position");
-        SpriteBatch.VERTEX_BUFFER = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER );
-        gl.enableVertexAttribArray(SpriteBatch.VERTEX_LOCATION );
-        gl.vertexAttribPointer(SpriteBatch.VERTEX_LOCATION , 2, gl.FLOAT, false, 0, 0);
-        /*
-        const vertices = [
-            0, 0,
-            1, 0,
-            0, 1,
-            0, 1,
-            1, 0,
-            1, 1
+        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SpriteBatch.INDEX_BUFFER);
+        /*const indices = [
+            1, 0, 3,        // 0, 1, 2 <-- correct order
+            3, 2, 1         // 2, 3, 0 <-- correct order
         ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        */
-        SpriteBatch.TEXCOORD_LOCATION = gl.getAttribLocation(this.shaderProgram, "a_texCoord");
-        SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
-        const texCoords = [
-            0.0,  0.0,
-            1.0,  0.0,
-            0.0,  1.0,
-            0.0,  1.0,
-            1.0,  0.0,
-            1.0,  1.0
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
-        
-        gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_LOCATION);
-        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_LOCATION, 2, gl.FLOAT, false, 0, 0);
-        
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);*/
     }
 
     public setGLRectangle(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -177,10 +153,12 @@ export default class WebGLSystem {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // bind necessary buffers
+        /*
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.VERTEX_LOCATION, 2, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.TEXCOORD_LOCATION, 2, gl.FLOAT, false, 0, 0);
+        */
 
         // prepare until batch is full
 

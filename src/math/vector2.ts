@@ -1,5 +1,8 @@
-import Point from "./point";
+import Point, {PointTemplate} from "./point";
 export default class Vector2 extends Point {
+    public static fromTemplate(template:PointTemplate) {
+        return new Vector2(template.x, template.y);
+    }
     constructor(x?:number, y?:number) {
         super(x, y);
     }

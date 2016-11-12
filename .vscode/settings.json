@@ -9,5 +9,7 @@
         "**/.git": true,
         "**/.svn": true,
         "**/.DS_Store": true
-    }
+    },
+    "files.trimTrailingWhitespace": true,
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }

@@ -2,6 +2,7 @@
 import Point, {PointTemplate} from "../math/point";
 import Entity from "../entity";
 import TransformComponent from "./transform-component";
+import Vector2 from "../math/vector2";
 export interface Transform2DComponentTemplate {
     position?:PointTemplate;
     scale?:PointTemplate;
@@ -113,9 +114,9 @@ export default class Transform2DComponent extends TransformComponent {
     }
     constructor(entity:Entity, template:Transform2DComponentTemplate = {}) {
         super(entity);
-        this._position = template.position ? new Point(template.position.x,template.position.y) : new Point();
-        this._origo = template.origo ? new Point(template.origo.x,template.origo.y) : new Point();
-        this._scale = template.origo ? new Point(template.origo.x,template.origo.y) : new Point(1,1);
+        this._position = template.position ? Vector2.fromTemplate(template.position) : new Vector2(0,0);
+        this._origo = template.origo ? Vector2.fromTemplate(template.origo) : new Vector2(0,0);
+        this._scale = template.scale ? Vector2.fromTemplate(template.scale) : new Vector2(1,1);
         this._rotation = template.rotation || 0;
         this._rotationCache = 0;
         this._parent = null;

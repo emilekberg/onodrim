@@ -4,6 +4,7 @@ import Texture from "../resources/texture";
 import Point from "../math/point";
 import WebGLSystem from "../system/webgl/webgl-system";
 import SpriteBatch from "../system/webgl/sprite-batch";
+import {Value} from "../math/matrix3";
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
@@ -18,7 +19,6 @@ export default class SpriteComponent extends RenderComponent {
     public static texCoordBuffer:WebGLBuffer;
     public static texCoordLocation:number;
     public static previousTexture:Texture;
-
 
     public x:number;
     public y:number;
@@ -45,10 +45,10 @@ export default class SpriteComponent extends RenderComponent {
         return this._offset;
     }
     get width():number {
-        return this._w * this._renderedMatrix.a;
+        return this._w * this._renderedMatrix.values[Value.a];
     }
     get height():number {
-        return this._h * this._renderedMatrix.d;
+        return this._h * this._renderedMatrix.values[Value.d];
     }
     constructor(entity:Entity, template:SpriteComponentTemplate = {}) {
         super(entity, template);
@@ -100,7 +100,7 @@ export default class SpriteComponent extends RenderComponent {
             x2, y2
         ]), gl.STATIC_DRAW);
     }
- 
+
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         // http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
         // http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
@@ -108,20 +108,16 @@ export default class SpriteComponent extends RenderComponent {
         this.interpolateRenderMatrix(delta);
 
         if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
-            batch.setTexture(this.texture.glTexture);
+            batch.render(gl);
+            batch.setTexture(this.texture);
             /*
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
             */
             SpriteComponent.previousTexture = this.texture;
-            
         }
-        if (!batch.add({
-            x: this._transform.x,
-            y: this._transform.y,
-            w: this.texture.rect.w * this._transform.scaleX,
-            h: this.texture.rect.h * this._transform.scaleY
-        }, this.texture.glRect)) {
+
+        if (!batch.add(this._renderedMatrix, this.texture.glRect)) {
             batch.render(gl);
         }
         /*

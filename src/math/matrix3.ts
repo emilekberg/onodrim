@@ -1,4 +1,9 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
+export const enum Value {
+    a=0, b=1,   // empty
+    c=3, d=4,   // empty
+    tx=6, ty=7, // empty
+}
 export default class Matrix {
     public static identity:Matrix = new Matrix();
     public static count:number = 9;
@@ -60,18 +65,20 @@ export default class Matrix {
 
     public values:Float32Array;
 
-    get a():number {return this.values[0];}
-    set a(value:number) {this.values[0] = value;}
-    get b():number {return this.values[1];}
-    set b(value:number) {this.values[1] = value;}
-    get c():number {return this.values[3];}
-    set c(value:number) {this.values[3] = value;}
-    get d():number {return this.values[4];}
-    set d(value:number) {this.values[4] = value;}
-    get tx():number {return this.values[6];}
-    set tx(value:number) {this.values[6] = value;}
-    get ty():number {return this.values[7];}
-    set ty(value:number) {this.values[7] = value;}
+    /*
+    get a():number {return this.values[Value.a];}
+    set a(value:number) {this.values[Value.a] = value;}
+    get b():number {return this.values[Value.b];}
+    set b(value:number) {this.values[Value.b] = value;}
+    get c():number {return this.values[Value.c];}
+    set c(value:number) {this.values[Value.c] = value;}
+    get d():number {return this.values[Value.d];}
+    set d(value:number) {this.values[Value.d] = value;}
+    get tx():number {return this.values[Value.tx];}
+    set tx(value:number) {this.values[Value.tx] = value;}
+    get ty():number {return this.values[Value.ty];}
+    set ty(value:number) {this.values[Value.ty] = value;}
+    */
     constructor(values?:Array<number>) {
         if (values) {
             this.values = new Float32Array(values);
@@ -92,7 +99,7 @@ export default class Matrix {
             0,0,1
         );
     }
-    public set(a:number,b:number,c:number,d:number,e:number,f:number,g:number,h:number,i:number) {
+    public set(a:number,b:number,c:number,d:number,e:number,f:number,g:number,tx:number,ty:number) {
         this.values[0] = a;
         this.values[1] = b;
         this.values[2] = c;
@@ -100,15 +107,21 @@ export default class Matrix {
         this.values[4] = e;
         this.values[5] = f;
         this.values[6] = g;
-        this.values[7] = h;
-        this.values[8] = i;
+        this.values[7] = tx;
+        this.values[8] = ty;
         return this;
     }
 
     public copy(matrix:Matrix) {
-        for(let i = 0; i < Matrix.count; i++) {
-            this.values[i] = matrix.values[i];
-        }
+        this.values[0] = this.values[0];
+        this.values[1] = this.values[1];
+        this.values[2] = this.values[2];
+        this.values[3] = this.values[3];
+        this.values[4] = this.values[4];
+        this.values[5] = this.values[5];
+        this.values[6] = this.values[6];
+        this.values[7] = this.values[7];
+        this.values[8] = this.values[8];
         return this;
     }
 
@@ -175,13 +188,84 @@ export default class Matrix {
     }
 
     public equals(matrix:Matrix) {
-        let equal = true;
-        for(let i = 0; i < Matrix.count; i++) {
-            equal = matrix.values[i] === this.values[i];
-            if (equal === false) {
-                return false;
-            }
-        }
-        return true;
+        return (
+            this.values[0] === this.values[0] &&
+            this.values[1] === this.values[1] &&
+            this.values[2] === this.values[2] &&
+            this.values[3] === this.values[3] &&
+            this.values[4] === this.values[4] &&
+            this.values[5] === this.values[5] &&
+            this.values[6] === this.values[6] &&
+            this.values[7] === this.values[7] &&
+            this.values[8] === this.values[8]
+        );
+    }
+
+    public toVertexData() {
+        const a = this.values[0];
+        const b = this.values[1];
+        const c = this.values[3];
+        const d = this.values[4];
+        const tx = this.values[6];
+        const ty = this.values[7];
+        const vertexData = new Float32Array(8);
+
+        const w0 = 1;       // should be texture width
+        const w1 = -1;
+
+        const h0 = 1;
+        const h1 = -1;
+
+        let i = 0;
+        // top left
+        vertexData[i++] = (a * w1) + (c * h1) + tx;
+        vertexData[i++] = (d * h1) + (b * w1) + ty;
+
+        // top right
+        vertexData[i++] = (a * w0) + (c * h1) + tx;
+        vertexData[i++] = (d * h1) + (b * w0) + ty;
+
+         // bottom right
+        vertexData[i++] = (a * w0) + (c * h0) + tx;
+        vertexData[i++] = (d * h0) + (b * w0) + ty;
+
+        // bottom left
+        vertexData[i++] = (a * w1) + (c * h0) + tx;
+        vertexData[i++] = (d * h0) + (b * w1) + ty;
+
+        return vertexData;
+    }
+
+    public setVertexData(target:Float32Array, offset:number) {
+        const a = this.values[0];
+        const b = this.values[1];
+        const c = this.values[3];
+        const d = this.values[4];
+        const tx = this.values[6];
+        const ty = this.values[7];
+
+        // should calculate from pixels to on screen coordinates
+        const w0 = 0.25;
+        const w1 = -0.25;
+
+        const h0 = 0.25;
+        const h1 = -0.25;
+
+        let i = 0;
+        // top left
+        target[offset + i++] = (a * w1) + (c * h1) + tx;
+        target[offset + i++] = (d * h1) + (b * w1) + ty;
+
+        // top right
+        target[offset + i++] = (a * w0) + (c * h1) + tx;
+        target[offset + i++] = (d * h1) + (b * w0) + ty;
+
+         // bottom right
+        target[offset + i++] = (a * w0) + (c * h0) + tx;
+        target[offset + i++] = (d * h0) + (b * w0) + ty;
+
+        // bottom left
+        target[offset + i++] = (a * w1) + (c * h0) + tx;
+        target[offset + i++] = (d * h0) + (b * w1) + ty;
     }
 }

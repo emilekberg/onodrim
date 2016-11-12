@@ -1,7 +1,8 @@
 import Component from "./component";
 import Transform2DComponent from "./transform2d-component";
 import Entity from "../entity";
-import Matrix from "../math/matrix";
+import Matrix3 from "../math/matrix3";
+import Vector2 from "../math/vector3";
 import WebGLSystem from "../system/webgl/webgl-system";
 import SpriteBatch from "../system/webgl/sprite-batch";
 import SystemManager from "../system/system-manager";
@@ -12,7 +13,7 @@ export interface RenderComponentTemplate {
     depth?:number;
 }
 export interface RenderState {
-    matrix:Matrix;
+    matrix:Matrix3;
     alpha:number;
 }
 export default class RenderComponent extends Component {
@@ -21,7 +22,7 @@ export default class RenderComponent extends Component {
     public requireDepthSort:boolean;
 
     protected _transform:Transform2DComponent;
-    protected _renderedMatrix:Matrix;
+    protected _renderedMatrix:Matrix3;
     protected _depth:number;
     protected _oldRenderState:RenderState;
     protected _renderState:RenderState;
@@ -42,13 +43,13 @@ export default class RenderComponent extends Component {
         this._depth  =  template.depth   || 0;
         this.alpha   =  template.alpha   || 1;
         this.visible =	template.visible || true;
-        this._renderedMatrix = new Matrix();
+        this._renderedMatrix = new Matrix3();
         this._oldRenderState = {
-            matrix: new Matrix(),
+            matrix: new Matrix3(),
             alpha: 1
         };
         this._renderState = {
-            matrix: new Matrix(),
+            matrix: new Matrix3(),
             alpha: 1
         };
         this._transform = this._entity.getComponent(Transform2DComponent);
@@ -85,7 +86,7 @@ export default class RenderComponent extends Component {
         let m2 = this._renderState.matrix;
 
         let equal = true;
-        for(let i = 0; i < Matrix.count; i++) {
+        for(let i = 0; i < Matrix3.count; i++) {
             equal = m1.values[i] === m2.values[i];
             if (equal === false) {
                 break;
@@ -95,7 +96,7 @@ export default class RenderComponent extends Component {
         if (equal) {
             return;
         }
-        for(let i = 0; i < Matrix.count; i++) {
+        for(let i = 0; i < Matrix3.count; i++) {
             this._renderedMatrix.values[i] = lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
     }
