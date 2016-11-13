@@ -2,7 +2,6 @@ import Component from "./component";
 import Transform2DComponent from "./transform2d-component";
 import Entity from "../entity";
 import Matrix3 from "../math/matrix3";
-import Vector2 from "../math/vector3";
 import WebGLSystem from "../system/webgl/webgl-system";
 import SpriteBatch from "../system/webgl/sprite-batch";
 import SystemManager from "../system/system-manager";

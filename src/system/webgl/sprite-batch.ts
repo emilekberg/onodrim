@@ -22,8 +22,6 @@ export default class SpriteBatch {
     public static MATRIX_ATTRIB:number;
 
     public attributes:IAttributes;
-    public vertices:Float32Array;
-    public textureCoords:Float32Array;
     public count:number;
     public size:number;
 
@@ -36,7 +34,7 @@ export default class SpriteBatch {
     protected _program:WebGLProgram;
     constructor(
         gl:WebGLRenderingContext, program:WebGLProgram,
-        maxQuadsPerBatch:number = 100, vertsPerQuad:number = 4,
+        maxQuadsPerBatch:number = 500, vertsPerQuad:number = 4,
         floatsPerVert:number = 2) {
         this._gl = gl;
         this._program = program;
@@ -47,11 +45,11 @@ export default class SpriteBatch {
         this.size = this._maxQuadsPerBatch * this._vertsPerQuad * this._floatsPerVert;
         this.attributes = {
              // Index
-             indices: new Uint16Array(this._maxQuadsPerBatch * this._vertsPerQuad),
+             indices: new Uint16Array(this.size * 6),
              // Texture coordinate
-             aTexCoord: new Float32Array(this.size),
+             aTexCoord: new Float32Array(this.size * 8),
              // Position
-             aVertex: new Float32Array(this.size),
+             aVertex: new Float32Array(this.size * 8),
         };
         this.count = 0;
     }
@@ -71,9 +69,10 @@ export default class SpriteBatch {
     }
 
     public fillDefaultBuffers() {
+        /*
         const gl = this._gl;
         // Vertex Buffer
-        /*gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER );
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER );
         const vertCoords = [
             // 0.0,  1.0,
             // 0.0,  0.0,
@@ -123,37 +122,43 @@ export default class SpriteBatch {
         */
     }
 
-    public add(matrix:Matrix3, texCoord:Rect):boolean {
+    public add(matrix:Matrix3, texCoord:Rect, texCoordPixel:Rect):boolean {
         // http://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute
-        let offset = this.count * 8;
+        const vertexOffset = this.count * 8;
 
-        matrix.setVertexData(this.attributes.aVertex, offset);
+        matrix.setVertexData(this.attributes.aVertex, vertexOffset, texCoordPixel);
         /*for(let i = 0; i < quadData.length; i++) {
             this.attributes.a_vertex[offset + i] = quadData[i];
         }*/
-        this.attributes.aTexCoord[offset+0] = texCoord.x; // 0.0;
-        this.attributes.aTexCoord[offset+1] = texCoord.y; // 0.0;
 
-        this.attributes.aTexCoord[offset+2] = texCoord.x + texCoord.w; // 1.0;
-        this.attributes.aTexCoord[offset+3] = texCoord.y; // 0.0;
 
-        this.attributes.aTexCoord[offset+4] = texCoord.x + texCoord.w;// 1.0;
-        this.attributes.aTexCoord[offset+5] = texCoord.y + texCoord.h;// 1.0;
+        this.attributes.aTexCoord[vertexOffset+0] = texCoord.x; // 0.0;
+        this.attributes.aTexCoord[vertexOffset+1] = texCoord.y; // 0.0;
 
-        this.attributes.aTexCoord[offset+6] = texCoord.x; // 0.0;
-        this.attributes.aTexCoord[offset+7] = texCoord.y + texCoord.h;// 1.0;
+        this.attributes.aTexCoord[vertexOffset+2] = texCoord.x + texCoord.w; // 1.0;
+        this.attributes.aTexCoord[vertexOffset+3] = texCoord.y; // 0.0;
 
-        let indexPosOffset = this.count * 6;
-        let indexValueOffset = this.count * 4;
+        this.attributes.aTexCoord[vertexOffset+4] = texCoord.x + texCoord.w;// 1.0;
+        this.attributes.aTexCoord[vertexOffset+5] = texCoord.y + texCoord.h;// 1.0;
+
+        this.attributes.aTexCoord[vertexOffset+6] = texCoord.x; // 0.0;
+        this.attributes.aTexCoord[vertexOffset+7] = texCoord.y + texCoord.h;// 1.0;*/
+
+        const indexPosOffset = this.count * 6;
+        const indexValueOffset = this.count * 4;
         this.attributes.indices[indexPosOffset + 0] = indexValueOffset + 0;
         this.attributes.indices[indexPosOffset + 1] = indexValueOffset + 1;
         this.attributes.indices[indexPosOffset + 2] = indexValueOffset + 2;
         this.attributes.indices[indexPosOffset + 3] = indexValueOffset + 0;
         this.attributes.indices[indexPosOffset + 4] = indexValueOffset + 2;
         this.attributes.indices[indexPosOffset + 5] = indexValueOffset + 3;
-
-        this.count++;
-        return this.count !== this._maxQuadsPerBatch;
+        /*this.attributes.indices[indexPosOffset + 0] = indexValueOffset + 0;
+        this.attributes.indices[indexPosOffset + 1] = indexValueOffset + 1;
+        this.attributes.indices[indexPosOffset + 2] = indexValueOffset + 2;
+        this.attributes.indices[indexPosOffset + 3] = indexValueOffset + 0;
+        this.attributes.indices[indexPosOffset + 4] = indexValueOffset + 2;
+        this.attributes.indices[indexPosOffset + 5] = indexValueOffset + 3;*/
+        return ++this.count !== this._maxQuadsPerBatch;
     }
 
     public setTexture(texture:Texture) {
@@ -176,7 +181,9 @@ export default class SpriteBatch {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SpriteBatch.INDEX_BUFFER);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.STATIC_DRAW);
 
-
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
+        gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
         gl.enableVertexAttribArray(SpriteBatch.VERTEX_ATTRIB);

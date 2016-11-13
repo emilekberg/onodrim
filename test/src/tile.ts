@@ -14,8 +14,8 @@ export default class Tile extends GameObject {
         }*/);
         this.addComponent(this._sprite);
         this._sprite.setTexture(new Resources.Texture("assets/colors.png"));
-        this.transform.scaleX = 1;
-        this.transform.scaleY = 1;
+        this.transform.scaleX = 4;
+        this.transform.scaleY = 4;
 
         /*let enemy = new Enemy();
         this._enemy = enemy;

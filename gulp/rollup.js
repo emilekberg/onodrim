@@ -6,11 +6,13 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const string = require('rollup-plugin-string');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
+const rollupSourcemaps = require('rollup-plugin-sourcemaps');
 exports.bundle = function bundle() {
     return rollup({
         entry: './dist/onodrim.js',
         sourceMap: true,
         plugins: [
+            rollupSourcemaps(),
             string({
                 include: [
                     './shaders/*.frag',
@@ -24,9 +26,9 @@ exports.bundle = function bundle() {
                 ]
             })
         ],
-        format: 'cjs', 
+        format: 'cjs',
         moduleName: 'Onodrim'
-        
+
     })
     .pipe(source('onodrim.js'))
     .pipe(buffer())

@@ -9,6 +9,8 @@ export default class Enemy extends GameObject {
             autoStart: true,
             fps: 24
         }, new Math.Rect(0, 0, 16, 16));
+        this.transform.scaleX = 4;
+        this.transform.scaleY = 4;
         this.addComponent(this._sprite);
         this._sprite.offset = new Math.Point(0.5, 0.5);
     }

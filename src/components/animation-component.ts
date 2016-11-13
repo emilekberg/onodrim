@@ -1,4 +1,5 @@
 import SpriteComponent, {SpriteComponentTemplate} from "./sprite-component";
+import SpriteBatch from "../system/webgl/sprite-batch";
 import Entity from "../entity";
 import Rect from "../math/rect";
 import Texture from "../resources/texture";
@@ -107,11 +108,32 @@ export default class AnimationComponent extends SpriteComponent {
         this._currentFrame = 0;
     }
 
-    public render(delta:number, gl:WebGLRenderingContext) {
+    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         // http://webglfundamentals.org/webgl/lessons/webgl-2d-matrices.html
         // http://webglfundamentals.org/webgl/webgl-2d-geometry-matrix-transform.html
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
-        return;
+        this.interpolateRenderMatrix(delta);
+
+        if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
+            batch.render(gl);
+            batch.setTexture(this.texture);
+
+            /*
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            */
+            SpriteComponent.previousTexture = this.texture;
+        }
+        const rect = this._frames[this._currentFrame];
+        const texCoord = new Rect(
+            rect.x/this.texture.rect.w,
+            rect.y/this.texture.rect.h,
+            rect.w/this.texture.rect.w,
+            rect.h/this.texture.rect.h
+        );
+        if (!batch.add(this._renderedMatrix, texCoord, rect)) {
+            batch.render(gl);
+        }
         /*
         this.interpolateRenderMatrix(delta);
         let rect = this._frames[this._currentFrame];

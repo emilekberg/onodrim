@@ -1,4 +1,5 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
+import Rect from './rect'
 export const enum Value {
     a=0, b=1,   // empty
     c=3, d=4,   // empty
@@ -113,15 +114,15 @@ export default class Matrix {
     }
 
     public copy(matrix:Matrix) {
-        this.values[0] = this.values[0];
-        this.values[1] = this.values[1];
-        this.values[2] = this.values[2];
-        this.values[3] = this.values[3];
-        this.values[4] = this.values[4];
-        this.values[5] = this.values[5];
-        this.values[6] = this.values[6];
-        this.values[7] = this.values[7];
-        this.values[8] = this.values[8];
+        this.values[0] = matrix.values[0];
+        this.values[1] = matrix.values[1];
+        this.values[2] = matrix.values[2];
+        this.values[3] = matrix.values[3];
+        this.values[4] = matrix.values[4];
+        this.values[5] = matrix.values[5];
+        this.values[6] = matrix.values[6];
+        this.values[7] = matrix.values[7];
+        this.values[8] = matrix.values[8];
         return this;
     }
 
@@ -189,15 +190,15 @@ export default class Matrix {
 
     public equals(matrix:Matrix) {
         return (
-            this.values[0] === this.values[0] &&
-            this.values[1] === this.values[1] &&
-            this.values[2] === this.values[2] &&
-            this.values[3] === this.values[3] &&
-            this.values[4] === this.values[4] &&
-            this.values[5] === this.values[5] &&
-            this.values[6] === this.values[6] &&
-            this.values[7] === this.values[7] &&
-            this.values[8] === this.values[8]
+            this.values[0] === matrix.values[0] &&
+            this.values[1] === matrix.values[1] &&
+            this.values[2] === matrix.values[2] &&
+            this.values[3] === matrix.values[3] &&
+            this.values[4] === matrix.values[4] &&
+            this.values[5] === matrix.values[5] &&
+            this.values[6] === matrix.values[6] &&
+            this.values[7] === matrix.values[7] &&
+            this.values[8] === matrix.values[8]
         );
     }
 
@@ -236,7 +237,7 @@ export default class Matrix {
         return vertexData;
     }
 
-    public setVertexData(target:Float32Array, offset:number) {
+    public setVertexData(target:Float32Array, offset:number, size:Rect) {
         const a = this.values[0];
         const b = this.values[1];
         const c = this.values[3];
@@ -245,11 +246,11 @@ export default class Matrix {
         const ty = this.values[7];
 
         // should calculate from pixels to on screen coordinates
-        const w0 = 0.25;
-        const w1 = -0.25;
+        const w0 = size.w * 0.25;
+        const w1 = size.w * -0.25;
 
-        const h0 = 0.25;
-        const h1 = -0.25;
+        const h0 = size.h * 0.25;
+        const h1 = size.h * -0.25;
 
         let i = 0;
         // top left

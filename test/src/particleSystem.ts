@@ -31,7 +31,7 @@ export default class ParticleSystem extends Graphics.ParticleSystem {
     }
 }
 
-const lifeTime = 2;
+const lifeTime = 4;
 class Particle extends Graphics.Particle {
     public velocity: Onodrim.Math.Vector2;
     public time: number;
@@ -53,7 +53,7 @@ class Particle extends Graphics.Particle {
         this.time = 0;
 
     }
-    
+
     public fixedUpdate(): boolean {
         this.transform.x += this.velocity.x;
         this.transform.y += this.velocity.y;

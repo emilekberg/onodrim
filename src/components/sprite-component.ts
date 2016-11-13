@@ -117,7 +117,7 @@ export default class SpriteComponent extends RenderComponent {
             SpriteComponent.previousTexture = this.texture;
         }
 
-        if (!batch.add(this._renderedMatrix, this.texture.glRect)) {
+        if (!batch.add(this._renderedMatrix, this.texture.glRect, this.texture.rect)) {
             batch.render(gl);
         }
         /*
