@@ -68,7 +68,6 @@ export default class WebGLSystem {
 
         this.spriteBatch = new SpriteBatch(this.gl, this.shaderProgram);
         this.spriteBatch.createBuffers();
-        this.spriteBatch.fillDefaultBuffers();
     }
 
     public addComponentInstance(component:RenderComponent):void {

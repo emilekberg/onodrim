@@ -2,8 +2,8 @@
   "name": "onodrim",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/onodrim.js",
-  "types": "types/onodrim.d.ts",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd node_modules/typescript/bin && tsc",

@@ -19,9 +19,7 @@
         "interface-name": [
             false
         ],
-
         "object-literal-sort-keys": false,
-        "object-literal-shorthand": false,
         "no-bitwise": false
     }
 }

@@ -36,10 +36,6 @@ export default class MyGame extends Onodrim.Game {
 
         this.addEntity(square);
 
-
-
-
-
         this.addEntity(particles);
         particles.getComponent(Onodrim.Graphics.ParticleComponent).system.start();
     }

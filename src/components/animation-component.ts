@@ -114,16 +114,16 @@ export default class AnimationComponent extends SpriteComponent {
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta);
 
-        if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
+        /*if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
             batch.render(gl);
             batch.setTexture(this.texture);
 
             /*
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            */
+
             SpriteComponent.previousTexture = this.texture;
-        }
+        }*/
         const rect = this._frames[this._currentFrame];
         const texCoord = new Rect(
             rect.x/this.texture.rect.w,
@@ -131,7 +131,7 @@ export default class AnimationComponent extends SpriteComponent {
             rect.w/this.texture.rect.w,
             rect.h/this.texture.rect.h
         );
-        if (!batch.add(this._renderedMatrix, texCoord, rect)) {
+        if (!batch.add(this._renderedMatrix, this.texture, texCoord, rect)) {
             batch.render(gl);
         }
         /*

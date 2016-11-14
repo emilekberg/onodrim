@@ -1,5 +1,5 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
-import Rect from './rect'
+import Rect from "./rect";
 export const enum Value {
     a=0, b=1,   // empty
     c=3, d=4,   // empty
