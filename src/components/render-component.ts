@@ -6,6 +6,7 @@ import WebGLSystem from "../system/webgl/webgl-system";
 import SpriteBatch from "../system/webgl/sprite-batch";
 import SystemManager from "../system/system-manager";
 import {lerp} from "../math/interpolation";
+import Color from "../graphics/color";
 export interface RenderComponentTemplate {
     alpha?:number;
     visible?:boolean;
@@ -25,6 +26,7 @@ export default class RenderComponent extends Component {
     protected _depth:number;
     protected _oldRenderState:RenderState;
     protected _renderState:RenderState;
+    protected _color: Color;
 
     get depth():number {
         return this._depth;
@@ -39,8 +41,8 @@ export default class RenderComponent extends Component {
 
     constructor(entity:Entity, template:RenderComponentTemplate = {}) {
         super(entity);
-        this._depth  =  template.depth   || 0;
-        this.alpha   =  template.alpha   || 1;
+        this._depth  =  template.depth || 0;
+        this.alpha   =  template.alpha || 1;
         this.visible =	template.visible || true;
         this._renderedMatrix = new Matrix3();
         this._oldRenderState = {
@@ -51,6 +53,8 @@ export default class RenderComponent extends Component {
             matrix: new Matrix3(),
             alpha: 1
         };
+        this._color = new Color(1, 1, 1, 1);
+
         this._transform = this._entity.getComponent(Transform2DComponent);
         this.requireDepthSort = true;
         SystemManager.getSystem(WebGLSystem).addComponentInstance(this);
@@ -63,6 +67,7 @@ export default class RenderComponent extends Component {
         this._oldRenderState.alpha = this._renderState.alpha;
         this.updateTransform();
         this._renderState.alpha = this.alpha;
+        this._color.a = this.alpha;
     }
     public reset() {
         this.updateTransform();
@@ -85,9 +90,9 @@ export default class RenderComponent extends Component {
         let m2 = this._renderState.matrix;
 
         let equal = true;
-        for(let i = 0; i < Matrix3.count; i++) {
+        for(let i = 0; i < Matrix3.count; ++i) {
             equal = m1.values[i] === m2.values[i];
-            if (equal === false) {
+            if (!equal) {
                 break;
             }
             this._renderedMatrix.values[i] = m1.values[i];
@@ -95,7 +100,7 @@ export default class RenderComponent extends Component {
         if (equal) {
             return;
         }
-        for(let i = 0; i < Matrix3.count; i++) {
+        for(let i = 0; i < Matrix3.count; ++i) {
             this._renderedMatrix.values[i] = lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
     }

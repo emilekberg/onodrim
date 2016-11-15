@@ -10,6 +10,6 @@
         "**/.svn": true,
         "**/.DS_Store": true
     },
-    "files.trimTrailingWhitespace": true,
+    "files.trimTrailingWhitespace": false,
     "typescript.tsdk": "./node_modules/typescript/lib"
 }

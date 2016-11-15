@@ -131,7 +131,7 @@ export default class AnimationComponent extends SpriteComponent {
             rect.w/this.texture.rect.w,
             rect.h/this.texture.rect.h
         );
-        if (!batch.add(this._renderedMatrix, this.texture, texCoord, rect)) {
+        if (!batch.add(this._renderedMatrix, this.texture, texCoord, rect, this._color)) {
             batch.render(gl);
         }
         /*

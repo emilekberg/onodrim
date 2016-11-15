@@ -15,7 +15,7 @@ export default class ParticleComponent extends RenderComponent {
     }
     public fixedUpdate() {
         this.system.fixedUpdate();
-        for(let i = 0; i < this.system.activeParticles.length; i++) {
+        for(let i = 0; i < this.system.activeParticles.length; ++i) {
             this.system.activeParticles[i].transform.fixedUpdate();
             this.system.activeParticles[i].renderComponent.fixedUpdate();
         }
@@ -26,7 +26,7 @@ export default class ParticleComponent extends RenderComponent {
     }
 
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
-        for(let i = 0; i < this.system.activeParticles.length; i++) {
+        for(let i = 0; i < this.system.activeParticles.length; ++i) {
             let renderer = this.system.activeParticles[i].renderComponent;
             if(renderer) {
                 renderer.render(delta, gl, batch);

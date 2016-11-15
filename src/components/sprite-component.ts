@@ -5,6 +5,7 @@ import Point from "../math/point";
 import WebGLSystem from "../system/webgl/webgl-system";
 import SpriteBatch from "../system/webgl/sprite-batch";
 import {Value} from "../math/matrix3";
+
 export interface SpriteComponentTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
@@ -117,7 +118,7 @@ export default class SpriteComponent extends RenderComponent {
             SpriteComponent.previousTexture = this.texture;
         }*/
 
-        if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this.texture.rect)) {
+        if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this.texture.rect, this._color)) {
             batch.render(gl);
         }
         /*

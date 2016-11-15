@@ -1,6 +1,8 @@
 attribute vec2 a_vertex;
 attribute vec2 a_texCoord;
+attribute vec4 a_color;
 varying vec2 v_texCoord;
+varying vec4 v_color;
 uniform vec2 u_size;
 uniform vec2 u_resolution;
 
@@ -18,6 +20,7 @@ void main(void) {
     //gl_Position = a_vertex;
     gl_Position = vec4(clipSpace, 1, 1);
     v_texCoord = a_texCoord;
+    v_color = a_color;
 }
 /*
 void main(void) {
