@@ -10,7 +10,7 @@ export class SystemManager {
     }
 
     public hasSystem(systemType:Function):boolean {
-        for(let i = 0; i < this._systems.length; i++) {
+        for(let i = 0; i < this._systems.length; ++i) {
             if(this._systems[i] instanceof (systemType)) {
                 return true;
             }
@@ -19,7 +19,7 @@ export class SystemManager {
     }
 
     public getSystem<T extends System>(componentType:{ new (...args:any[]):T;}):T {
-        for(let i = 0; i < this._systems.length; i++) {
+        for(let i = 0; i < this._systems.length; ++i) {
             if(this._systems[i] instanceof (componentType)) {
                 return this._systems[i] as T;
             }

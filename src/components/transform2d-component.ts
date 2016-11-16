@@ -125,7 +125,7 @@ export default class Transform2DComponent extends TransformComponent {
         this._isDirty = true;
 
         this._parentCache = new Array<number>(5);
-        for(let i = 0; i < 5; i++) {
+        for(let i = 0; i < 5; ++i) {
             this._parentCache[i] = 0;
         }
     }
@@ -139,10 +139,10 @@ export default class Transform2DComponent extends TransformComponent {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; i++) {
+        for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; i++) {
+            for(let i = 0; i < components.length; ++i) {
                 components[i].fixedUpdate();
             }
         }
@@ -158,10 +158,10 @@ export default class Transform2DComponent extends TransformComponent {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; i++) {
+        for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; i++) {
+            for(let i = 0; i < components.length; ++i) {
                 components[i].update();
             }
         }

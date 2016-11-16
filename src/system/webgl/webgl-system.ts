@@ -161,7 +161,7 @@ export default class WebGLSystem {
 
         // prepare until batch is full
 
-        for(let i = 0; i < this._renderComponents.length; i++) {
+        for(let i = 0; i < this._renderComponents.length; ++i) {
             let renderer = this._renderComponents[i];
             if(renderer /*&& renderer.getEntity().isInWorld()*/) {
                 if(renderer.requireDepthSort) {

@@ -33,7 +33,7 @@ export default class ParticlePool {
     }
 
     protected _fillPool(count:number) {
-        for(let i = 0; i < count; i++) {
+        for(let i = 0; i < count; ++i) {
             this._particles.push(new this._particleConstructor());
         }
     }
