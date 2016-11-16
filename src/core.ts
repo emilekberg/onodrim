@@ -47,7 +47,7 @@ export default class Core {
 
     protected _fixedUpdate() {
         this.game.fixedUpdate();
-        for(let i = 0; i < this.game.entities.length; ++i) {
+        for(let i = 0; i < this.game.entities.length; i++) {
             let entity = this.game.entities[i];
             entity.fixedUpdate();
             let components = entity.getAllComponents();
@@ -59,7 +59,7 @@ export default class Core {
 
     protected _update() {
         this.game.update();
-        for(let i = 0; i < this.game.entities.length; ++i) {
+        for(let i = 0; i < this.game.entities.length; i++) {
             let entity = this.game.entities[i];
             entity.update();
             let components = entity.getAllComponents();

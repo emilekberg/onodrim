@@ -90,7 +90,7 @@ export default class RenderComponent extends Component {
         let m2 = this._renderState.matrix;
 
         let equal = true;
-        for(let i = 0; i < Matrix3.count; ++i) {
+        for(let i = 0; i < Matrix3.count; i++) {
             equal = m1.values[i] === m2.values[i];
             if (!equal) {
                 break;
@@ -100,7 +100,7 @@ export default class RenderComponent extends Component {
         if (equal) {
             return;
         }
-        for(let i = 0; i < Matrix3.count; ++i) {
+        for(let i = 0; i < Matrix3.count; i++) {
             this._renderedMatrix.values[i] = lerp(delta, m1.values[i], m1.values[i]-m2.values[i], 1);
         }
     }

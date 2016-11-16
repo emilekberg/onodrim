@@ -59,7 +59,7 @@ export default class ParticleSystem extends Entity {
                     let particle:Particle = this.activeParticles[i];
 
                     if(particle.fixedUpdate()) {
-                        ++i;
+                        i++;
                     }
                     else {
                         this._pool.poolParticle(particle);

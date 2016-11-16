@@ -218,7 +218,7 @@ export default class SpriteBatch {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.STATIC_DRAW);
 
         let l = this._textureGroup.currentIndex+1;
-        for(let i = 0; i < l; ++i) {
+        for(let i = 0; i < l; i++) {
             const group = this._textureGroup.groups[i];
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, group.texture.glTexture);
