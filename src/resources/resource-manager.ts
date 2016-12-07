@@ -9,9 +9,9 @@ export default class ResourceManager {
                 resolve(this._IMAGES[url]);
             }
             let image = new Image();
-            image.addEventListener("load", resolve.bind(null, {
-                url: url,
-                image: image
+            image.addEventListener('load', resolve.bind(null, {
+                url,
+                image
             }));
             image.src = url;
             this._IMAGES[url] = image;
@@ -20,7 +20,7 @@ export default class ResourceManager {
     public static getImage(url:string) {
         return this._IMAGES[url];
     }
-    public static loadImages(url:Array<string>):Promise<Array<ImageLoadedEvent>> {
+    public static loadImages(url:string[]):Promise<ImageLoadedEvent[]> {
         return Promise.all(url.map((value) => {
             return this.loadImage(value);
         }));

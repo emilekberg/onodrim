@@ -1,9 +1,9 @@
-import Entity from "../entity";
+import Entity from '../entity';
 export default class Component {
     protected _entity:Entity;
-    protected _requiredComponents:Array<Function>;
+    protected _requiredComponents:Function[];
     constructor(entity:Entity) {
-        this._requiredComponents = new Array<Function>();
+        this._requiredComponents = [];
         this.setEntity(entity);
 
     }
@@ -35,7 +35,7 @@ export default class Component {
     }
 
     /*private _checkRequiredComponents():void {
-        for(let i = 0; i < this._requiredComponents.length; i++) {
+        for(let i = 0; i < this._requiredComponents.length; ++i) {
             if(!this._entity.hasComponent(this._requiredComponents[i])) {
                 console.error(
                     this._entity.constructor.name,

@@ -1,5 +1,5 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
-import Rect from "./rect";
+import Rect from './rect';
 export const enum Value {
     a=0, b=1,   // empty
     c=3, d=4,   // empty
@@ -80,7 +80,7 @@ export default class Matrix {
     get ty():number {return this.values[Value.ty];}
     set ty(value:number) {this.values[Value.ty] = value;}
     */
-    constructor(values?:Array<number>) {
+    constructor(values?:number[]) {
         if (values) {
             this.values = new Float32Array(values);
         }
@@ -217,22 +217,22 @@ export default class Matrix {
         const h0 = 1;
         const h1 = -1;
 
-        let i = 0;
+        let i = -1;
         // top left
-        vertexData[i++] = (a * w1) + (c * h1) + tx;
-        vertexData[i++] = (d * h1) + (b * w1) + ty;
+        vertexData[++i] = (a * w1) + (c * h1) + tx;
+        vertexData[++i] = (d * h1) + (b * w1) + ty;
 
         // top right
-        vertexData[i++] = (a * w0) + (c * h1) + tx;
-        vertexData[i++] = (d * h1) + (b * w0) + ty;
+        vertexData[++i] = (a * w0) + (c * h1) + tx;
+        vertexData[++i] = (d * h1) + (b * w0) + ty;
 
          // bottom right
-        vertexData[i++] = (a * w0) + (c * h0) + tx;
-        vertexData[i++] = (d * h0) + (b * w0) + ty;
+        vertexData[++i] = (a * w0) + (c * h0) + tx;
+        vertexData[++i] = (d * h0) + (b * w0) + ty;
 
         // bottom left
-        vertexData[i++] = (a * w1) + (c * h0) + tx;
-        vertexData[i++] = (d * h0) + (b * w1) + ty;
+        vertexData[++i] = (a * w1) + (c * h0) + tx;
+        vertexData[++i] = (d * h0) + (b * w1) + ty;
 
         return vertexData;
     }
@@ -252,21 +252,21 @@ export default class Matrix {
         const h0 = size.h * 0.25;
         const h1 = size.h * -0.25;
 
-        let i = 0;
+        let i = -1;
         // top left
-        target[offset + i++] = (a * w1) + (c * h1) + tx;
-        target[offset + i++] = (d * h1) + (b * w1) + ty;
+        target[offset + ++i] = (a * w1) + (c * h1) + tx;
+        target[offset + ++i] = (d * h1) + (b * w1) + ty;
 
         // top right
-        target[offset + i++] = (a * w0) + (c * h1) + tx;
-        target[offset + i++] = (d * h1) + (b * w0) + ty;
+        target[offset + ++i] = (a * w0) + (c * h1) + tx;
+        target[offset + ++i] = (d * h1) + (b * w0) + ty;
 
          // bottom right
-        target[offset + i++] = (a * w0) + (c * h0) + tx;
-        target[offset + i++] = (d * h0) + (b * w0) + ty;
+        target[offset + ++i] = (a * w0) + (c * h0) + tx;
+        target[offset + ++i] = (d * h0) + (b * w0) + ty;
 
         // bottom left
-        target[offset + i++] = (a * w1) + (c * h0) + tx;
-        target[offset + i++] = (d * h0) + (b * w1) + ty;
+        target[offset + ++i] = (a * w1) + (c * h0) + tx;
+        target[offset + ++i] = (d * h0) + (b * w1) + ty;
     }
 }

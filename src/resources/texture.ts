@@ -1,6 +1,6 @@
-import ResourceManager from "./resource-manager";
-import Rect from "../math/rect";
-import WebGLSystem from "../system/webgl/webgl-system";
+import ResourceManager from './resource-manager';
+import Rect from '../math/rect';
+import WebGLSystem from '../system/webgl/webgl-system';
 export default class Texture {
     private static WEBGL_TEXTURES:{[id:string]:WebGLTexture} = {};
     public image: HTMLImageElement;

@@ -61,5 +61,4 @@ export default class Vector3 {
         this.z /= vector.z;
         return this;
     }
-
 }

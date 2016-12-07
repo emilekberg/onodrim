@@ -1,10 +1,10 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/math/Matrix.js
-import Vector3 from "./vector3";
+import Vector3 from './vector3';
 export default class Matrix4 {
     public static identity:Matrix4 = new Matrix4();
     public static count:number = 16;
     public values:Float32Array;
-    constructor(values?:Array<number>) {
+    constructor(values?:number[]) {
         if (values) {
             this.values = new Float32Array(values);
         }

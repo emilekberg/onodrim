@@ -1,8 +1,8 @@
-import Entity from "../entity";
-import Transform2DComponent from "../components/transform2d-component";
-import SpriteComponent from "../components/sprite-component";
-import RenderComponent from "../components/render-component";
-import ParticleSystem from "./particle-system";
+import Entity from '../entity';
+import Transform2DComponent from '../components/transform2d-component';
+import SpriteComponent from '../components/sprite-component';
+import RenderComponent from '../components/render-component';
+import ParticleSystem from './particle-system';
 export default class Particle extends Entity {
     public transform:Transform2DComponent;
     public renderComponent:RenderComponent;

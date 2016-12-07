@@ -19,6 +19,8 @@ const enum ParentCache {
 };
 
 export default class Transform2DComponent extends TransformComponent {
+    
+    public wasDirty:boolean;
     protected _position:Point;
     protected _origo:Point;
     protected _scale:Point;
@@ -27,6 +29,7 @@ export default class Transform2DComponent extends TransformComponent {
     protected _cr:number;
     protected _sr:number;
     protected _isDirty:boolean;
+    
 
     private _parentCache:Array<number>;
 
@@ -123,9 +126,10 @@ export default class Transform2DComponent extends TransformComponent {
         this._cr = 1;
         this._sr = 0;
         this._isDirty = true;
+        this.wasDirty = true;
 
         this._parentCache = new Array<number>(5);
-        for(let i = 0; i < 5; i++) {
+        for(let i = 0; i < 5; ++i) {
             this._parentCache[i] = 0;
         }
     }
@@ -139,14 +143,15 @@ export default class Transform2DComponent extends TransformComponent {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; i++) {
+        for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; i++) {
-                components[i].fixedUpdate();
+            for(let j = 0; j < components.length; j++) {
+                components[j].fixedUpdate();
             }
         }
-        this._isDirty = false;
+        this.wasDirty = this._isDirty;
+        // this._isDirty = false;
     }
 
     public update() {
@@ -158,17 +163,18 @@ export default class Transform2DComponent extends TransformComponent {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; i++) {
+        for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; i++) {
+            for(let i = 0; i < components.length; ++i) {
                 components[i].update();
             }
         }
+        this.wasDirty = this._isDirty;
         this._isDirty = false;
     }
 
-    private setDirty() {
+    public setDirty() {
         this._isDirty = true;
     }
 }

@@ -1,19 +1,20 @@
-import Entity from "./entity";
-import WebGLSystem from "./system/webgl/webgl-system";
-import Time from "./time";
-import SystemManager from "./system/system-manager";
-import Game from "./game";
+import Entity from './entity';
+import WebGLSystem from './system/webgl/webgl-system';
+import Time from './time';
+import SystemManager from './system/system-manager';
+import Game from './game';
 export interface CoreConfig {
     width?:number;
     height?:number;
 }
 export default class Core {
-    public static ENTITIES: Array<Entity> = [];
-    public renderSystem: WebGLSystem;
-    public currentFixedUpdateTime: number;
-    public nextFixedUpdateTime: number;
-    public fixedUpdateTime: number;
+    public static ENTITIES: Entity[] = [];
+    public renderSystem:WebGLSystem;
+    public currentFixedUpdateTime:number;
+    public nextFixedUpdateTime:number;
+    public fixedUpdateTime:number;
     public game:Game;
+
     protected _gameLoop:()=>void;
     constructor(config?:CoreConfig) {
         this.fixedUpdateTime = 1/30;
@@ -47,7 +48,7 @@ export default class Core {
 
     protected _fixedUpdate() {
         this.game.fixedUpdate();
-        for(let i = 0; i < this.game.entities.length; i++) {
+        for(let i = 0; i < this.game.entities.length; ++i) {
             let entity = this.game.entities[i];
             entity.fixedUpdate();
             let components = entity.getAllComponents();
@@ -59,7 +60,7 @@ export default class Core {
 
     protected _update() {
         this.game.update();
-        for(let i = 0; i < this.game.entities.length; i++) {
+        for(let i = 0; i < this.game.entities.length; ++i) {
             let entity = this.game.entities[i];
             entity.update();
             let components = entity.getAllComponents();

@@ -6,7 +6,7 @@ function watch() {
     gulp.watch([
         './src/**/*.ts',
         './shaders/**/*.*'
-        ], gulp.series(typescript.build, rollup.bundle));
+    ], gulp.series(typescript.build, rollup.bundle));
 }
 
 gulp.task('default', gulp.series(typescript.build, rollup.bundle));

@@ -1,4 +1,4 @@
-import Particle from "./particle";
+import Particle from './particle';
 export default class ParticlePool {
     public static pool:{[id:string]:ParticlePool} = {};
     public static createPool<T extends Particle>(particleType:{ new (...args:any[]):T}, count:number) {
@@ -12,7 +12,7 @@ export default class ParticlePool {
         return pool;
     }
     protected _particleConstructor:{new (...args:any[]):Particle};
-    protected _particles:Array<Particle>;
+    protected _particles:Particle[];
     constructor() {
         this._particles = new Array<Particle>();
     }
@@ -33,7 +33,7 @@ export default class ParticlePool {
     }
 
     protected _fillPool(count:number) {
-        for(let i = 0; i < count; i++) {
+        for(let i = 0; i < count; ++i) {
             this._particles.push(new this._particleConstructor());
         }
     }

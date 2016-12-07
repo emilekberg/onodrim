@@ -1,7 +1,7 @@
 {
     "extends": "tslint:latest",
     "rules": {
-        "ordered-imports": false,
+        "ordered-imports": [false],
         "variable-name": [
             true,
             "allow-leading-underscore"
@@ -12,7 +12,7 @@
         "one-line": [
             false
         ],
-        "trailing-comma": false,
+        "trailing-comma": [false],
         "typedef-whitespace": [
             false
         ],
@@ -20,6 +20,10 @@
             false
         ],
         "object-literal-sort-keys": false,
-        "no-bitwise": false
+        "no-bitwise": false,
+        "quotemark": [
+            true, "single", "avoid-escape"
+        ],
+        "prefer-for-of": false
     }
 }

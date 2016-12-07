@@ -1,12 +1,12 @@
-import SpriteComponent, {SpriteComponentTemplate} from "./sprite-component";
-import SpriteBatch from "../system/webgl/sprite-batch";
-import Entity from "../entity";
-import Rect from "../math/rect";
-import Texture from "../resources/texture";
-import Time from "../time";
+import SpriteComponent, {SpriteComponentTemplate} from './sprite-component';
+import SpriteBatch from '../system/webgl/sprite-batch';
+import Entity from '../entity';
+import Rect from '../math/rect';
+import Texture from '../resources/texture';
+import Time from '../time';
 export interface AnimationComponentTemplate extends SpriteComponentTemplate {
     fps?: number;
-    frames?: Array<Rect>;
+    frames?: Rect[];
     autoStart?:boolean;
     loop?:boolean;
 }
@@ -20,8 +20,8 @@ export default class AnimationComponent extends SpriteComponent {
                                frameSize:Rect,
                                margin:number = 0,
                                frameStart:number=0,
-                               numberOfFrames=-1):Array<Rect> {
-        let frames:Array<Rect> = [];
+                               numberOfFrames=-1):Rect[] {
+        let frames:Rect[] = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
                 if(y*x + x < frameStart) {
@@ -49,7 +49,7 @@ export default class AnimationComponent extends SpriteComponent {
 
     protected _fps:number;
     protected _numberOfFrames:number;
-    protected _frames:Array<Rect>;
+    protected _frames:Rect[];
     protected _currentFrame:number;
     protected _nextFrameTime:number;
     protected _frameTime:number;
@@ -62,11 +62,11 @@ export default class AnimationComponent extends SpriteComponent {
     get fps():number {
         return this._fps;
     }
-    set frames(value:Array<Rect>) {
+    set frames(value:Rect[]) {
         this._frames = value;
         this._numberOfFrames = this._frames.length;
     }
-    get frames():Array<Rect> {
+    get frames():Rect[] {
         return this._frames;
     }
     constructor(entity:Entity, template:AnimationComponentTemplate = {}) {
@@ -114,16 +114,6 @@ export default class AnimationComponent extends SpriteComponent {
         // http://www.html5rocks.com/en/tutorials/webgl/webgl_fundamentals/
         this.interpolateRenderMatrix(delta);
 
-        /*if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
-            batch.render(gl);
-            batch.setTexture(this.texture);
-
-            /*
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-
-            SpriteComponent.previousTexture = this.texture;
-        }*/
         const rect = this._frames[this._currentFrame];
         const texCoord = new Rect(
             rect.x/this.texture.rect.w,
@@ -134,28 +124,6 @@ export default class AnimationComponent extends SpriteComponent {
         if (!batch.add(this._renderedMatrix, this.texture, texCoord, rect, this._color)) {
             batch.render(gl);
         }
-        /*
-        this.interpolateRenderMatrix(delta);
-        let rect = this._frames[this._currentFrame];
-
-        if (!SpriteComponent.previousTexture || this.texture.url !== SpriteComponent.previousTexture.url) {
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            SpriteComponent.previousTexture = this.texture;
-        }
-
-        gl.uniform2f(this.sizeLocation, rect.w, rect.h);
-        gl.uniformMatrix3fv(this.matrixLocation, false, this._renderedMatrix.values);
-        gl.uniform4f(
-            this.textureOffsetLocation,
-            rect.x/this.texture.rect.w,
-            rect.y/this.texture.rect.h,
-            rect.w/this.texture.rect.w,
-            rect.h/this.texture.rect.h
-        );
-        gl.uniform1f(this.alphaLocation, this.alpha);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-        */
     }
 
     public updateTransform() {

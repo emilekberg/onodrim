@@ -1,53 +1,17 @@
 // http://stackoverflow.com/questions/15561871/the-fastest-way-to-batch-calls-in-webgl
 // https://jsfiddle.net/omsqo7v0/6/
-import {Rect, Matrix3} from "../../math";
-import Texture from "../../resources/texture";
-import Color from "../../graphics/color";
+import {Rect, Matrix3} from '../../math';
+import Texture from '../../resources/texture';
+import Color from '../../graphics/color';
+import BatchGroup from './batching/batch-group';
+import TextureGroup from './batching/texture-group';
 export interface IAttributes {
     indices: Uint16Array;
     aVertex: Float32Array;
     aTexCoord: Float32Array;
     aColor: Float32Array;
 }
-export class Group {
-    public start: number;
-    public length: number;
-    public texture: Texture;
-}
-export class TextureGroup {
-    public readonly groups: Group[];
-    private _current: number;
-    public get currentIndex(): number {
-        return this._current;
-    }
-    public get current():Group {
-        return this.groups[this._current];
-    }
 
-    constructor() {
-        this.groups = [];
-        this._current = -1;
-    }
-    public reset() {
-        this._current = -1;
-    }
-
-    public getGroup(texture:Texture) {
-        if (this._current === -1 || this.groups[this._current].texture.url !== texture.url) {
-            this._current = this.getNextIndex();
-            this.groups[this._current].texture = texture;
-            this.groups[this._current].length = 0;
-        }
-        return this.groups[this._current];
-    }
-
-    protected getNextIndex(): number {
-        if (this._current === this.groups.length-1) {
-            this.groups.push({texture: undefined, start: 0, length: 0});
-        }
-        return ++this._current;
-    }
-}
 export default class SpriteBatch {
     public static VERTEX_BUFFER: WebGLBuffer;
     public static VERTEX_ATTRIB:number;
@@ -83,7 +47,7 @@ export default class SpriteBatch {
         this._program = program;
 
         this.batchSize = startBatchSize;
-        this.size = this.batchSize /** 4 * 2*/;
+        this.size = this.batchSize /* * 4 * 2*/;
         this.attributes = {
              // Index
              indices: new Uint16Array(this.size * SpriteBatch.INDICES_PER_INSTANCE),
@@ -100,7 +64,7 @@ export default class SpriteBatch {
 
     public createLargerBuffers() {
         this.batchSize *= SpriteBatch.BATCH_INCREASE_FACTOR;
-        this.size = this.batchSize/** 4 * 2*/;
+        this.size = this.batchSize/* * 4 * 2*/;
         const oldIndices = this.attributes.indices;
         this.attributes.indices = new Uint16Array(this.size * SpriteBatch.INDICES_PER_INSTANCE);
         this.attributes.indices.set(oldIndices);
@@ -124,7 +88,7 @@ export default class SpriteBatch {
         SpriteBatch.INDEX_BUFFER = gl.createBuffer();
 
         // Vertex Buffer
-        SpriteBatch.VERTEX_ATTRIB = gl.getAttribLocation(this._program, "a_vertex");
+        SpriteBatch.VERTEX_ATTRIB = gl.getAttribLocation(this._program, 'a_vertex');
         SpriteBatch.VERTEX_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
@@ -132,7 +96,7 @@ export default class SpriteBatch {
         gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         // Texture coordinate buffer
-        SpriteBatch.TEXCOORD_ATTRIB = gl.getAttribLocation(this._program, "a_texCoord");
+        SpriteBatch.TEXCOORD_ATTRIB = gl.getAttribLocation(this._program, 'a_texCoord');
         SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
@@ -140,7 +104,7 @@ export default class SpriteBatch {
         gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         // Color Buffer
-        SpriteBatch.COLOR_ATTRIB = gl.getAttribLocation(this._program, "a_color");
+        SpriteBatch.COLOR_ATTRIB = gl.getAttribLocation(this._program, 'a_color');
         SpriteBatch.COLOR_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.COLOR_BUFFER);
@@ -181,11 +145,13 @@ export default class SpriteBatch {
         this.attributes.indices[indexPosOffset + 4] = indexValueOffset + 2;
         this.attributes.indices[indexPosOffset + 5] = indexValueOffset + 3;
 
-        const colorOffset = this.count * 4 * 4;
-        this.attributes.aColor[colorOffset + 0] = this.attributes.aColor[colorOffset + 4] = this.attributes.aColor[colorOffset + 8] = this.attributes.aColor[colorOffset + 12] = color.r;
-        this.attributes.aColor[colorOffset + 1] = this.attributes.aColor[colorOffset + 5] = this.attributes.aColor[colorOffset + 9] = this.attributes.aColor[colorOffset + 13] = color.g;
-        this.attributes.aColor[colorOffset + 2] = this.attributes.aColor[colorOffset + 6] = this.attributes.aColor[colorOffset + 10] = this.attributes.aColor[colorOffset + 14] = color.b;
-        this.attributes.aColor[colorOffset + 3] = this.attributes.aColor[colorOffset + 7] = this.attributes.aColor[colorOffset + 11] = this.attributes.aColor[colorOffset + 15] = color.a; 
+        // color offset
+        const i = this.count * 4 * 4;
+        const aColor = this.attributes.aColor;
+        aColor[i + 0] = aColor[i + 4] = aColor[i + 8] = aColor[i + 12] = color.r;
+        aColor[i + 1] = aColor[i + 5] = aColor[i + 9] = aColor[i + 13] = color.g;
+        aColor[i + 2] = aColor[i + 6] = aColor[i + 10] = aColor[i + 14] = color.b;
+        aColor[i + 3] = aColor[i + 7] = aColor[i + 11] = aColor[i + 15] = color.a;
 
         ++group.length;
         return ++this.count !== this.batchSize;
@@ -218,7 +184,7 @@ export default class SpriteBatch {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.STATIC_DRAW);
 
         let l = this._textureGroup.currentIndex+1;
-        for(let i = 0; i < l; i++) {
+        for(let i = 0; i < l; ++i) {
             const group = this._textureGroup.groups[i];
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, group.texture.glTexture);

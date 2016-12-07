@@ -1,10 +1,10 @@
-import Entity from "./entity";
+import Entity from './entity';
 // import SystemManager from "./system/system-manager";
 // import RenderSystem from "./system/render-system";
 export default class Game {
-    public entities:Array<Entity>;
+    public entities:Entity[];
     constructor() {
-        this.entities = new Array<Entity>();
+        this.entities = [];
     }
 
     public addEntity(entity:Entity) {

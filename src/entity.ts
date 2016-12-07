@@ -1,13 +1,13 @@
-import Component from "./components/component";
+import Component from './components/component';
 
 export default class Entity {
     protected _id:number;
-    protected _components:Array<Component>;
+    protected _components:Component[];
     protected _name:string;
     protected _isInWorld:boolean;
 
     constructor() {
-        this._name = "entity";
+        this._name = 'entity';
         this._components = [];
         this._isInWorld = false;
     }
@@ -30,7 +30,7 @@ export default class Entity {
     }
 
     public hasComponent(componentType:Function):boolean {
-        for(let i = 0; i < this._components.length; i++) {
+        for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 return true;
             }
@@ -39,7 +39,7 @@ export default class Entity {
     }
 
     public getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T {
-        for(let i = 0; i < this._components.length; i++) {
+        for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 return this._components[i] as T;
             }
@@ -47,9 +47,9 @@ export default class Entity {
         return null;
     }
 
-    public getComponents<T extends Component>(componentType:{ new (...args:any[]):T;}):Array<T> {
+    public getComponents<T extends Component>(componentType:{ new (...args:any[]):T;}):T[] {
         let components = new Array<T>();
-        for(let i = 0; i < this._components.length; i++) {
+        for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 components.push(this._components[i] as T);
             }
@@ -57,7 +57,7 @@ export default class Entity {
         return components;
     }
 
-    public getAllComponents():Array<Component> {
+    public getAllComponents():Component[] {
         return this._components;
     }
 

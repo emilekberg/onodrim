@@ -1,7 +1,7 @@
-import Component from "./component";
-import Entity from "../entity";
+import Component from './component';
+import Entity from '../entity';
 abstract class TransformComponent extends Component {
-    protected _children:Array<TransformComponent>;
+    protected _children:TransformComponent[];
     protected _parent:TransformComponent;
     constructor(entity:Entity) {
         super(entity);
@@ -22,7 +22,7 @@ abstract class TransformComponent extends Component {
     }
 
     public addChild(child:TransformComponent) {
-        console.warn("Transform.addChild(): is not fully implemented yet");
+        console.warn('Transform.addChild(): is not fully implemented yet');
         if(this.isChild(child)) {
             return;
         }
@@ -33,7 +33,7 @@ abstract class TransformComponent extends Component {
         child._parent = this;
     }
     public removeChild(child:TransformComponent) {
-        console.warn("Transform.removeChild(): is not fully implemented yet");
+        console.warn('Transform.removeChild(): is not fully implemented yet');
         let index = this._children.indexOf(child);
         if(index === -1) {
             return;
