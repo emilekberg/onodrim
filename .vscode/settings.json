@@ -13,5 +13,8 @@
     "files.trimTrailingWhitespace": false,
     "typescript.tsdk": "./node_modules/typescript/lib",
     "tslint.configFile": "./tslint.json",
-    "tslint.exclude": "./test/**/*.ts"
+    "tslint.exclude": [
+        "./test/**/*.ts",
+        "**/*.js"
+    ]
 }

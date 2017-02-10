@@ -1,5 +1,5 @@
 import Component from './component';
-import Transform2DComponent from './transform2d-component';
+import Transform2D from './transform2d';
 import Entity from '../entity';
 import Matrix3, {Value} from '../math/matrix3';
 import WebGLSystem from '../system/webgl/webgl-system';
@@ -12,17 +12,19 @@ export interface RenderComponentTemplate {
     visible?:boolean;
     depth?:number;
 }
+
 export interface RenderState {
     wasDirty:boolean;
     matrix:Matrix3;
     alpha:number;
 }
+
 export default class RenderComponent extends Component {
     public alpha:number;
     public visible:boolean;
     public requireDepthSort:boolean;
 
-    protected _transform:Transform2DComponent;
+    protected _transform:Transform2D;
     protected _renderedMatrix:Matrix3;
     protected _depth:number;
     protected _oldRenderState:RenderState;
@@ -58,13 +60,28 @@ export default class RenderComponent extends Component {
         };
         this._color = new Color(1, 1, 1, 1);
 
-        this._transform = this._entity.getComponent(Transform2DComponent);
+        let transform = this._entity.getComponent(Transform2D);
+        if (!transform) {
+            console.error('RenderComponent cannot find component Transform2D.');
+        }
+        else {
+            this._transform = transform;
+        }
+
         this.requireDepthSort = true;
-        SystemManager.getSystem(WebGLSystem).addComponentInstance(this);
+        const webglSystem = SystemManager.getSystem(WebGLSystem);
+        if (webglSystem) {
+            webglSystem.addComponentInstance(this);
+        }
     }
+
     public destroy():void {
-        SystemManager.getSystem(WebGLSystem).removeComponentInstance(this);
+        const webglSystem = SystemManager.getSystem(WebGLSystem);
+        if (webglSystem) {
+            webglSystem.removeComponentInstance(this);
+        }
     }
+
     public fixedUpdate() {
         this._oldRenderState.wasDirty = this._renderState.wasDirty;
         this._oldRenderState.matrix.copy(this._renderState.matrix);
@@ -75,12 +92,14 @@ export default class RenderComponent extends Component {
         this._renderState.alpha = this.alpha;
         this._color.a = this.alpha;
     }
+
     public reset() {
         this.updateTransform();
         this._renderState.alpha = this.alpha;
         this._oldRenderState.matrix.copy(this._renderState.matrix);
         this._oldRenderState.alpha = this._renderState.alpha;
     }
+
     public updateTransform() {
         this._renderState.wasDirty = true;
         this._renderState.matrix
@@ -89,9 +108,11 @@ export default class RenderComponent extends Component {
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(this._transform.worldX, this._transform.worldY);
     }
+
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         this.interpolateRenderMatrix(delta);
     }
+
     public interpolateRenderMatrix(delta:number) {
         if(!this._renderState.wasDirty && !this._oldRenderState.wasDirty) {
             return;

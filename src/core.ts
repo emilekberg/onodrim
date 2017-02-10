@@ -22,7 +22,14 @@ export default class Core {
         this.nextFixedUpdateTime = 0;
 
         SystemManager.addSystem(new WebGLSystem(config));
-        this.renderSystem = SystemManager.getSystem(WebGLSystem);
+        const webglSystem = SystemManager.getSystem(WebGLSystem);
+        if (!webglSystem) {
+            console.error('WebGLSystem not created for some reason');
+        }
+        else {
+            this.renderSystem = webglSystem;
+        }
+
         this._gameLoop = () => {
             this.gameLoop();
         };

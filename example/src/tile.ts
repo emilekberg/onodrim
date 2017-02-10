@@ -1,19 +1,15 @@
-import GameObject from "./gameObject";
-import {Components,Resources, Math, Time} from "onodrim";
-import Enemy from "./enemy";
+import GameObject from './gameObject';
+import {Components,Resources, Math, Time} from 'onodrim';
+import Enemy from './enemy';
 export default class Tile extends GameObject {
-    protected _sprite:Components.SpriteComponent;
+    protected _sprite:Components.Sprite;
     protected _enemy:Enemy;
     constructor() {
         super();
-        this._sprite = new Components.SpriteComponent(this/*, {
-            alpha: 1,
-            offset: new Math.Point(0, 0),
-            x: 0,
-            y: 0
-        }*/);
+        this._sprite = new Components.Sprite(this, {
+            texture: new Resources.Texture('assets/colors.png')
+        });
         this.addComponent(this._sprite);
-        this._sprite.setTexture(new Resources.Texture("assets/colors.png"));
         this.transform.scaleX = 4;
         this.transform.scaleY = 4;
 

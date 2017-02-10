@@ -19,17 +19,22 @@ export default class TextureGroup {
     }
 
     public getGroup(texture:Texture) {
-        if (this._current === -1 || this.groups[this._current].texture.url !== texture.url) {
-            this._current = this.getNextIndex();
-            this.groups[this._current].texture = texture;
-            this.groups[this._current].length = 0;
+        const group = this.groups[this._current];
+        if (this._current === -1 || group.texture.url !== texture.url) {
+            this._current = this.getNextIndex(texture);
+            group.texture = texture;
+            group.length = 0;
         }
-        return this.groups[this._current];
+        return group;
     }
 
-    protected getNextIndex(): number {
+    protected getNextIndex(texture: Texture): number {
         if (this._current === this.groups.length-1) {
-            this.groups.push({texture: undefined, start: 0, length: 0});
+            this.groups.push({
+                texture,
+                start: 0,
+                length: 0
+            });
         }
         return ++this._current;
     }

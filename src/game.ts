@@ -1,6 +1,6 @@
 import Entity from './entity';
-// import SystemManager from "./system/system-manager";
-// import RenderSystem from "./system/render-system";
+// import SystemManager from './system/system-manager';
+// import RenderSystem from './system/render-system';
 export default class Game {
     public entities:Entity[];
     constructor() {

@@ -1,7 +1,9 @@
 {
     "extends": "tslint:latest",
     "rules": {
-        "ordered-imports": [false],
+        "ordered-imports": [
+            false
+        ],
         "variable-name": [
             true,
             "allow-leading-underscore"
@@ -23,7 +25,6 @@
         "no-bitwise": false,
         "quotemark": [
             true, "single", "avoid-escape"
-        ],
-        "prefer-for-of": false
+        ]
     }
 }

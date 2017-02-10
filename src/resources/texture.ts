@@ -8,7 +8,7 @@ export default class Texture {
     public url:string;
     public rect:Rect;
     public glRect:Rect;
-    public glTexture:WebGLTexture;
+    public glTexture:WebGLTexture|null;
     constructor(url:string) {
         if(ResourceManager.isImageLoaded(url)) {
             this.image = ResourceManager.getImage(url);
@@ -21,6 +21,9 @@ export default class Texture {
         this.rect = new Rect(0,0,this.image.width, this.image.height);
         this.glRect = new Rect(0,0,1,1);
         if (!Texture.WEBGL_TEXTURES[url]) {
+            if (!this.glTexture) {
+                return;
+            }
             this.createGLTexture(WebGLSystem.GL);
             Texture.WEBGL_TEXTURES[url] = this.glTexture;
         }

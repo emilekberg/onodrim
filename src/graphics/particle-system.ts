@@ -1,5 +1,5 @@
 import Entity from '../entity';
-import Transform2DComponent from '../components/transform2d-component';
+import Transform2D from '../components/transform2d';
 import ParticlePool from './particle-pool';
 import Particle from './particle';
 export const enum State {
@@ -9,7 +9,7 @@ export const enum State {
     PAUSED
 }
 export default class ParticleSystem extends Entity {
-    public transform:Transform2DComponent;
+    public transform:Transform2D;
     public activeParticles:Particle[];
     protected _state:State;
     protected _maxParticles:number;
@@ -19,7 +19,7 @@ export default class ParticleSystem extends Entity {
 
     constructor() {
         super();
-        this.transform = new Transform2DComponent(this);
+        this.transform = new Transform2D(this);
         this.addComponent(this.transform);
 
         this.activeParticles = new Array<Particle>();
@@ -40,7 +40,11 @@ export default class ParticleSystem extends Entity {
         if (immediately) {
             this._state = State.IDLE;
             for (let i = 0; i < this._particleCount;) {
-                this._pool.poolParticle(this.activeParticles.shift());
+                let particle = this.activeParticles.shift();
+                if (!particle) {
+                    continue;
+                }
+                this._pool.poolParticle(particle);
             }
             this._particleCount = 0;
         }
@@ -77,15 +81,14 @@ export default class ParticleSystem extends Entity {
         }
     }
     protected _fireParticle():void {
-        let particle: Particle;
-        if(this._particleCount >= this._maxParticles) {
-            this._pool.poolParticle(this.activeParticles.shift());
+        let particle = this.activeParticles.shift();
+        if (particle) {
+            this._pool.poolParticle(particle);
             particle = this._pool.requestParticle();
         }
         else {
             particle = this._pool.requestParticle();
             this._particleCount++;
-
         }
         this.activeParticles.push(particle);
         this._initParticle(particle);

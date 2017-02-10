@@ -5,11 +5,11 @@ import SpriteBatch from '../system/webgl/sprite-batch';
 export interface ParticleComponentTemplate extends RenderComponentTemplate {
     x?:number;
     y?:number;
-    system?:ParticleSystem;
+    system:ParticleSystem;
 }
 export default class ParticleComponent extends RenderComponent {
     public system:ParticleSystem;
-    constructor(entity:Entity, template:ParticleComponentTemplate = {}) {
+    constructor(entity:Entity, template:ParticleComponentTemplate) {
         super(entity, template);
         this.system = template.system;
     }

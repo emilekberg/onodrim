@@ -9,14 +9,14 @@ const buffer = require('vinyl-buffer');
 const rollupSourcemaps = require('rollup-plugin-sourcemaps');
 exports.bundle = function bundle() {
     return rollup({
-        entry: './dist/onodrim.js',
+        entry: './bin/index.js',
         sourceMap: true,
         plugins: [
             rollupSourcemaps(),
             string({
                 include: [
-                    './shaders/*.frag',
-                    './shaders/*.vert'
+                    './bin/shaders/*.frag',
+                    './bin/shaders/*.vert'
                 ]
             }),
             nodeResolve({
@@ -34,5 +34,5 @@ exports.bundle = function bundle() {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./bin'))
+    .pipe(gulp.dest('./dist'))
 }

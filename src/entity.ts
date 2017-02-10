@@ -38,7 +38,7 @@ export default class Entity {
         return false;
     }
 
-    public getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T {
+    public getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T|null {
         for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 return this._components[i] as T;

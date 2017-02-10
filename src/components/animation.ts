@@ -1,10 +1,10 @@
-import SpriteComponent, {SpriteComponentTemplate} from './sprite-component';
+import Sprite, {SpriteTemplate} from './sprite';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import Entity from '../entity';
 import Rect from '../math/rect';
 import Texture from '../resources/texture';
 import Time from '../time';
-export interface AnimationComponentTemplate extends SpriteComponentTemplate {
+export interface AnimationTemplate extends SpriteTemplate {
     fps?: number;
     frames?: Rect[];
     autoStart?:boolean;
@@ -15,12 +15,18 @@ export const enum State {
     PLAYING,
     PAUSED
 }
-export default class AnimationComponent extends SpriteComponent {
-    public static CreateFrames(texture:Texture,
-                               frameSize:Rect,
+export default class Animation extends Sprite {
+    public static CreateFrames(texture:Texture|undefined,
+                               frameSize:Rect|undefined,
                                margin:number = 0,
                                frameStart:number=0,
-                               numberOfFrames=-1):Rect[] {
+                               numberOfFrames=-1):Rect[]|undefined {
+        if(!texture) {
+            return undefined;
+        }
+        if(!frameSize) {
+            return undefined;
+        }
         let frames:Rect[] = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
@@ -37,13 +43,13 @@ export default class AnimationComponent extends SpriteComponent {
     }
 
     public static CreateFromRect(entity:Entity,
-                                 template:AnimationComponentTemplate,
+                                 template:AnimationTemplate,
                                  frameSize:Rect,
                                  margin:number = 0,
                                  frameStart:number=0,
-                                 numberOfFrames=-1):AnimationComponent {
+                                 numberOfFrames=-1):Animation {
         template.frames = this.CreateFrames(template.texture, frameSize, margin, frameStart, numberOfFrames);
-        return new AnimationComponent(entity, template);
+        return new Animation(entity, template);
     }
     public loop:boolean;
 
@@ -69,12 +75,11 @@ export default class AnimationComponent extends SpriteComponent {
     get frames():Rect[] {
         return this._frames;
     }
-    constructor(entity:Entity, template:AnimationComponentTemplate = {}) {
+    constructor(entity:Entity, template:AnimationTemplate) {
         super(entity, template);
 
         this.fps = template.fps || 24;
         this.frames = template.frames || [];
-        this._texture = template.texture || null;
         this._state = State.STOPPED;
         this._currentFrame = 0;
         this.loop = false;

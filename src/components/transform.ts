@@ -1,38 +1,39 @@
 import Component from './component';
 import Entity from '../entity';
-abstract class TransformComponent extends Component {
-    protected _children:TransformComponent[];
-    protected _parent:TransformComponent;
+abstract class Transform extends Component {
+    protected _children:Transform[];
+    protected _parent:Transform|null;
     constructor(entity:Entity) {
         super(entity);
 
-        this._children = new Array<TransformComponent>();
+        this._children = new Array<Transform>();
+        this._parent = null;
         // TODO: implement
     }
 
-    public fixedUpdate() {
+    public fixedUpdate(): void {
         // TODO: implement
     }
-    public update() {
+    public update(): void {
         // TODO: implement
     }
 
-    public get parent():TransformComponent {
+    public get parent():Transform|null {
         return this._parent;
     }
 
-    public addChild(child:TransformComponent) {
+    public addChild(child:Transform): void {
         console.warn('Transform.addChild(): is not fully implemented yet');
         if(this.isChild(child)) {
             return;
         }
         this._children.push(child);
-        if(child.hasParent()) {
+        if(child._parent !== null) {
             child._parent.removeChild(child);
         }
         child._parent = this;
     }
-    public removeChild(child:TransformComponent) {
+    public removeChild(child:Transform): void {
         console.warn('Transform.removeChild(): is not fully implemented yet');
         let index = this._children.indexOf(child);
         if(index === -1) {
@@ -41,11 +42,11 @@ abstract class TransformComponent extends Component {
         this._children.splice(index, 1);
         child._parent = null;
     }
-    public isChild(transform:TransformComponent):boolean {
+    public isChild(transform:Transform):boolean {
         return this._children.indexOf(transform) !== -1;
     }
     public hasParent():boolean {
         return this._parent !== null;
     }
 }
-export default TransformComponent;
+export default Transform;

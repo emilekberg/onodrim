@@ -1,9 +1,9 @@
-import * as Onodrim from "onodrim";
-import GameObject from "./gameObject";
-import Enemy from "./enemy";
-import Tile from "./tile";
-import Square from "./square";
-import ParticleSystem from "./particleSystem";
+import * as Onodrim from 'onodrim';
+import GameObject from './gameObject';
+import Enemy from './enemy';
+import Tile from './tile';
+import Square from './square';
+import ParticleSystem from './particleSystem';
 
 export default class MyGame extends Onodrim.Game {
     public tile: Tile;
@@ -15,19 +15,17 @@ export default class MyGame extends Onodrim.Game {
             system: new ParticleSystem()
         }));
 
-        
         let enemy = new Enemy();
         enemy.transform.x = 200;
         enemy.transform.y = 300;
         this.addEntity(enemy);
-        
+
         let tile = new Tile();
         tile.transform.x = 400;
         tile.transform.y = 400;
         this.tile = tile;
         this.addEntity(tile);
 
-        
         let square = new Square();
         square.transform.x = 200;
         square.transform.y = 200;
@@ -36,7 +34,6 @@ export default class MyGame extends Onodrim.Game {
         square.transform.x = 210;
         square.transform.y = 10;
         this.addEntity(square);
-        
 
         this.addEntity(particles);
         particles.getComponent(Onodrim.Graphics.ParticleComponent).system.start();

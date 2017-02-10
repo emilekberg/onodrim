@@ -7,15 +7,15 @@ const tsProject = ts.createProject('tsconfig.json', {
     typescript: require('typescript')
 });
 exports.build = function build() {
-    const tsResult = tsProject.src() // instead of gulp.src(...)
+    const tsResult = tsProject.src()
         .pipe(sourcemaps.init())
         .pipe(tsProject());
 
-    return merge([ // Merge the two output streams, so this task is finished when the IO of both operations is done.
+    return merge([
         tsResult.dts
             .pipe(gulp.dest('types')),
         tsResult.js
             .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest('dist'))
+            .pipe(gulp.dest('bin'))
     ]);
 }

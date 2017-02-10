@@ -6,13 +6,13 @@ import WebGLSystem from '../system/webgl/webgl-system';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import {Value} from '../math/matrix3';
 
-export interface SpriteComponentTemplate extends RenderComponentTemplate {
+export interface SpriteTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
-    texture?: Texture;
+    texture: Texture;
     offset?:Point;
 }
-export default class SpriteComponent extends RenderComponent {
+export default class Sprite extends RenderComponent {
     public static vertexBuffer:WebGLBuffer;
     public static vertexLocation:number;
     public static vertexIndexBuffer:WebGLBuffer;
@@ -51,14 +51,13 @@ export default class SpriteComponent extends RenderComponent {
     get height():number {
         return this._h * this._renderedMatrix.values[Value.d];
     }
-    constructor(entity:Entity, template:SpriteComponentTemplate = {}) {
+    constructor(entity:Entity, template:SpriteTemplate) {
         super(entity, template);
-        this.x       = template.x      || 0;
-        this.y       = template.y      || 0;
+        this.x = template.x || 0;
+        this.y = template.y || 0;
         this._offset = template.offset || new Point();
         this._w = 0;
         this._h = 0;
-
         if(template.texture) {
             this.setTexture(template.texture);
         }

@@ -4,7 +4,7 @@ export interface Vector3Template {
     z:number;
 }
 export default class Vector3 {
-    public static fromTemplate(template?:Vector3Template) {
+    public static fromTemplate(template:Vector3Template) {
         return new Vector3(template.x, template.y, template.z);
     }
     public static makeLeft() {

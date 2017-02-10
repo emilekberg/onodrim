@@ -1,7 +1,7 @@
-export { default as AnimationComponent } from './animation-component';
-export { default as Component } from './component';
+export { default as Animation } from './animation';
+export { default as Component} from './component';
 export { default as RenderComponent } from './render-component';
-export { default as SpriteComponent } from './sprite-component';
-export { default as TransformComponent } from './transform-component';
-export { default as Transform2DComponent } from './transform2d-component';
-export { default as Transform3DComponent } from './transform3d-component';
+export { default as Sprite } from './sprite';
+export { default as Transform } from './transform';
+export { default as Transform2D } from './transform2d';
+export { default as Transform3D } from './transform3d';

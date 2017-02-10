@@ -13,14 +13,14 @@ export interface IAttributes {
 }
 
 export default class SpriteBatch {
-    public static VERTEX_BUFFER: WebGLBuffer;
+    public static VERTEX_BUFFER: WebGLBuffer|null;
     public static VERTEX_ATTRIB:number;
-    public static INDEX_BUFFER: WebGLBuffer;
-    public static TEXCOORD_BUFFER:WebGLBuffer;
+    public static INDEX_BUFFER: WebGLBuffer|null;
+    public static TEXCOORD_BUFFER:WebGLBuffer|null;
     public static TEXCOORD_ATTRIB:number;
-    public static POSITION_BUFFER:WebGLBuffer;
+    public static POSITION_BUFFER:WebGLBuffer|null;
     public static POSITION_ATTRIB:number;
-    public static COLOR_BUFFER:WebGLBuffer;
+    public static COLOR_BUFFER:WebGLBuffer|null;
     public static COLOR_ATTRIB:number;
 
     public static MAX_BATCH_SIZE:number = 0b1000000000000000;

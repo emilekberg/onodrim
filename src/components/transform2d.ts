@@ -1,44 +1,46 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
-import Vector3, {Vector3Template} from "../math/vector3";
-import Entity from "../entity";
-import TransformComponent from "./transform-component";
-export interface Transform3DComponentTemplate {
-    position?:Vector3Template;
-    scale?:Vector3Template;
-    origo?:Vector3Template;
+import Point, {PointTemplate} from '../math/point';
+import Entity from '../entity';
+import Transform from './transform';
+import Vector2 from '../math/vector2';
+export interface Transform2DTemplate {
+    position?:PointTemplate;
+    scale?:PointTemplate;
+    origo?:PointTemplate;
     rotation?:number;
 }
 
 const enum ParentCache {
     x,
     y,
-    z,
     scaleX,
     scaleY,
-    scaleZ,
     rotation
 };
 
-export default class Transform3DComponent extends TransformComponent {
-
-    protected _position:Vector3;
-    protected _scale:Vector3;
-    protected _up:Vector3;
-    protected _left:Vector3;
+export default class Transform2D extends Transform {
+    public wasDirty:boolean;
+    protected _position:Point;
+    protected _origo:Point;
+    protected _scale:Point;
+    protected _rotation:number;
+    protected _rotationCache:number;
+    protected _cr:number;
+    protected _sr:number;
     protected _isDirty:boolean;
 
-    private _parentCache:Array<number>;
+    private _parentCache:number[];
 
-    get parent():Transform3DComponent {
-        return this._parent as Transform3DComponent;
+    get parent():Transform2D {
+        return this._parent as Transform2D;
     }
     get entity():Entity {
         return this._entity;
     }
-    get position():Vector3 {
+    get position():Point {
         return this._position;
     }
-    set position(value:Vector3) {
+    set position(value:Point) {
         this._position = value;
         this.setDirty();
     }
@@ -56,17 +58,10 @@ export default class Transform3DComponent extends TransformComponent {
         this._position.y = value;
         this.setDirty();
     }
-    get z():number {
-        return this._position.y;
-    }
-    set z(value:number) {
-        this._position.z = value;
-        this.setDirty();
-    }
-    get scale():Vector3 {
+    get scale():Point {
         return this._scale;
     }
-    set scale(value:Vector3) {
+    set scale(value:Point) {
         this._scale = value;
         this.setDirty();
     }
@@ -84,19 +79,19 @@ export default class Transform3DComponent extends TransformComponent {
         this._scale.y = value;
         this.setDirty();
     }
-    get scaleZ():number {
-        return this._scale.z;
+    get origo():Point {
+        return this._origo;
     }
-    set scaleZ(value:number) {
-        this._scale.z = value;
+    set origo(value:Point) {
+        this._origo = value;
         this.setDirty();
     }
     set rotation(value:number) {
-        // this._rotation = value;
+        this._rotation = value;
         this.setDirty();
     }
     get rotation():number {
-        return 0;// this._rotation;
+        return this._rotation;
     }
 
     get worldX():number {
@@ -105,33 +100,31 @@ export default class Transform3DComponent extends TransformComponent {
     get worldY():number {
         return this._parentCache[ParentCache.y] + this._position.y;
     }
-    get worldZ():number {
-        return this._parentCache[ParentCache.z] + this._position.z;
-    }
     get worldScaleX():number {
         return this._parentCache[ParentCache.scaleX] + this._scale.x;
     }
     get worldScaleY():number {
         return this._parentCache[ParentCache.scaleY] + this._scale.y;
     }
-    get worldScaleZ():number {
-        return this._parentCache[ParentCache.scaleZ] + this._scale.z;
-    }
     get worldRotation():number {
-        return this._parentCache[ParentCache.rotation] + 0;// this._rotation;
+        return this._parentCache[ParentCache.rotation] + this._rotation;
     }
 
     get isDirty():boolean {
         return this._isDirty;
     }
-    constructor(entity:Entity, template:Transform3DComponentTemplate = {}) {
+    constructor(entity:Entity, template:Transform2DTemplate = {}) {
         super(entity);
-        this._position = template.position ? Vector3.fromTemplate(template.position) : new Vector3();
-        this._scale = template.scale ? Vector3.fromTemplate(template.scale) : new Vector3(1,1,1);
-        this._up = new Vector3(0,1,0);
-        this._left = new Vector3(1,0,0);
+        this._position = template.position ? Vector2.fromTemplate(template.position) : new Vector2(0,0);
+        this._origo = template.origo ? Vector2.fromTemplate(template.origo) : new Vector2(0,0);
+        this._scale = template.scale ? Vector2.fromTemplate(template.scale) : new Vector2(1,1);
+        this._rotation = template.rotation || 0;
+        this._rotationCache = 0;
         this._parent = null;
+        this._cr = 1;
+        this._sr = 0;
         this._isDirty = true;
+        this.wasDirty = true;
 
         this._parentCache = new Array<number>(5);
         for(let i = 0; i < 5; ++i) {
@@ -144,20 +137,19 @@ export default class Transform3DComponent extends TransformComponent {
             this._isDirty = true;
             this._parentCache[ParentCache.x] = this.parent.worldX;
             this._parentCache[ParentCache.y] = this.parent.worldY;
-            this._parentCache[ParentCache.z] = this.parent.worldZ;
             this._parentCache[ParentCache.scaleX] = this.parent.worldScaleX;
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
-            this._parentCache[ParentCache.scaleZ] = this.parent.worldScaleZ;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
         for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; ++i) {
-                components[i].fixedUpdate();
+            for(let j = 0; j < components.length; j++) {
+                components[j].fixedUpdate();
             }
         }
-        this._isDirty = false;
+        this.wasDirty = this._isDirty;
+        // this._isDirty = false;
     }
 
     public update() {
@@ -165,23 +157,22 @@ export default class Transform3DComponent extends TransformComponent {
             this._isDirty = true;
             this._parentCache[ParentCache.x] = this.parent.worldX;
             this._parentCache[ParentCache.y] = this.parent.worldY;
-            this._parentCache[ParentCache.z] = this.parent.worldZ;
             this._parentCache[ParentCache.scaleX] = this.parent.worldScaleX;
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
-            this._parentCache[ParentCache.scaleZ] = this.parent.worldScaleZ;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
         for(let i = 0, l = this._children.length; i < l; ++i) {
             let child = this._children[i];
             let components = child.getEntity().getAllComponents();
-            for(let j = 0; j < components.length; j++) {
-                components[j].update();
+            for(let i = 0; i < components.length; ++i) {
+                components[i].update();
             }
         }
+        this.wasDirty = this._isDirty;
         this._isDirty = false;
     }
 
-    private setDirty() {
+    public setDirty() {
         this._isDirty = true;
     }
 }

@@ -1,6 +1,6 @@
 import RenderComponent from '../../components/render-component';
-import SpriteFrag from '../../../shaders/sprite.frag';
-import SpriteVert from '../../../shaders/sprite.vert';
+import SpriteFrag from '../../shaders/sprite.frag';
+import SpriteVert from '../../shaders/sprite.vert';
 import SpriteBatch from './sprite-batch';
 export const enum ShaderType {
     vert, frag
@@ -11,8 +11,8 @@ export interface RenderConfig {
 }
 export default class WebGLSystem {
     public static SYSTEM_TYPE:string = 'renderer';
-    public static GL:WebGLRenderingContext = null;
-    public static PROGRAM:WebGLProgram = null;
+    public static GL:WebGLRenderingContext;
+    public static PROGRAM:WebGLProgram;
     public static isWebGLSupported() {
         try{
             let canvas = document.createElement('canvas');
@@ -24,8 +24,8 @@ export default class WebGLSystem {
             return false;
         }
     }
-    public static createShader(shaderSource:string, shaderType:ShaderType, gl:WebGLRenderingContext):WebGLShader {
-        let shader:WebGLShader;
+    public static createShader(shaderSource:string, shaderType:ShaderType, gl:WebGLRenderingContext):WebGLShader|null {
+        let shader:WebGLShader|null = null;
         if (shaderType === ShaderType.frag) {
             shader = gl.createShader(gl.FRAGMENT_SHADER);
         }
@@ -87,6 +87,10 @@ export default class WebGLSystem {
             antialias: true
         };
         let gl = this.canvas.getContext('webgl', opts) || this.canvas.getContext('experimental-webgl', opts);
+        if (!gl) {
+            console.error('Web GL Context could not be initialized');
+            return;
+        }
         WebGLSystem.GL = this.gl = gl;
         canvas.width = this.width;
         canvas.height = this.height;
@@ -104,7 +108,12 @@ export default class WebGLSystem {
         let gl = this.gl;
         let fragShader = WebGLSystem.createShader(SpriteFrag, ShaderType.frag, gl);
         let vertShader = WebGLSystem.createShader(SpriteVert, ShaderType.vert, gl);
-        let program = this.shaderProgram = WebGLSystem.PROGRAM = gl.createProgram();
+        let program = gl.createProgram();
+        if (!program) {
+            console.error('program could not be initialized');
+            return;
+        }
+        this.shaderProgram = WebGLSystem.PROGRAM = program;
         gl.attachShader(program, vertShader);
         gl.attachShader(program, fragShader);
         gl.linkProgram(program);

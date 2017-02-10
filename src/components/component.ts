@@ -13,7 +13,7 @@ export default class Component {
         // this._checkRequiredComponents();
     }
 
-    public getEntity():Entity|null {
+    public getEntity():Entity {
         return this._entity;
     }
 
@@ -39,7 +39,7 @@ export default class Component {
             if(!this._entity.hasComponent(this._requiredComponents[i])) {
                 console.error(
                     this._entity.constructor.name,
-                    "is missing required component",
+                    'is missing required component',
                     this._requiredComponents[i].name.toString()
                 );
             }
