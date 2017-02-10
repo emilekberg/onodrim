@@ -65,22 +65,22 @@ export default class Matrix4 {
     }
 
     public multiply(b:Matrix4):Matrix4 {
-        let a00 = b.values[0];
-        let a01 = b.values[1];
-        let a02 = b.values[2];
-        let a03 = b.values[3];
-        let a10 = b.values[4];
-        let a11 = b.values[5];
-        let a12 = b.values[6];
-        let a13 = b.values[7];
-        let a20 = b.values[8];
-        let a21 = b.values[9];
-        let a22 = b.values[10];
-        let a23 = b.values[11];
-        let a30 = b.values[12];
-        let a31 = b.values[13];
-        let a32 = b.values[14];
-        let a33 = b.values[15];
+        const a00 = b.values[0];
+        const a01 = b.values[1];
+        const a02 = b.values[2];
+        const a03 = b.values[3];
+        const a10 = b.values[4];
+        const a11 = b.values[5];
+        const a12 = b.values[6];
+        const a13 = b.values[7];
+        const a20 = b.values[8];
+        const a21 = b.values[9];
+        const a22 = b.values[10];
+        const a23 = b.values[11];
+        const a30 = b.values[12];
+        const a31 = b.values[13];
+        const a32 = b.values[14];
+        const a33 = b.values[15];
 
         // Cache only the current line of the second matrix
         let b0 = b.values[0];

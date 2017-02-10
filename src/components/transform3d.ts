@@ -150,11 +150,12 @@ export default class Transform3D extends Transform {
             this._parentCache[ParentCache.scaleZ] = this.parent.worldScaleZ;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; ++i) {
-            let child = this._children[i];
-            let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; ++i) {
-                components[i].fixedUpdate();
+        const l = this._children.length;
+        for(let i = 0; i < l; ++i) {
+            const child = this._children[i];
+            const components = child.getEntity().getAllComponents();
+            for(let j = 0; j < components.length; ++j) {
+                components[j].fixedUpdate();
             }
         }
         this._isDirty = false;
@@ -171,9 +172,10 @@ export default class Transform3D extends Transform {
             this._parentCache[ParentCache.scaleZ] = this.parent.worldScaleZ;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; ++i) {
-            let child = this._children[i];
-            let components = child.getEntity().getAllComponents();
+        const l = this._children.length;
+        for(let i = 0; i < l; ++i) {
+            const child = this._children[i];
+            const components = child.getEntity().getAllComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].update();
             }

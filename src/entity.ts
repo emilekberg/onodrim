@@ -48,7 +48,7 @@ export default class Entity {
     }
 
     public getComponents<T extends Component>(componentType:{ new (...args:any[]):T;}):T[] {
-        let components = new Array<T>();
+        const components = new Array<T>();
         for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 components.push(this._components[i] as T);

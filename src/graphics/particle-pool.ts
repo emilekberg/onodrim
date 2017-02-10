@@ -5,7 +5,7 @@ export default class ParticlePool {
         if (this.pool[particleType.name]) {
             return this.pool[particleType.name];
         }
-        let pool = new ParticlePool();
+        const pool = new ParticlePool();
         pool._setParticleType(particleType);
         pool._fillPool(count);
         this.pool[particleType.name] = pool;
@@ -18,7 +18,7 @@ export default class ParticlePool {
     }
 
     public requestParticle():Particle {
-        let p = this._particles.shift();
+        const p = this._particles.shift();
         if (!p) {
             return new this._particleConstructor();
         }

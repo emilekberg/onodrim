@@ -35,7 +35,7 @@ abstract class Transform extends Component {
     }
     public removeChild(child:Transform): void {
         console.warn('Transform.removeChild(): is not fully implemented yet');
-        let index = this._children.indexOf(child);
+        const index = this._children.indexOf(child);
         if(index === -1) {
             return;
         }

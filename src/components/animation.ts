@@ -27,7 +27,7 @@ export default class Animation extends Sprite {
         if(!frameSize) {
             return undefined;
         }
-        let frames:Rect[] = [];
+        const frames:Rect[] = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
                 if(y*x + x < frameStart) {
@@ -132,7 +132,7 @@ export default class Animation extends Sprite {
     }
 
     public updateTransform() {
-        let rect = this._frames[this._currentFrame];
+        const rect = this._frames[this._currentFrame];
         this._renderState.matrix
             .identity()
             .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)

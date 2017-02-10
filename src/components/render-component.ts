@@ -60,7 +60,7 @@ export default class RenderComponent extends Component {
         };
         this._color = new Color(1, 1, 1, 1);
 
-        let transform = this._entity.getComponent(Transform2D);
+        const transform = this._entity.getComponent(Transform2D);
         if (!transform) {
             console.error('RenderComponent cannot find component Transform2D.');
         }

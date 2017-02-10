@@ -141,9 +141,10 @@ export default class Transform2D extends Transform {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; ++i) {
-            let child = this._children[i];
-            let components = child.getEntity().getAllComponents();
+        const l = this._children.length;
+        for(let i = 0; i < l; ++i) {
+            const child = this._children[i];
+            const components = child.getEntity().getAllComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].fixedUpdate();
             }
@@ -161,11 +162,12 @@ export default class Transform2D extends Transform {
             this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
             this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
         }
-        for(let i = 0, l = this._children.length; i < l; ++i) {
-            let child = this._children[i];
-            let components = child.getEntity().getAllComponents();
-            for(let i = 0; i < components.length; ++i) {
-                components[i].update();
+        const l = this._children.length;
+        for(let i = 0; i < l; ++i) {
+            const child = this._children[i];
+            const components = child.getEntity().getAllComponents();
+            for(let j = 0; j < components.length; ++j) {
+                components[j].update();
             }
         }
         this.wasDirty = this._isDirty;

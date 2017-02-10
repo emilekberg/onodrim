@@ -3,7 +3,7 @@ export class Time {
     protected _deltaTimeMS:number = 0;
     protected _lastUpdateTime:number = performance.now();
     public update() {
-        let now = performance.now();
+        const now = performance.now();
         this._deltaTimeMS = now - this._lastUpdateTime;
         this._deltaTime = this._deltaTimeMS * 0.001;
         this._lastUpdateTime = now;

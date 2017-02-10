@@ -8,7 +8,7 @@ export default class ResourceManager {
             if(this.isImageLoaded(url)) {
                 resolve(this._IMAGES[url]);
             }
-            let image = new Image();
+            const image = new Image();
             image.addEventListener('load', resolve.bind(null, {
                 url,
                 image

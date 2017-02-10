@@ -13,7 +13,7 @@ export default class Game {
     }
 
     public removeEntity(entity:Entity) {
-        let index = this.entities.indexOf(entity);
+        const index = this.entities.indexOf(entity);
         if (index !== -1) {
             this.entities.splice(index, 1);
             entity.removedFromWorld();

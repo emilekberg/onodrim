@@ -16,8 +16,8 @@ export default class Matrix {
         ]);
     }
     public static makeRotation(rotation:number):Matrix {
-        let c = Math.cos(rotation);
-        let s = Math.sin(rotation);
+        const c = Math.cos(rotation);
+        const s = Math.sin(rotation);
         return new Matrix([
             c, -s, 0,
             s, c, 0,
@@ -32,24 +32,24 @@ export default class Matrix {
         ]);
     }
     public static multiply(a:Matrix, b:Matrix):Matrix {
-        let a00 = a.values[0*3+0];
-        let a01 = a.values[0*3+1];
-        let a02 = a.values[0*3+2];
-        let a10 = a.values[1*3+0];
-        let a11 = a.values[1*3+1];
-        let a12 = a.values[1*3+2];
-        let a20 = a.values[2*3+0];
-        let a21 = a.values[2*3+1];
-        let a22 = a.values[2*3+2];
-        let b00 = b.values[0*3+0];
-        let b01 = b.values[0*3+1];
-        let b02 = b.values[0*3+2];
-        let b10 = b.values[1*3+0];
-        let b11 = b.values[1*3+1];
-        let b12 = b.values[1*3+2];
-        let b20 = b.values[2*3+0];
-        let b21 = b.values[2*3+1];
-        let b22 = b.values[2*3+2];
+        const a00 = a.values[0*3+0];
+        const a01 = a.values[0*3+1];
+        const a02 = a.values[0*3+2];
+        const a10 = a.values[1*3+0];
+        const a11 = a.values[1*3+1];
+        const a12 = a.values[1*3+2];
+        const a20 = a.values[2*3+0];
+        const a21 = a.values[2*3+1];
+        const a22 = a.values[2*3+2];
+        const b00 = b.values[0*3+0];
+        const b01 = b.values[0*3+1];
+        const b02 = b.values[0*3+2];
+        const b10 = b.values[1*3+0];
+        const b11 = b.values[1*3+1];
+        const b12 = b.values[1*3+2];
+        const b20 = b.values[2*3+0];
+        const b21 = b.values[2*3+1];
+        const b22 = b.values[2*3+2];
         return new Matrix([
             a00 * b00 + a01 * b10 + a02 * b20,
             a00 * b01 + a01 * b11 + a02 * b21,
@@ -66,20 +66,6 @@ export default class Matrix {
 
     public values:Float32Array;
 
-    /*
-    get a():number {return this.values[Value.a];}
-    set a(value:number) {this.values[Value.a] = value;}
-    get b():number {return this.values[Value.b];}
-    set b(value:number) {this.values[Value.b] = value;}
-    get c():number {return this.values[Value.c];}
-    set c(value:number) {this.values[Value.c] = value;}
-    get d():number {return this.values[Value.d];}
-    set d(value:number) {this.values[Value.d] = value;}
-    get tx():number {return this.values[Value.tx];}
-    set tx(value:number) {this.values[Value.tx] = value;}
-    get ty():number {return this.values[Value.ty];}
-    set ty(value:number) {this.values[Value.ty] = value;}
-    */
     constructor(values?:number[]) {
         if (values) {
             this.values = new Float32Array(values);
@@ -169,8 +155,8 @@ export default class Matrix {
     }
 
     public rotate(rotation:number):Matrix {
-        let s = Math.sin(rotation);
-        let c = Math.cos(rotation);
+        const s = Math.sin(rotation);
+        const c = Math.cos(rotation);
         Matrix.tmp.set(
             c, -s, 0,
             s, c, 0,

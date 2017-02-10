@@ -39,8 +39,8 @@ export default class ParticleSystem extends Entity {
         this._state = State.STOPPING;
         if (immediately) {
             this._state = State.IDLE;
-            for (let i = 0; i < this._particleCount;) {
-                let particle = this.activeParticles.shift();
+            for (const i = 0; i < this._particleCount;) {
+                const particle = this.activeParticles.shift();
                 if (!particle) {
                     continue;
                 }
@@ -60,7 +60,7 @@ export default class ParticleSystem extends Entity {
                 }
             case State.STOPPING:
                 for(let i = 0; i < this._particleCount;) {
-                    let particle:Particle = this.activeParticles[i];
+                    const particle:Particle = this.activeParticles[i];
 
                     if(particle.fixedUpdate()) {
                         ++i;

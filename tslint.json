@@ -25,6 +25,7 @@
         "no-bitwise": false,
         "quotemark": [
             true, "single", "avoid-escape"
-        ]
+        ],
+        "prefer-for-of": false
     }
 }

@@ -56,9 +56,9 @@ export default class Core {
     protected _fixedUpdate() {
         this.game.fixedUpdate();
         for(let i = 0; i < this.game.entities.length; ++i) {
-            let entity = this.game.entities[i];
+            const entity = this.game.entities[i];
             entity.fixedUpdate();
-            let components = entity.getAllComponents();
+            const components = entity.getAllComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].fixedUpdate();
             }
@@ -68,9 +68,9 @@ export default class Core {
     protected _update() {
         this.game.update();
         for(let i = 0; i < this.game.entities.length; ++i) {
-            let entity = this.game.entities[i];
+            const entity = this.game.entities[i];
             entity.update();
-            let components = entity.getAllComponents();
+            const components = entity.getAllComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].update();
             }
@@ -78,7 +78,7 @@ export default class Core {
     }
 
     protected _render() {
-        let delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
+        const delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
         this.renderSystem.render(delta);
     }
 };

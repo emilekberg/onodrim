@@ -27,7 +27,7 @@ export default class ParticleComponent extends RenderComponent {
 
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         for(let i = 0; i < this.system.activeParticles.length; ++i) {
-            let renderer = this.system.activeParticles[i].renderComponent;
+            const renderer = this.system.activeParticles[i].renderComponent;
             if(renderer) {
                 renderer.render(delta, gl, batch);
             }

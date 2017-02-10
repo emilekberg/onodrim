@@ -15,9 +15,9 @@ export default class WebGLSystem {
     public static PROGRAM:WebGLProgram;
     public static isWebGLSupported() {
         try{
-            let canvas = document.createElement('canvas');
-            let webGLRenderingContextExist = !!WebGLRenderingContext;
-            let webGLContextExistsInCanvas = !!canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            const canvas = document.createElement('canvas');
+            const webGLRenderingContextExist = !!WebGLRenderingContext;
+            const webGLContextExistsInCanvas = !!canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
             return webGLRenderingContextExist && webGLContextExistsInCanvas;
         }
         catch(e) {
@@ -73,20 +73,20 @@ export default class WebGLSystem {
         this._renderComponents.push(component);
     }
     public removeComponentInstance(component:RenderComponent):void {
-        let index = this._renderComponents.indexOf(component);
+        const index = this._renderComponents.indexOf(component);
         if (index !== -1) {
             this._renderComponents.splice(index, 1);
         }
     }
 
     public initGL():void {
-        let canvas = this.canvas = document.createElement('Canvas') as HTMLCanvasElement;
-        let opts:WebGLContextAttributes = {
+        const canvas = this.canvas = document.createElement('Canvas') as HTMLCanvasElement;
+        const opts:WebGLContextAttributes = {
             premultipliedAlpha: false,
             alpha: false,
             antialias: true
         };
-        let gl = this.canvas.getContext('webgl', opts) || this.canvas.getContext('experimental-webgl', opts);
+        const gl = this.canvas.getContext('webgl', opts) || this.canvas.getContext('experimental-webgl', opts);
         if (!gl) {
             console.error('Web GL Context could not be initialized');
             return;
@@ -105,10 +105,10 @@ export default class WebGLSystem {
 
     public initShaders() {
         // kolla upp https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
-        let gl = this.gl;
-        let fragShader = WebGLSystem.createShader(SpriteFrag, ShaderType.frag, gl);
-        let vertShader = WebGLSystem.createShader(SpriteVert, ShaderType.vert, gl);
-        let program = gl.createProgram();
+        const gl = this.gl;
+        const fragShader = WebGLSystem.createShader(SpriteFrag, ShaderType.frag, gl);
+        const vertShader = WebGLSystem.createShader(SpriteVert, ShaderType.vert, gl);
+        const program = gl.createProgram();
         if (!program) {
             console.error('program could not be initialized');
             return;
@@ -122,15 +122,15 @@ export default class WebGLSystem {
         }
         gl.useProgram(program);
 
-        let resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
+        const resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
         gl.uniform2f(resolutionLocation, this.width, this.height);
     }
 
     public setGLRectangle(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
-        let x1 = x;
-        let x2 = x+width;
-        let y1 = y;
-        let y2 = y+height;
+        const x1 = x;
+        const x2 = x+width;
+        const y1 = y;
+        const y2 = y+height;
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             x1, y1,
             x2, y1,
@@ -143,13 +143,13 @@ export default class WebGLSystem {
 
     public render(delta:number) {
         let resort = false;
-        let gl = this.gl;
+        const gl = this.gl;
 
         // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         for(let i = 0; i < this._renderComponents.length; ++i) {
-            let renderer = this._renderComponents[i];
+            const renderer = this._renderComponents[i];
             if(renderer) {
                 if(renderer.requireDepthSort) {
                     resort = true;
