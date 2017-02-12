@@ -232,11 +232,11 @@ export default class Matrix {
         const ty = this.values[7];
 
         // should calculate from pixels to on screen coordinates
-        const w0 = size.w * 0.25;
-        const w1 = size.w * -0.25;
+        const w0 = size.w * 0.5;
+        const w1 = size.w * -0.5;
 
-        const h0 = size.h * 0.25;
-        const h1 = size.h * -0.25;
+        const h0 = size.h * 0.5;
+        const h1 = size.h * -0.5;
 
         let i = -1;
         // top left
