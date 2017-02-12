@@ -1,6 +1,13 @@
 import ResourceManager from './resource-manager';
-import Rect from '../math/rect';
+import Rect, {RectTemplate} from '../math/rect';
+import {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
+export interface TextureTemplate {
+    x?: number;
+    y?: number;
+    w?: number;
+    h?: number;
+}
 export default class Texture {
     private static WEBGL_TEXTURES:{[id:string]:WebGLTexture} = {};
     public image: HTMLImageElement;
@@ -9,7 +16,7 @@ export default class Texture {
     public rect:Rect;
     public glRect:Rect;
     public glTexture:WebGLTexture|null;
-    constructor(url:string) {
+    constructor(url:string, template?:TextureTemplate) {
         if(!ResourceManager.isImageLoaded(url)) {
             ResourceManager.loadImage(url);
         }
@@ -17,6 +24,9 @@ export default class Texture {
         this.url = url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
         this.glRect = new Rect(0,0,1,1);
+        if (template) {
+            this.setFrame(template.x || 0, template.y || 0, template.w || 0 , template.h || 0);
+        }
         if (!Texture.WEBGL_TEXTURES[url]) {
             this.createGLTexture(WebGLSystem.GL);
             if (!this.glTexture) {
@@ -27,6 +37,7 @@ export default class Texture {
         else {
             this.glTexture = Texture.WEBGL_TEXTURES[url];
         }
+        
     }
 
     public setFrame(x:number, y: number, w: number, h: number) {

@@ -1,4 +1,10 @@
-export default class Rect {
+export interface RectTemplate {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+}
+export default class Rect implements RectTemplate{
     public x:number;
     public y:number;
     public w:number;
