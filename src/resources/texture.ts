@@ -10,21 +10,18 @@ export default class Texture {
     public glRect:Rect;
     public glTexture:WebGLTexture|null;
     constructor(url:string) {
-        if(ResourceManager.isImageLoaded(url)) {
-            this.image = ResourceManager.getImage(url);
-        }
-        else {
+        if(!ResourceManager.isImageLoaded(url)) {
             ResourceManager.loadImage(url);
-            this.image = ResourceManager.getImage(url);
         }
+        this.image = ResourceManager.getImage(url);
         this.url = url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
         this.glRect = new Rect(0,0,1,1);
         if (!Texture.WEBGL_TEXTURES[url]) {
+            this.createGLTexture(WebGLSystem.GL);
             if (!this.glTexture) {
                 return;
             }
-            this.createGLTexture(WebGLSystem.GL);
             Texture.WEBGL_TEXTURES[url] = this.glTexture;
         }
         else {

@@ -19,9 +19,10 @@ export default class TextureGroup {
     }
 
     public getGroup(texture:Texture) {
-        const group = this.groups[this._current];
+        let group = this.groups[this._current];
         if (this._current === -1 || group.texture.url !== texture.url) {
             this._current = this.getNextIndex(texture);
+            group = this.groups[this._current];
             group.texture = texture;
             group.length = 0;
         }
