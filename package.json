@@ -8,13 +8,13 @@
     "build": "cd node_modules/typescript/bin && tsc",
     "watch": "cd node_modules/typescript/bin && tsc -w",
     "bundle": "tsc && gulp",
-    "start": "node server",
+    "start": "node example/server",
     "dev": "npm run watch",
     "gulp": "./node_modules/gulp/bin/gulp.js"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-typescript": "^3.1.4",
