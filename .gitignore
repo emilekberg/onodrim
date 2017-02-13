@@ -5,3 +5,4 @@ assets
 .DS_Store
 bin
 types
+debug.log
