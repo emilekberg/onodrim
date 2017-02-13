@@ -19,11 +19,13 @@ export {
 // Root Files
 import {default as Core, CoreConfig} from './core';
 import {default as Entity} from './entity';
+import {default as Input, KeyCode} from './input';
 import {default as Game} from './game';
 import {default as Time} from './time';
 export {
     Core, CoreConfig,
     Entity,
+    Input, KeyCode,
     Game,
     Time
 }
