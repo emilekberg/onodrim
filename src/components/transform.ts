@@ -23,7 +23,8 @@ abstract class Transform extends Component {
     }
 
     public addChild(child:Transform): void {
-        console.warn('Transform.addChild(): is not fully implemented yet');
+        // TODO: Find out why not, it seems to work...
+        // console.warn('Transform.addChild(): is not fully implemented yet');
         if(this.isChild(child)) {
             return;
         }
@@ -34,7 +35,8 @@ abstract class Transform extends Component {
         child._parent = this;
     }
     public removeChild(child:Transform): void {
-        console.warn('Transform.removeChild(): is not fully implemented yet');
+        // TODO: Find out why not, it seems to work...
+        // console.warn('Transform.removeChild(): is not fully implemented yet');
         const index = this._children.indexOf(child);
         if(index === -1) {
             return;

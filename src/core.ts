@@ -45,6 +45,7 @@ export default class Core {
         while(Time.now() >= this.nextFixedUpdateTime) {
             Time.setFixedUpdateTime(this.fixedUpdateTime);
             this._fixedUpdate();
+            this.currentFixedUpdateTime = this.nextFixedUpdateTime;
             this.nextFixedUpdateTime += this.fixedUpdateTime;
         }
         Time.update();
@@ -78,7 +79,7 @@ export default class Core {
     }
 
     protected _render() {
-        const delta = (this.nextFixedUpdateTime-Time.now())/this.fixedUpdateTime;
+        const delta = (Time.now()-this.currentFixedUpdateTime)/this.fixedUpdateTime;
         this.renderSystem.render(delta);
     }
 };

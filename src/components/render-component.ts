@@ -120,13 +120,12 @@ export default class RenderComponent extends Component {
         const m1 = this._oldRenderState.matrix.values;
         const m2 = this._renderState.matrix.values;
 
-        this._renderedMatrix.values[Value.a] = lerp(delta, m1[Value.a], m1[Value.a]-m2[Value.a], 1);
-        this._renderedMatrix.values[Value.b] = lerp(delta, m1[Value.b], m1[Value.b]-m2[Value.b], 1);
-        this._renderedMatrix.values[Value.c] = lerp(delta, m1[Value.c], m1[Value.c]-m2[Value.c], 1);
-        this._renderedMatrix.values[Value.d] = lerp(delta, m1[Value.d], m1[Value.d]-m2[Value.d], 1);
-        this._renderedMatrix.values[Value.tx] = lerp(delta, m1[Value.tx], m1[Value.tx]-m2[Value.tx], 1);
-        this._renderedMatrix.values[Value.ty] = lerp(delta, m1[Value.ty], m1[Value.ty]-m2[Value.ty], 1);
-
+        this._renderedMatrix.values[Value.a] = lerp(m1[Value.a], m2[Value.a], delta);
+        this._renderedMatrix.values[Value.b] = lerp(m1[Value.b], m2[Value.b], delta);
+        this._renderedMatrix.values[Value.c] = lerp(m1[Value.c], m2[Value.c], delta);
+        this._renderedMatrix.values[Value.d] = lerp(m1[Value.d], m2[Value.d], delta);
+        this._renderedMatrix.values[Value.tx] = lerp(m1[Value.tx], m2[Value.tx], delta) | 0;
+        this._renderedMatrix.values[Value.ty] = lerp(m1[Value.ty], m2[Value.ty], delta) | 0;
     }
 
     public isVisible():boolean {
