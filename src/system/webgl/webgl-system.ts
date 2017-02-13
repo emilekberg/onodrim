@@ -150,13 +150,11 @@ export default class WebGLSystem {
 
         for(let i = 0; i < this._renderComponents.length; ++i) {
             const renderer = this._renderComponents[i];
-            if(renderer) {
-                if(renderer.requireDepthSort) {
-                    resort = true;
-                    renderer.requireDepthSort = false;
-                }
-                renderer.render(delta, gl, this.spriteBatch);
+            if(renderer.requireDepthSort) {
+                resort = true;
+                renderer.requireDepthSort = false;
             }
+            renderer.render(delta, gl, this.spriteBatch);
         }
         this.spriteBatch.render(gl);
         gl.flush();
