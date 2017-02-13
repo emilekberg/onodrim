@@ -1,7 +1,7 @@
 import RenderComponent, {RenderComponentTemplate} from './render-component';
 import Entity from '../entity';
 import Texture from '../resources/texture';
-import Point from '../math/point';
+import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import {Value} from '../math/matrix3';
@@ -10,7 +10,7 @@ export interface SpriteTemplate extends RenderComponentTemplate {
     x?: number;
     y?: number;
     texture: Texture;
-    offset?:Point;
+    offset?: PointTemplate;
 }
 export default class Sprite extends RenderComponent {
     public static vertexBuffer:WebGLBuffer;
@@ -55,7 +55,10 @@ export default class Sprite extends RenderComponent {
         super(entity, template);
         this.x = template.x || 0;
         this.y = template.y || 0;
-        this._offset = template.offset || new Point();
+        this._offset = new Point();
+        if (template.offset) {
+            this._offset.set(template.offset.x, template.offset.y);
+        }
         this._w = 0;
         this._h = 0;
         if(template.texture) {
@@ -72,7 +75,7 @@ export default class Sprite extends RenderComponent {
             .translate(-this._texture.rect.w * (this._offset.x - 0.5), -this._texture.rect.h * (this._offset.y - 0.5))
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
-            .translate(this._transform.worldX, this._transform.worldY);
+            .translate(this._transform.worldX + (this.x * this._transform.worldScaleX), this._transform.worldY + (this.y * this._transform.worldScaleY));
     }
 
     public setTexture(texture:Texture) {
