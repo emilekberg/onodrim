@@ -13,4 +13,9 @@ export default class Point implements PointTemplate {
     public isZero():boolean {
         return !(this.x || this.y);
     }
+
+    public set(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
 }

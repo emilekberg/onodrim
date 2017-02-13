@@ -1,3 +1,3 @@
-export function lerp(t:number, b:number, c:number, d:number):number {
-    return b + (c * (t / d));
+export function lerp(start:number, end:number, delta:number):number {
+    return start + delta * (end - start);
 };
