@@ -6,19 +6,24 @@ export class EntityFactory {
     }
 
     public create(template: EntityTemplate): Entity {
-        const components = template.components;
         const entity = new Entity();
-        if (!components) {
-            return entity;
-        }
+        this.parseTemplate(entity, template);
+        return entity;
+    }
 
-        components.forEach((value) => {
+    public parseTemplate(entity: Entity, template: EntityTemplate): void {
+        if (template.name) {
+            entity.name = template.name;
+        }
+        if (!template.components) {
+            return;
+        }
+        template.components.forEach((value) => {
             const component = ComponentFactory.create(entity, value);
             if(component) {
                 entity.addComponent(component);
             }
         });
-        return entity;
     }
 }
 const entityFactory = new EntityFactory();

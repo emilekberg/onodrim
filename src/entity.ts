@@ -1,8 +1,22 @@
 import Component, {Template, UpdateComponent } from './components/component';
+import EntityFactory from './entity-factory';
 export interface EntityTemplate {
-    components: any[];
+    name?: string;
+    components?: any[];
 }
 export default class Entity {
+    private static ENTITIES_CREATED: number = 0;
+    public get name(): string {
+        return this._name;
+    }
+    public set name(name: string) {
+        this._name = name;
+    }
+
+    public get id(): number {
+        return this._id;
+    }
+
     protected _id:number;
     protected _components:Component[];
     protected _updateComponent: UpdateComponent[];
@@ -10,12 +24,16 @@ export default class Entity {
     protected _name:string;
     protected _isInWorld:boolean;
 
-    constructor() {
-        this._name = 'entity';
+    constructor(template?: EntityTemplate) {
+        this._id = Entity.ENTITIES_CREATED++;
+        this._name = 'entity' + this._id;
         this._components = [];
         this._updateComponent = [];
         this._fixedUpdateComponent = [];
         this._isInWorld = false;
+        if (template) {
+            EntityFactory.parseTemplate(this, template);
+        }
     }
 
     public addedToWorld() {
