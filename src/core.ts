@@ -59,7 +59,7 @@ export default class Core {
         for(let i = 0; i < this.game.entities.length; ++i) {
             const entity = this.game.entities[i];
             entity.fixedUpdate();
-            const components = entity.getAllComponents();
+            const components = entity.getAllFixedUpdateComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].fixedUpdate();
             }
@@ -71,7 +71,7 @@ export default class Core {
         for(let i = 0; i < this.game.entities.length; ++i) {
             const entity = this.game.entities[i];
             entity.update();
-            const components = entity.getAllComponents();
+            const components = entity.getAllUpdateComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].update();
             }

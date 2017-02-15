@@ -1,9 +1,10 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
+import ComponentFactory from './component-factory';
 import Point, {PointTemplate} from '../math/point';
 import Entity from '../entity';
-import Transform from './transform';
+import Transform, {TransformTemplate} from './transform';
 import Vector2 from '../math/vector2';
-export interface Transform2DTemplate {
+export interface Transform2DTemplate extends TransformTemplate {
     position?:PointTemplate;
     scale?:PointTemplate;
     origo?:PointTemplate;
@@ -114,7 +115,7 @@ export default class Transform2D extends Transform {
         return this._isDirty;
     }
     constructor(entity:Entity, template:Transform2DTemplate = {}) {
-        super(entity);
+        super(entity, template);
         this._position = template.position ? Vector2.fromTemplate(template.position) : new Vector2(0,0);
         this._origo = template.origo ? Vector2.fromTemplate(template.origo) : new Vector2(0,0);
         this._scale = template.scale ? Vector2.fromTemplate(template.scale) : new Vector2(1,1);
@@ -144,7 +145,7 @@ export default class Transform2D extends Transform {
         const l = this._children.length;
         for(let i = 0; i < l; ++i) {
             const child = this._children[i];
-            const components = child.getEntity().getAllComponents();
+            const components = child.getEntity().getAllFixedUpdateComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].fixedUpdate();
             }
@@ -165,7 +166,7 @@ export default class Transform2D extends Transform {
         const l = this._children.length;
         for(let i = 0; i < l; ++i) {
             const child = this._children[i];
-            const components = child.getEntity().getAllComponents();
+            const components = child.getEntity().getAllUpdateComponents();
             for(let j = 0; j < components.length; ++j) {
                 components[j].update();
             }
@@ -178,3 +179,4 @@ export default class Transform2D extends Transform {
         this._isDirty = true;
     }
 }
+ComponentFactory.register(Transform2D);

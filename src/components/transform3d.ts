@@ -1,8 +1,9 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
+import ComponentFactory from './component-factory';
 import Vector3, {Vector3Template} from '../math/vector3';
 import Entity from '../entity';
-import Transform from './transform';
-export interface Transform3DTemplate {
+import Transform, {TransformTemplate} from './transform';
+export interface Transform3DTemplate extends TransformTemplate {
     position?:Vector3Template;
     scale?:Vector3Template;
     origo?:Vector3Template;
@@ -125,7 +126,7 @@ export default class Transform3D extends Transform {
         return this._isDirty;
     }
     constructor(entity:Entity, template:Transform3DTemplate = {}) {
-        super(entity);
+        super(entity, template);
         this._position = template.position ? Vector3.fromTemplate(template.position) : new Vector3();
         this._scale = template.scale ? Vector3.fromTemplate(template.scale) : new Vector3(1,1,1);
         this._up = new Vector3(0,1,0);
@@ -153,7 +154,7 @@ export default class Transform3D extends Transform {
         const l = this._children.length;
         for(let i = 0; i < l; ++i) {
             const child = this._children[i];
-            const components = child.getEntity().getAllComponents();
+            const components = child.getEntity().getAllFixedUpdateComponents();
             for(let j = 0; j < components.length; ++j) {
                 components[j].fixedUpdate();
             }
@@ -175,7 +176,7 @@ export default class Transform3D extends Transform {
         const l = this._children.length;
         for(let i = 0; i < l; ++i) {
             const child = this._children[i];
-            const components = child.getEntity().getAllComponents();
+            const components = child.getEntity().getAllUpdateComponents();
             for(let j = 0; j < components.length; j++) {
                 components[j].update();
             }
@@ -187,3 +188,4 @@ export default class Transform3D extends Transform {
         this._isDirty = true;
     }
 }
+ComponentFactory.register(Transform3D);

@@ -1,8 +1,9 @@
+import ComponentFactory from './component-factory';
 import Sprite, {SpriteTemplate} from './sprite';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import Entity from '../entity';
 import Rect from '../math/rect';
-import Texture from '../resources/texture';
+import Texture, {TextureTemplate} from '../resources/texture';
 import Time from '../time';
 export interface AnimationTemplate extends SpriteTemplate {
     fps?: number;
@@ -16,7 +17,7 @@ export const enum State {
     PAUSED
 }
 export default class Animation extends Sprite {
-    public static CreateFrames(texture:Texture|undefined,
+    public static CreateFrames(texture:Texture|TextureTemplate|undefined,
                                frameSize:Rect|undefined,
                                margin:number = 0,
                                frameStart:number=0,
@@ -27,6 +28,11 @@ export default class Animation extends Sprite {
         if(!frameSize) {
             return undefined;
         }
+
+        if (!(texture instanceof Texture)) {
+            return undefined;
+        }
+
         const frames:Rect[] = [];
         for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
@@ -148,3 +154,4 @@ export default class Animation extends Sprite {
         }
     }
 }
+ComponentFactory.register(Animation);

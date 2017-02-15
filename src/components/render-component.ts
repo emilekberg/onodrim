@@ -1,4 +1,5 @@
-import Component from './component';
+import ComponentFactory from './component-factory';
+import Component, {Template} from './component';
 import Transform2D from './transform2d';
 import Entity from '../entity';
 import Matrix3, {Value} from '../math/matrix3';
@@ -7,7 +8,7 @@ import SpriteBatch from '../system/webgl/sprite-batch';
 import SystemManager from '../system/system-manager';
 import {lerp} from '../math/interpolation';
 import Color from '../graphics/color';
-export interface RenderComponentTemplate {
+export interface RenderComponentTemplate extends Template {
     alpha?:number;
     visible?:boolean;
     depth?:number;
@@ -132,3 +133,4 @@ export default class RenderComponent extends Component {
         return this.visible && this.alpha > 0;
     }
 }
+ComponentFactory.register(RenderComponent);

@@ -1,14 +1,20 @@
-import Component from './components/component';
-
+import Component, {Template, UpdateComponent } from './components/component';
+export interface EntityTemplate {
+    components: any[];
+}
 export default class Entity {
     protected _id:number;
     protected _components:Component[];
+    protected _updateComponent: UpdateComponent[];
+    protected _fixedUpdateComponent: UpdateComponent[];
     protected _name:string;
     protected _isInWorld:boolean;
 
     constructor() {
         this._name = 'entity';
         this._components = [];
+        this._updateComponent = [];
+        this._fixedUpdateComponent = [];
         this._isInWorld = false;
     }
 
@@ -27,6 +33,12 @@ export default class Entity {
     public addComponent(component:Component) {
         component.setEntity(this);
         this._components.push(component);
+        if((component as UpdateComponent).update) {
+            this._updateComponent.push(component as UpdateComponent);
+        }
+        if((component as UpdateComponent).fixedUpdate) {
+            this._fixedUpdateComponent.push(component as UpdateComponent);
+        }
     }
 
     public hasComponent(componentType:Function):boolean {
@@ -59,6 +71,14 @@ export default class Entity {
 
     public getAllComponents():Component[] {
         return this._components;
+    }
+
+    public getAllUpdateComponents(): UpdateComponent[] {
+        return this._updateComponent;
+    }
+
+    public getAllFixedUpdateComponents(): UpdateComponent[] {
+        return this._fixedUpdateComponent;
     }
 
     // Called at 30fps

@@ -1,5 +1,6 @@
 export { default as Animation } from './animation';
-export { default as Component} from './component';
+export { default as Component, Template} from './component';
+export { default as ComponentFactory } from './component-factory';
 export { default as RenderComponent } from './render-component';
 export { default as Sprite } from './sprite';
 export { default as Transform } from './transform';

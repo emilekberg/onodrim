@@ -1,9 +1,12 @@
-import Component from './component';
+import Component, {Template} from './component';
 import Entity from '../entity';
+export interface TransformTemplate extends Template {
+
+}
 abstract class Transform extends Component {
     protected _children:Transform[];
     protected _parent:Transform|null;
-    constructor(entity:Entity) {
+    constructor(entity:Entity, template: TransformTemplate) {
         super(entity);
 
         this._children = new Array<Transform>();

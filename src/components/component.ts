@@ -1,11 +1,18 @@
 import Entity from '../entity';
+import ComponentFactory from './component-factory';
+export interface Template {
+    type?: string;
+}
+export interface UpdateComponent extends Component{
+    update: () => void;
+    fixedUpdate: () => void;
+}
 export default class Component {
     protected _entity:Entity;
     protected _requiredComponents:Function[];
     constructor(entity:Entity) {
         this._requiredComponents = [];
         this.setEntity(entity);
-
     }
 
     public setEntity(entity:Entity):void {
@@ -17,6 +24,7 @@ export default class Component {
         return this._entity;
     }
 
+    /*
     public fixedUpdate():void {
         // TODO: implement this
     }
@@ -24,6 +32,7 @@ export default class Component {
     public update():void {
         // TODO: implement this
     }
+    */
 
     public parseJSON(json:Object):void {
         // TODO: implement this
@@ -46,3 +55,4 @@ export default class Component {
         }
     }*/
 }
+ComponentFactory.register(Component);

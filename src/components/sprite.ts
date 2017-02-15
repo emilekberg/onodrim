@@ -1,15 +1,16 @@
+import ComponentFactory from './component-factory';
 import RenderComponent, {RenderComponentTemplate} from './render-component';
 import Entity from '../entity';
-import Texture from '../resources/texture';
+import Texture, {TextureTemplate} from '../resources/texture';
 import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import {Value} from '../math/matrix3';
 
 export interface SpriteTemplate extends RenderComponentTemplate {
+    texture: TextureTemplate|Texture;
     x?: number;
     y?: number;
-    texture: Texture;
     offset?: PointTemplate;
 }
 export default class Sprite extends RenderComponent {
@@ -61,8 +62,16 @@ export default class Sprite extends RenderComponent {
         }
         this._w = 0;
         this._h = 0;
+        // TODO: make this a bit prettier
         if(template.texture) {
-            this.setTexture(template.texture);
+            let texture: Texture;
+            if (template.texture instanceof Texture) {
+                texture = template.texture;
+            }
+            else {
+                texture = new Texture(template.texture);
+            }
+            this.setTexture(texture);
         }
     }
 
@@ -75,13 +84,16 @@ export default class Sprite extends RenderComponent {
             .translate(-this._texture.rect.w * (this._offset.x - 0.5), -this._texture.rect.h * (this._offset.y - 0.5))
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
-            .translate(this._transform.worldX + (this.x * this._transform.worldScaleX), this._transform.worldY + (this.y * this._transform.worldScaleY));
+            .translate(
+                this._transform.worldX + (this.x * this._transform.worldScaleX),
+                this._transform.worldY + (this.y * this._transform.worldScaleY)
+            );
     }
 
     public setTexture(texture:Texture) {
         this._texture = texture;
         this._w = this._texture.image.width;
-        this._w = this._texture.image.height;
+        this._h = this._texture.image.height;
     }
 
     public setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
@@ -107,3 +119,4 @@ export default class Sprite extends RenderComponent {
         }
     }
 }
+ComponentFactory.register(Sprite);

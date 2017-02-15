@@ -3,6 +3,7 @@ import Rect, {RectTemplate} from '../math/rect';
 import {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
 export interface TextureTemplate {
+    url: string;
     x?: number;
     y?: number;
     w?: number;
@@ -16,28 +17,28 @@ export default class Texture {
     public rect:Rect;
     public glRect:Rect;
     public glTexture:WebGLTexture|null;
-    constructor(url:string, template?:TextureTemplate) {
-        if(!ResourceManager.isImageLoaded(url)) {
-            ResourceManager.loadImage(url);
+    constructor(template:TextureTemplate) {
+        if(!ResourceManager.isImageLoaded(template.url)) {
+            ResourceManager.loadImage(template.url);
         }
-        this.image = ResourceManager.getImage(url);
-        this.url = url;
+        this.image = ResourceManager.getImage(template.url);
+        this.url = template.url;
         this.rect = new Rect(0,0,this.image.width, this.image.height);
         this.glRect = new Rect(0,0,1,1);
-        if (template) {
-            this.setFrame(template.x || 0, template.y || 0, template.w || 0 , template.h || 0);
-        }
-        if (!Texture.WEBGL_TEXTURES[url]) {
+        this.setFrame(
+            template.x || 0, template.y || 0,
+            template.w || this.image.width , template.h || this.image.height
+        );
+        if (!Texture.WEBGL_TEXTURES[template.url]) {
             this.createGLTexture(WebGLSystem.GL);
             if (!this.glTexture) {
                 return;
             }
-            Texture.WEBGL_TEXTURES[url] = this.glTexture;
+            Texture.WEBGL_TEXTURES[template.url] = this.glTexture;
         }
         else {
-            this.glTexture = Texture.WEBGL_TEXTURES[url];
+            this.glTexture = Texture.WEBGL_TEXTURES[template.url];
         }
-        
     }
 
     public setFrame(x:number, y: number, w: number, h: number) {
