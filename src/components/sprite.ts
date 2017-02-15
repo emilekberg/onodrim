@@ -14,22 +14,8 @@ export interface SpriteTemplate extends RenderComponentTemplate {
     offset?: PointTemplate;
 }
 export default class Sprite extends RenderComponent {
-    public static vertexBuffer:WebGLBuffer;
-    public static vertexLocation:number;
-    public static vertexIndexBuffer:WebGLBuffer;
-    public static vertexIndexLocation:number;
-    public static texCoordBuffer:WebGLBuffer;
-    public static texCoordLocation:number;
-    public static previousTexture:Texture;
-
     public x:number;
     public y:number;
-
-    public matrixLocation:WebGLUniformLocation;
-    public sizeLocation:WebGLUniformLocation;
-    public textureOffsetLocation:WebGLUniformLocation;
-    public alphaLocation:WebGLUniformLocation;
-
     protected _w:number;
     protected _h:number;
 
@@ -62,7 +48,6 @@ export default class Sprite extends RenderComponent {
         }
         this._w = 0;
         this._h = 0;
-        // TODO: make this a bit prettier
         if(template.texture) {
             let texture: Texture;
             if (template.texture instanceof Texture) {
@@ -85,8 +70,8 @@ export default class Sprite extends RenderComponent {
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(
-                this._transform.worldX + (this.x * this._transform.worldScaleX),
-                this._transform.worldY + (this.y * this._transform.worldScaleY)
+                this._transform.worldX + ((this.x * this._transform.worldScaleX)),
+                this._transform.worldY + ((this.y * this._transform.worldScaleY))
             );
     }
 

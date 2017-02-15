@@ -102,10 +102,10 @@ export default class Transform2D extends Transform {
         return this._parentCache[ParentCache.y] + this._position.y;
     }
     get worldScaleX():number {
-        return this._parentCache[ParentCache.scaleX] + this._scale.x;
+        return this._parentCache[ParentCache.scaleX] * this._scale.x;
     }
     get worldScaleY():number {
-        return this._parentCache[ParentCache.scaleY] + this._scale.y;
+        return this._parentCache[ParentCache.scaleY] * this._scale.y;
     }
     get worldRotation():number {
         return this._parentCache[ParentCache.rotation] + this._rotation;
@@ -128,9 +128,11 @@ export default class Transform2D extends Transform {
         this.wasDirty = true;
 
         this._parentCache = new Array<number>(5);
-        for(let i = 0; i < 5; ++i) {
-            this._parentCache[i] = 0;
-        }
+        this._parentCache[ParentCache.x] = 0;
+        this._parentCache[ParentCache.y] = 0;
+        this._parentCache[ParentCache.scaleX] = 1;
+        this._parentCache[ParentCache.scaleY] = 1;
+        this._parentCache[ParentCache.rotation] = 0;
     }
 
     public fixedUpdate() {

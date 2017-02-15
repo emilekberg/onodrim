@@ -16,6 +16,7 @@ export class ComponentFactory {
         }
         const componentType = this._componentTypes[template.type];
         const component = new componentType(entity, template);
+        entity.addComponent(component);
         return component;
     }
 }
