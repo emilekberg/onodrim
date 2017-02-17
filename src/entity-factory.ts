@@ -20,9 +20,6 @@ export class EntityFactory {
         }
         template.components.forEach((value) => {
             const component = ComponentFactory.create(entity, value);
-            if(component) {
-                entity.addComponent(component);
-            }
         });
     }
 }

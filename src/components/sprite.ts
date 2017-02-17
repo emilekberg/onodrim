@@ -70,8 +70,8 @@ export default class Sprite extends RenderComponent {
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(
-                this._transform.worldX + ((this.x * this._transform.worldScaleX)),
-                this._transform.worldY + ((this.y * this._transform.worldScaleY))
+                (this._transform.worldX + this.x) * this._transform.worldScaleX,
+                (this._transform.worldY + this.y) * this._transform.worldScaleY
             );
     }
 
@@ -83,9 +83,9 @@ export default class Sprite extends RenderComponent {
 
     public setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
         const x1 = x;
-        const x2 = x+width;
+        const x2 = x + width;
         const y1 = y;
-        const y2 = y+height;
+        const y2 = y + height;
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             x1, y1,
             x2, y1,

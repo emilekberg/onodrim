@@ -12,7 +12,14 @@
         "strictNullChecks": true,
         "declaration": true,
         "declarationDir": "types",
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "es2015"
+        ]
     },
     "exclude": [
         "node_modules",

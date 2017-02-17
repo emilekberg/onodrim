@@ -7,8 +7,11 @@ const string = require('rollup-plugin-string');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
 const rollupSourcemaps = require('rollup-plugin-sourcemaps');
+
+var cache;
 exports.bundle = function bundle() {
     return rollup({
+        rollup: require('rollup'),
         entry: './bin/index.js',
         sourceMap: true,
         plugins: [
@@ -27,8 +30,11 @@ exports.bundle = function bundle() {
             })
         ],
         format: 'cjs',
-        moduleName: 'Onodrim'
-
+        moduleName: 'Onodrim',
+        cache: cache
+    })
+    .on('bundle', function(bundle) {
+        cache = bundle;
     })
     .pipe(source('onodrim.js'))
     .pipe(buffer())

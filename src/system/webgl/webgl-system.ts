@@ -148,7 +148,8 @@ export default class WebGLSystem {
         // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        for(let i = 0; i < this._renderComponents.length; ++i) {
+        const numComponents = this._renderComponents.length;
+        for(let i = 0; i < numComponents; ++i) {
             const renderer = this._renderComponents[i];
             if(renderer.requireDepthSort) {
                 resort = true;
