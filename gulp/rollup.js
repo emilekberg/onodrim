@@ -31,10 +31,10 @@ exports.bundle = function bundle() {
         ],
         format: 'cjs',
         moduleName: 'Onodrim',
-        cache: cache
+        //cache: cache
     })
     .on('bundle', function(bundle) {
-        cache = bundle;
+        //cache = bundle;
     })
     .pipe(source('onodrim.js'))
     .pipe(buffer())
