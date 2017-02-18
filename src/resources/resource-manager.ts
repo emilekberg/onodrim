@@ -3,18 +3,23 @@ export interface ImageLoadedEvent {
     image: HTMLImageElement;
 }
 export default class ResourceManager {
-    public static loadImage(url:string):Promise<ImageLoadedEvent> {
+    public static loadImage(key: string, url:string):Promise<ImageLoadedEvent> {
         return new Promise((resolve, reject) => {
-            if(this.isImageLoaded(url)) {
-                resolve(this._IMAGES[url]);
+            if(this.isImageLoaded(key)) {
+                resolve({
+                    key,
+                    image: this._IMAGES[key]
+                });
             }
             const image = new Image();
-            image.addEventListener('load', resolve.bind(null, {
-                url,
-                image
-            }));
+            image.addEventListener('load', () => {
+                resolve({
+                    key,
+                    image
+                });
+            });
             image.src = url;
-            this._IMAGES[url] = image;
+            this._IMAGES[key] = image;
         });
     }
     public static getImage(url:string) {
@@ -22,7 +27,7 @@ export default class ResourceManager {
     }
     public static loadImages(url:string[]):Promise<ImageLoadedEvent[]> {
         return Promise.all(url.map((value) => {
-            return this.loadImage(value);
+            return this.loadImage(value, value);
         }));
     }
     public static isImageLoaded(url:string):boolean {

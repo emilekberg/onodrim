@@ -19,7 +19,7 @@ export default class Texture {
     public glTexture:WebGLTexture|null;
     constructor(template:TextureTemplate) {
         if(!ResourceManager.isImageLoaded(template.url)) {
-            ResourceManager.loadImage(template.url);
+            ResourceManager.loadImage(template.url, template.url);
         }
         this.image = ResourceManager.getImage(template.url);
         this.url = template.url;
