@@ -12,6 +12,13 @@ export default class Game {
         entity.addedToWorld();
     }
 
+    public getEntity(name: string): Entity|undefined {
+        const found = this.entities.find((entity) => {
+            return entity.name === name;
+        });
+        return found;
+    }
+
     public removeEntity(entity:Entity) {
         const index = this.entities.indexOf(entity);
         if (index !== -1) {

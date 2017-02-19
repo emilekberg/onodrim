@@ -1,3 +1,7 @@
+export interface ResourceData {
+    name: string;
+    url: string;
+}
 export default class Resource {
     public get extension() {
         return this._extension;
@@ -5,17 +9,22 @@ export default class Resource {
     public get url() {
         return this._url;
     }
+    public get name() {
+        return this._name;
+    }
     private _url: string;
+    private _name: string;
     private _data: any;
     private _mimeType: string;
     private _responseType: string;
     private _extension: string;
-    constructor(url: string) {
-        this._url = url;
+    constructor(data: ResourceData) {
+        this._url = data.url;
+        this._name = data.name;
 
-        const res = /(?=.)\w*$/g.exec(url);
-        if(res) {
-            this._extension = res[0];
+        const result = /(?=.)\w*$/g.exec(this._url);
+        if(result) {
+            this._extension = result[0];
         }
         this._mimeType = this.getMimeType();
         this._responseType = this.getResponseType();

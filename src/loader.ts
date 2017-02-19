@@ -1,11 +1,12 @@
-import Resource from './resources/resource';
+import Resource, {ResourceData} from './resources/resource';
 import Parser from './parsers/image-parser';
 export interface LoaderData {
-    loaded: {[key: string]: Resource}
+    loaded: {[key: string]: Resource};
 }
+
 export class Loader {
     private readonly _parsers: Parser[];
-    private readonly _assetsToLoad: string[];
+    private readonly _assetsToLoad: ResourceData[];
     private readonly _loadedAssets: Resource[];
     private readonly _loadingAssets: Resource[];
 
@@ -16,28 +17,30 @@ export class Loader {
         this._loadingAssets = [];
         this._loadedAssets = [];
     }
-    public add(url: string): Loader {
-        this._assetsToLoad.push(url);
+    public add(url: string, name?: string): Loader {
+        this._assetsToLoad.push({
+            url,
+            name: name ? name : url
+        });
         return this;
     }
 
-    public addParser(parser: Parser): void {
+    public addParser(parser: Parser): Loader {
         this._parsers.push(parser);
+        return this;
     }
 
     public start(): Promise<Resource[]> {
-        this._assetsToLoad.forEach((url) => {
-            this.load(url);
-        });
+        this.loadAssets();
         return new Promise((resolve, reject) => {
             this._resolve = resolve;
         });
     }
 
-    private load(url: string): Promise<any> {
-        const index = this._assetsToLoad.indexOf(url);
+    private load(asset: ResourceData): Promise<any> {
+        const index = this._assetsToLoad.indexOf(asset);
         this._assetsToLoad.splice(index, 1);
-        const resource = new Resource(url);
+        const resource = new Resource(asset);
         this._loadingAssets.push(resource);
         return resource.load().then(() => {
             return this.parse(resource);
@@ -73,14 +76,22 @@ export class Loader {
     private onDone(resource: Resource) {
         this._loadingAssets.splice(this._loadingAssets.indexOf(resource), 1);
         this._loadedAssets.push(resource);
-        if (this._assetsToLoad.length > 0) {
-            this._assetsToLoad.forEach((url) => {
-                this.load(url);
-            });
-        }
-        else if (this._loadingAssets.length === 0) {
+        this.loadAssets();
+        if(this.isDone()) {
             this._resolve();
         }
+    }
+
+    private loadAssets() {
+        if (this._assetsToLoad.length > 0) {
+            this._assetsToLoad.forEach((asset) => {
+                this.load(asset);
+            });
+        }
+    }
+
+    private isDone(): boolean {
+        return this._loadingAssets.length === 0;
     }
 }
 const loader = new Loader();

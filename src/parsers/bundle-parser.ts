@@ -3,7 +3,12 @@ import Resource from '../resources/resource';
 import Loader from '../loader';
 import ResourceManager from '../resources/resource-manager';
 export interface Bundle {
-    bundle: Array<{url: string}>;
+    bundle: Asset[];
+}
+export interface Asset {
+    name: string;
+    url: string;
+    data?: Asset|Blob|ArrayBuffer;
 }
 export default class BundleParser extends Parser {
     public canParse(resource: Resource): boolean {
@@ -14,12 +19,15 @@ export default class BundleParser extends Parser {
     public parse(resource: Resource): Promise<{}> {
         const data = resource.getData<Bundle>();
         data.bundle.forEach((asset) => {
-            const url = resource.url.substring(0, resource.url.lastIndexOf('/')+1) + asset.url;
-            Loader.add(url);
+            const url = this.formatUrl(resource.url, asset.url);
+            Loader.add(url, asset.name);
         });
         return new Promise((resolve, reject) => {
             resolve();
         });
+    }
+    private formatUrl(baseUrl: string, relativeUrl: string): string {
+        return baseUrl.substring(0, baseUrl.lastIndexOf('/')+1) + relativeUrl;
     }
 }
 Loader.addParser(new BundleParser());

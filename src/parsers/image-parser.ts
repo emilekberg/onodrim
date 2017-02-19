@@ -9,7 +9,7 @@ export default class ImageParser extends Parser {
     public parse(resource: Resource): Promise<{}> {
         const data = resource.getData<Blob>();
         const urlData = window.URL.createObjectURL(data);
-        return ResourceManager.loadImage(resource.url, urlData);
+        return ResourceManager.loadImage(resource.name, urlData);
     }
 }
 Loader.addParser(new ImageParser());
