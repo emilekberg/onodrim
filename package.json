@@ -17,16 +17,12 @@
   "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-sourcemaps": "^2.4.1",
-    "gulp-typescript": "^3.1.4",
+    "gulp-typescript": "^3.1.5",
     "merge2": "^1.0.3",
     "rollup": "^0.41.4",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-sourcemaps": "^0.4.1",
     "rollup-plugin-string": "^2.0.2",
-    "rollup-stream": "^1.19.0",
-    "ts-node": "^2.1.0",
-    "typescript": "^2.1.6",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "typescript": "^2.2.1"
   }
 }
