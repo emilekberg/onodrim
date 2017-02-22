@@ -99,10 +99,13 @@ export default class RenderComponent extends Component {
         this._renderState.alpha = this.alpha;
         this._oldRenderState.matrix.copy(this._renderState.matrix);
         this._oldRenderState.alpha = this._renderState.alpha;
+        this._oldRenderState.wasDirty = true;
+        this._renderState.wasDirty = true;
     }
 
     public updateTransform() {
-        this._renderState.wasDirty = true;
+        // TODO: Removed this since it should not be needed...
+        // this._renderState.wasDirty = true;
         this._renderState.matrix
             .identity()
             .rotate(this._transform.worldRotation)

@@ -3,6 +3,7 @@ import WebGLSystem from './system/webgl/webgl-system';
 import Time from './time';
 import SystemManager from './system/system-manager';
 import Game from './game';
+import Input from './input';
 export interface CoreConfig {
     width?:number;
     height?:number;

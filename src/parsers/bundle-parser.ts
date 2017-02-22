@@ -19,8 +19,14 @@ export default class BundleParser extends Parser {
     public parse(resource: Resource): Promise<{}> {
         const data = resource.getData<Bundle>();
         data.bundle.forEach((asset) => {
-            const url = this.formatUrl(resource.url, asset.url);
-            Loader.add(url, asset.name);
+            if (asset.data) {
+                const url = this.formatUrl(resource.url, asset.url);
+                console.warn('BundleParser.parse  - Asset.data not yet implemented');
+            }
+            else {
+                const url = this.formatUrl(resource.url, asset.url);
+                Loader.add(url, asset.name);
+            }
         });
         return new Promise((resolve, reject) => {
             resolve();

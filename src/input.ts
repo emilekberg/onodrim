@@ -1,20 +1,20 @@
 export class Input {
-    private _keyDown: {[key: string]: boolean};
+    private _currentKeyState: {[key: string]: boolean};
     constructor() {
-        this._keyDown = {};
+        this._currentKeyState = {};
         window.addEventListener('keydown', (e) => {
-            this._keyDown[e.keyCode] = true;
+            this._currentKeyState[e.keyCode] = true;
         });
         window.addEventListener('keyup', (e) => {
-            this._keyDown[e.keyCode] = false;
+            this._currentKeyState[e.keyCode] = false;
         });
     }
     public isDown(key: KeyCode): boolean {
-        return this._keyDown[key];
+        return this._currentKeyState[key];
     }
 
     public isUp(key: KeyCode): boolean {
-        return !this._keyDown[key];
+        return !this._currentKeyState[key];
     }
 }
 const instance = new Input();

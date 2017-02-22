@@ -154,18 +154,11 @@ export default class Transform2D extends Transform {
             }
         }
         this.wasDirty = this._isDirty;
+        // TODO: Check if this can be removed.
         // this._isDirty = false;
     }
 
     public update() {
-        /*if (this.parent && this.parent.isDirty) {
-            this._isDirty = true;
-            this._parentCache[ParentCache.x] = this.parent.worldX;
-            this._parentCache[ParentCache.y] = this.parent.worldY;
-            this._parentCache[ParentCache.scaleX] = this.parent.worldScaleX;
-            this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
-            this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
-        }*/
         const numChildren = this._children.length;
         for(let i = 0; i < numChildren; ++i) {
             const child = this._children[i];
