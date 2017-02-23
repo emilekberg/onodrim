@@ -59,7 +59,7 @@ export default class Entity {
         }
     }
 
-    public hasComponent(componentType:Function):boolean {
+    public hasComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):boolean {
         for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {
                 return true;

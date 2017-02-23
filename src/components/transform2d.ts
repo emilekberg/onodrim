@@ -154,8 +154,7 @@ export default class Transform2D extends Transform {
             }
         }
         this.wasDirty = this._isDirty;
-        // TODO: Check if this can be removed.
-        // this._isDirty = false;
+        this._isDirty = false;
     }
 
     public update() {
@@ -168,8 +167,6 @@ export default class Transform2D extends Transform {
                 components[j].update();
             }
         }
-        this.wasDirty = this._isDirty;
-        this._isDirty = false;
     }
 
     public setDirty() {

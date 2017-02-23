@@ -68,7 +68,6 @@ export default class RenderComponent extends Component {
         else {
             this._transform = transform;
         }
-
         this.requireDepthSort = true;
         const webglSystem = SystemManager.getSystem(WebGLSystem);
         if (webglSystem) {

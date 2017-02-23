@@ -20,7 +20,7 @@ export default class Core {
     constructor(config?:CoreConfig) {
         this.fixedUpdateTime = 1/30;
         this.currentFixedUpdateTime = Time.now();
-        this.nextFixedUpdateTime = 0;
+        this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
 
         SystemManager.addSystem(new WebGLSystem(config));
         const webglSystem = SystemManager.getSystem(WebGLSystem);
@@ -39,12 +39,14 @@ export default class Core {
     public start(game:Game = new Game()) {
         this.game = game;
         this.game.start();
+        this.currentFixedUpdateTime = Time.now();
+        this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
         requestAnimationFrame(this._gameLoop);
     }
 
     public gameLoop() {
+        Time.setFixedUpdateTime(this.fixedUpdateTime);
         while(Time.now() >= this.nextFixedUpdateTime) {
-            Time.setFixedUpdateTime(this.fixedUpdateTime);
             this._fixedUpdate();
             this.currentFixedUpdateTime = this.nextFixedUpdateTime;
             this.nextFixedUpdateTime += this.fixedUpdateTime;
