@@ -12,7 +12,7 @@
             "taskName": "watch",
             "args": [],
             "isBuildCommand": true,
-            "isWatching": true,
+            "isBackground": true,
             "problemMatcher": [
                 "$lessCompile",
                 "$tsc",
