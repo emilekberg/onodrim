@@ -1,7 +1,9 @@
 export class Input {
     private _currentKeyState: {[key: string]: boolean};
+    private _previousKeyState: {[key: string]: boolean};
     constructor() {
         this._currentKeyState = {};
+        this._previousKeyState = {};
         window.addEventListener('keydown', (e) => {
             this._currentKeyState[e.keyCode] = true;
         });
@@ -15,6 +17,27 @@ export class Input {
 
     public isUp(key: KeyCode): boolean {
         return !this._currentKeyState[key];
+    }
+
+    public wasDown(key: KeyCode): boolean {
+        return this._previousKeyState[key];
+    }
+
+    public wasUp(key: KeyCode): boolean {
+        return !this._previousKeyState[key];
+    }
+
+    public pressed(key: KeyCode): boolean {
+        return this.isDown(key) && this.wasUp(key);
+    }
+
+    public fixedUpdate() {
+        for(const k in this._currentKeyState) {
+            if(!this._currentKeyState.hasOwnProperty(k)) {
+                continue;
+            }
+            this._previousKeyState[k] = this._currentKeyState[k];
+        }
     }
 }
 const instance = new Input();

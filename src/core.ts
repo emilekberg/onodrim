@@ -54,6 +54,7 @@ export default class Core {
         Time.update();
         this._update();
         this._render();
+        Input.fixedUpdate();
         requestAnimationFrame(this._gameLoop);
     }
 
