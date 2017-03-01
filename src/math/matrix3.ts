@@ -255,4 +255,16 @@ export default class Matrix {
         target[offset + ++i] = (a * w1) + (c * h0) + tx;
         target[offset + ++i] = (d * h0) + (b * w1) + ty;
     }
+
+    public setData(target: Float32Array, offset: number) {
+        target[offset + 0] = this.values[0];// * (size.w);
+        target[offset + 1] = this.values[1];
+        target[offset + 2] = this.values[2];
+        target[offset + 3] = this.values[3];
+        target[offset + 4] = this.values[4];// * (size.h);
+        target[offset + 5] = this.values[5];
+        target[offset + 6] = this.values[6];
+        target[offset + 7] = this.values[7];
+        target[offset + 8] = this.values[8];
+    }
 }

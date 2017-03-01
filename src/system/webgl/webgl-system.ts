@@ -86,7 +86,7 @@ export default class WebGLSystem {
             alpha: false,
             antialias: true
         };
-        const gl = this.canvas.getContext('webgl', opts) || this.canvas.getContext('experimental-webgl', opts);
+        const gl = this.canvas.getContext('webgl2', opts) as WebGLRenderingContext || this.canvas.getContext('experimental-webgl2', opts) as WebGLRenderingContext;
         if (!gl) {
             console.error('Web GL Context could not be initialized');
             return;
@@ -157,7 +157,7 @@ export default class WebGLSystem {
             }
             renderer.render(delta, gl, this.spriteBatch);
         }
-        this.spriteBatch.render(gl);
+        this.spriteBatch.render();
         gl.flush();
         if(resort) {
              this._renderComponents.sort((a, b) => {

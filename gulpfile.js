@@ -5,7 +5,8 @@ const copy = require('./gulp/copy');
 function watch() {
     gulp.watch([
         './src/**/*.ts',
-        './shaders/**/*.*'
+        './src/**/*.frag',
+        './src/**/*.vert'
     ], gulp.series(typescript.build, copy.shaders, rollup.bundle));
 }
 
