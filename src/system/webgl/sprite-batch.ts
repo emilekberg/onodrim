@@ -11,7 +11,7 @@ import Color from '../../graphics/color';
 import BatchGroup from './batching/batch-group';
 import TextureGroup from './batching/texture-group';
 export interface IAttributes {
-    indices: Uint16Array;
+    indices: Uint8Array;
     aVertex: Float32Array;
     aMatrix: Float32Array;
     aTexCoord: Float32Array;
@@ -65,7 +65,7 @@ export default class SpriteBatch {
                 1, -1
             ]),
             // index buffer
-            indices: new Uint16Array([
+            indices: new Uint8Array([
                 0, 1, 2,
                 0, 2, 3
             ]),
@@ -104,24 +104,20 @@ export default class SpriteBatch {
         SpriteBatch.VERTEX_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aVertex, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aVertex, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(SpriteBatch.VERTEX_ATTRIB);
         gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         // Index Buffer
         SpriteBatch.INDEX_BUFFER = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SpriteBatch.INDEX_BUFFER);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.DYNAMIC_DRAW);
 
         // Matrix Buffer
         SpriteBatch.MATRIX_ATTRIB = gl.getAttribLocation(this._program, 'a_matrix');
         SpriteBatch.MATRIX_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.MATRIX_BUFFER);
-        //gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB);
-        //gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+1);
-        //gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+2);
-
         gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB,   3, gl.FLOAT, false, 36, 0);
         gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB+1, 3, gl.FLOAT, false, 36, 12);
         gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB+2, 3, gl.FLOAT, false, 36, 24);
@@ -135,16 +131,15 @@ export default class SpriteBatch {
         SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
-        //gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
-        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0);
-        gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 1);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 8, 0);
+        // gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 1);
 
         // Color Buffer
         SpriteBatch.COLOR_ATTRIB = gl.getAttribLocation(this._program, 'a_color');
         SpriteBatch.COLOR_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.COLOR_BUFFER);
-        gl.vertexAttribPointer(SpriteBatch.COLOR_ATTRIB, 4, gl.FLOAT, true, 16, 0);
+        gl.vertexAttribPointer(SpriteBatch.COLOR_ATTRIB, 4, gl.FLOAT, false, 16, 0);
         gl.vertexAttribDivisor(SpriteBatch.COLOR_ATTRIB, 1);
     }
 
@@ -217,35 +212,48 @@ export default class SpriteBatch {
         // activate group:
         //      set texture
         // Draw each group from start to end
-
+        gl.enableVertexAttribArray(SpriteBatch.VERTEX_ATTRIB);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
+        gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         // TODO: use glBufferSubData
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB);
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+1);
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+2);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.MATRIX_BUFFER);
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aMatrix, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aMatrix, gl.DYNAMIC_DRAW);
+
+        gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB,   3, gl.FLOAT, false, 36, 0);
+        gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB+1, 3, gl.FLOAT, false, 36, 12);
+        gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB+2, 3, gl.FLOAT, false, 36, 24);
+        gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB,   1);
+        gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+1, 1);
+        gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+2, 1);
 
         gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aTexCoord, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aTexCoord, gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 8, 0);
+        gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 0);
 
         gl.enableVertexAttribArray(SpriteBatch.COLOR_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.COLOR_BUFFER);
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aColor, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aColor, gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(SpriteBatch.COLOR_ATTRIB, 4, gl.FLOAT, false, 16, 0);
+        gl.vertexAttribDivisor(SpriteBatch.COLOR_ATTRIB, 1);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SpriteBatch.INDEX_BUFFER);
-
         const l = this._textureGroup.currentIndex+1;
         for(let i = 0; i < l; ++i) {
             const group = this._textureGroup.groups[i];
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, group.texture.glTexture);
 
-            // gl.drawElements(gl.TRIANGLES, group.length * 6, gl.UNSIGNED_SHORT, group.start * 6 * 2);
-            gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, 1);
+            gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, group.length);
         }
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
         this.renderDone();
     }
 
