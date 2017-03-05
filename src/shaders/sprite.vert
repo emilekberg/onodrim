@@ -1,15 +1,15 @@
 #version 300 es
-in vec2 a_vertex;
-in vec2 a_texCoord;
-in vec4 a_color;
-in mat3 a_matrix;
+in vec2 vertex;
+in vec2 instanceTexCoord;
+in vec4 instanceColor;
+in mat3 instanceMatrix;
 out vec2 v_texCoord;
 out vec4 v_color;
 uniform vec2 u_size;
 uniform vec2 u_resolution;
 
 void main(void) {
-    vec3 units = a_matrix * vec3(a_vertex, 1);
+    vec3 units = instanceMatrix * vec3(vertex, 1);
     units.x /= u_resolution.x;
     units.y /= u_resolution.y;
 
@@ -18,6 +18,6 @@ void main(void) {
     clipSpace.y *= -1.0;
 
     gl_Position = vec4(clipSpace, 1);
-    v_texCoord = a_texCoord;
-    v_color = a_color;
+    v_texCoord = instanceTexCoord;
+    v_color = instanceColor;
 }

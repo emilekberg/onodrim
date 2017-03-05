@@ -65,9 +65,10 @@ export default class Sprite extends RenderComponent {
         if(!this._renderState.wasDirty) {
             return;
         }
+        // TODO: scale with 0.5 should probably be removed from here, investigy why it needs to be there :)
         this._renderState.matrix
             .identity()
-            .scale(this._texture.rect.w, this._texture.rect.h)
+            .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
             .translate(-this._texture.rect.w * (this._offset.x - 0.5), -this._texture.rect.h * (this._offset.y - 0.5))
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
