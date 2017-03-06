@@ -1,13 +1,10 @@
+import { CoreConfig } from '../../core';
 import RenderComponent from '../../components/render-component';
 import SpriteFrag from '../../shaders/sprite.frag';
 import SpriteVert from '../../shaders/sprite.vert';
 import SpriteBatch from './sprite-batch';
 export const enum ShaderType {
     vert, frag
-}
-export interface RenderConfig {
-    width?:number;
-    height?:number;
 }
 export default class WebGLSystem {
     public static SYSTEM_TYPE:string = 'renderer';
@@ -56,14 +53,20 @@ export default class WebGLSystem {
     public spriteBatch:SpriteBatch;
 
     protected _renderComponents: RenderComponent[];
-    constructor(config:RenderConfig = {}) {
+    constructor(config:CoreConfig = {}) {
         this.systemType = WebGLSystem.SYSTEM_TYPE;
         this.width = config.width || 800;
         this.height = config.height || 300;
+        if (!config.canvas) {
+            this.canvas = document.createElement('canvas');
+            document.body.appendChild(this.canvas);
+        }
+        else {
+            this.canvas = config.canvas;
+        }
         this.initGL();
         this.initShaders();
         this._renderComponents = [];
-        document.body.appendChild(this.canvas);
 
         this.spriteBatch = new SpriteBatch(this.gl, this.shaderProgram);
         this.spriteBatch.createBuffers();
@@ -80,7 +83,7 @@ export default class WebGLSystem {
     }
 
     public initGL():void {
-        const canvas = this.canvas = document.createElement('Canvas') as HTMLCanvasElement;
+        const canvas = this.canvas;
         const opts:WebGLContextAttributes = {
             premultipliedAlpha: false,
             alpha: false,
@@ -126,28 +129,14 @@ export default class WebGLSystem {
         gl.uniform2f(resolutionLocation, this.width, this.height);
     }
 
-    public setGLRectangle(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
-        const x1 = x;
-        const x2 = x+width;
-        const y1 = y;
-        const y2 = y+height;
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            x1, y1,
-            x2, y1,
-            x1, y2,
-            x1, y2,
-            x2, y1,
-            x2, y2
-        ]), gl.STATIC_DRAW);
-    }
-
     public render(delta:number) {
-        let resort = false;
         const gl = this.gl;
+        this.resize();
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
         // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+        let resort = false;
         const numComponents = this._renderComponents.length;
         for(let i = 0; i < numComponents; ++i) {
             const renderer = this._renderComponents[i];
@@ -169,6 +158,17 @@ export default class WebGLSystem {
                  }
                  return 0;
              });
+        }
+    }
+
+    private resize() {
+        const ratio = window.devicePixelRatio || 1;
+        const canvas = this.gl.canvas;
+        const width = Math.floor(canvas.clientWidth * ratio);
+        const height = Math.floor(canvas.clientHeight * ratio);
+        if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
         }
     }
 }
