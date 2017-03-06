@@ -69,7 +69,7 @@ export default class Sprite extends RenderComponent {
         this._renderState.matrix
             .identity()
             .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
-            .translate(-this._texture.rect.w * (this._offset.x - 0.5), -this._texture.rect.h * (this._offset.y - 0.5))
+            .translate(-this._texture.rect.w * (this._offset.x - 1), -this._texture.rect.h * (this._offset.y - 1))
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(
