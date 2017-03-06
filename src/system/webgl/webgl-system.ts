@@ -84,7 +84,7 @@ export default class WebGLSystem {
         const opts:WebGLContextAttributes = {
             premultipliedAlpha: false,
             alpha: false,
-            antialias: true
+            antialias: false
         };
         const gl = this.canvas.getContext('webgl2', opts) as WebGLRenderingContext || this.canvas.getContext('experimental-webgl2', opts) as WebGLRenderingContext;
         if (!gl) {

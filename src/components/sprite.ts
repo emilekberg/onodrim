@@ -86,7 +86,9 @@ export default class Sprite extends RenderComponent {
 
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         this.interpolateRenderMatrix(delta);
-
+        if (!batch.canRenderTexture(this.texture)) {
+            batch.render();
+        }
         if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this._color)) {
             batch.render();
         }

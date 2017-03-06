@@ -17,9 +17,10 @@ import TextureGroup from './batching/texture-group';
 
 export interface IAttributes {
     indices: Uint8Array;
-    aVertex: Int8Array;
+    vertices: Int8Array;
+    texCoord: Uint8Array;
     aMatrix: Float32Array;
-    aTexCoord: Float32Array;
+    aTexQuad: Float32Array;
     aColor: Float32Array;
 }
 
@@ -31,6 +32,8 @@ export default class SpriteBatch {
     public static MATRIX_ATTRIB:number;
     public static TEXCOORD_BUFFER:WebGLBuffer|null;
     public static TEXCOORD_ATTRIB:number;
+    public static TEXQUAD_BUFFER:WebGLBuffer|null;
+    public static TEXQUAD_ATTRIB:number;
     public static POSITION_BUFFER:WebGLBuffer|null;
     public static POSITION_ATTRIB:number;
     public static COLOR_BUFFER:WebGLBuffer|null;
@@ -47,6 +50,7 @@ export default class SpriteBatch {
     public count:number;
     public size:number;
     public batchSize:number;
+    public lastTexture:Texture;
 
     protected _textureGroup:TextureGroup;
 
@@ -66,7 +70,7 @@ export default class SpriteBatch {
         this.size = this.batchSize /* * 4 * 2*/;
         this.attributes = {
             // vertex buffer
-            aVertex: new Int8Array([
+            vertices: new Int8Array([
                 -1, -1,
                 -1, 1,
                 1, 1,
@@ -77,10 +81,18 @@ export default class SpriteBatch {
                 0, 1, 2,
                 0, 2, 3
             ]),
+            // texcoord buffer
+            texCoord: new Uint8Array([
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+            ]),
+
             // matrix buffer
             aMatrix: new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE),
             // Texture coordinate
-            aTexCoord: new Float32Array(this.size * SpriteBatch.VERTICES_PER_INSTANCE),
+            aTexQuad: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
             // Color
             aColor: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE)
         };
@@ -96,21 +108,24 @@ export default class SpriteBatch {
         this.attributes.aMatrix = new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE);
         this.attributes.aMatrix.set(oldMatrix);
 
-        const oldTexcoord = this.attributes.aTexCoord;
-        this.attributes.aTexCoord = new Float32Array(this.size * SpriteBatch.VERTICES_PER_INSTANCE);
-        this.attributes.aTexCoord.set(oldTexcoord);
-
         const oldColor = this.attributes.aColor;
         this.attributes.aColor = new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE);
         this.attributes.aColor.set(oldColor);
+
+        const oldTexQuad = this.attributes.aTexQuad;
+        this.attributes.aTexQuad = new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE);
+        this.attributes.aTexQuad.set(oldTexQuad);
     }
 
     public createBuffers() {
         const gl = this._gl as WebGL2RenderingContext;
-        
         // Vertex Buffer
         SpriteBatch.VERTEX_ATTRIB = gl.getAttribLocation(this._program, 'vertex');
         SpriteBatch.VERTEX_BUFFER = gl.createBuffer();
+
+        // Texture coordinate buffer
+        SpriteBatch.TEXCOORD_ATTRIB = gl.getAttribLocation(this._program, 'texCoord');
+        SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
 
         // Index Buffer
         SpriteBatch.INDEX_BUFFER = gl.createBuffer();
@@ -119,21 +134,25 @@ export default class SpriteBatch {
         SpriteBatch.MATRIX_ATTRIB = gl.getAttribLocation(this._program, 'instanceMatrix');
         SpriteBatch.MATRIX_BUFFER = gl.createBuffer();
 
-        // Texture coordinate buffer
-        SpriteBatch.TEXCOORD_ATTRIB = gl.getAttribLocation(this._program, 'instanceTexCoord');
-        SpriteBatch.TEXCOORD_BUFFER = gl.createBuffer();
+        // Texture Quad Buffer
+        SpriteBatch.TEXQUAD_ATTRIB = gl.getAttribLocation(this._program, 'instanceTextureQuad');
+        SpriteBatch.TEXQUAD_BUFFER = gl.createBuffer();
 
         // Color Buffer
         SpriteBatch.COLOR_ATTRIB = gl.getAttribLocation(this._program, 'instanceColor');
         SpriteBatch.COLOR_BUFFER = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aVertex, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.vertices, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(SpriteBatch.VERTEX_ATTRIB);
         gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.BYTE, false, 0, 0);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SpriteBatch.INDEX_BUFFER);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.attributes.indices, gl.DYNAMIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.texCoord, gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.MATRIX_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.MATRIX_ATTRIB,   3, gl.FLOAT, false, 36, 0);
@@ -144,61 +163,31 @@ export default class SpriteBatch {
         gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+1, 1);
         gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+2, 1);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
-        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0);
-        gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 1);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXQUAD_BUFFER);
+        gl.vertexAttribPointer(SpriteBatch.TEXQUAD_ATTRIB, 4, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribDivisor(SpriteBatch.TEXQUAD_ATTRIB, 1);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.COLOR_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.COLOR_ATTRIB, 4, gl.FLOAT, false, 0, 0);
         gl.vertexAttribDivisor(SpriteBatch.COLOR_ATTRIB, 1);
     }
 
+    public canRenderTexture(texture: Texture): boolean {
+        return this.lastTexture === undefined || (this.lastTexture.url === texture.url);
+    }
+
     public add(matrix:Matrix3, texture: Texture, texCoord:Rect,color:Color):boolean {
+        this.lastTexture = texture;
         const prevGroup = this._textureGroup.current;
         const group = this._textureGroup.getGroup(texture);
         if(group !== prevGroup) {
             group.start = this.count;
         }
-        // http://stackoverflow.com/questions/38853096/webgl-how-to-bind-values-to-a-mat4-attribute
 
         const matrixOffset = this.count * SpriteBatch.MATRIX_PER_INSTANCE;
         this.attributes.aMatrix.set(matrix.values, matrixOffset);
-
-        const x = texCoord.x;
-        const y = texCoord.y;
-        const w = texCoord.x + texCoord.w;
-        const h = texCoord.y + texCoord.h;
-
-        /*-1, -1,
-        -1, 1,
-        1, 1,
-        1, -1
-*/
-        const vertexOffset = this.count * 8;
-        this.attributes.aTexCoord[vertexOffset+0] = x;          // 0.0;
-        this.attributes.aTexCoord[vertexOffset+1] = y;          // 0.0;
-
-        this.attributes.aTexCoord[vertexOffset+2] = x;          // 0.0;
-        this.attributes.aTexCoord[vertexOffset+3] = h;          // 1.0;
-
-        this.attributes.aTexCoord[vertexOffset+4] = w;          // 1.0;
-        this.attributes.aTexCoord[vertexOffset+5] = h;          // 1.0;
-
-        this.attributes.aTexCoord[vertexOffset+6] = w;          // 1.0;
-        this.attributes.aTexCoord[vertexOffset+7] = y;          // 0.0;
-
-        // color offset
-        // const i = this.count * 4;
-        // const aColor = this.attributes.aColor;
+        this.attributes.aTexQuad.set(texCoord.array, this.count * 4);
         this.attributes.aColor.set(color.array, this.count * 4);
-
-        /*const i = this.count * 4 * 4;
-        const aColor = this.attributes.aColor;
-        aColor[i + 0] = aColor[i + 4] = aColor[i + 8] = aColor[i + 12] = color.r;
-        aColor[i + 1] = aColor[i + 5] = aColor[i + 9] = aColor[i + 13] = color.g;
-        aColor[i + 2] = aColor[i + 6] = aColor[i + 10] = aColor[i + 14] = color.b;
-        aColor[i + 3] = aColor[i + 7] = aColor[i + 11] = aColor[i + 15] = color.a;
-        */
 
         ++group.length;
         return ++this.count !== this.batchSize;
@@ -222,6 +211,10 @@ export default class SpriteBatch {
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.BYTE, false, 0, 0);
 
+        gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
+        gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.BYTE, false, 0, 0);
+
         // TODO: use glBufferSubData
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB);
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+1);
@@ -236,11 +229,17 @@ export default class SpriteBatch {
         gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+1, 1);
         gl.vertexAttribDivisor(SpriteBatch.MATRIX_ATTRIB+2, 1);
 
-        gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
+        /*gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
         gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aTexCoord, gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.FLOAT, false, 0, 0); // 8
-        gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 1);
+        gl.vertexAttribDivisor(SpriteBatch.TEXCOORD_ATTRIB, 0);*/
+
+        gl.enableVertexAttribArray(SpriteBatch.TEXQUAD_ATTRIB);
+        gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXQUAD_BUFFER);
+        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.aTexQuad, gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(SpriteBatch.TEXQUAD_ATTRIB, 4, gl.FLOAT, false, 0, 0); // 16
+        gl.vertexAttribDivisor(SpriteBatch.TEXQUAD_ATTRIB, 1);
 
         gl.enableVertexAttribArray(SpriteBatch.COLOR_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.COLOR_BUFFER);
