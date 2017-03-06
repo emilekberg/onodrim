@@ -218,9 +218,8 @@ export default class SpriteBatch {
         //      set texture
         // Draw each group from start to end
         gl.bindVertexArray(this._vao);
-    
+
         // Set data;
-        
         gl.enableVertexAttribArray(SpriteBatch.VERTEX_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.VERTEX_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.VERTEX_ATTRIB, 2, gl.BYTE, false, 0, 0);
@@ -228,10 +227,7 @@ export default class SpriteBatch {
         gl.enableVertexAttribArray(SpriteBatch.TEXCOORD_ATTRIB);
         gl.bindBuffer(gl.ARRAY_BUFFER, SpriteBatch.TEXCOORD_BUFFER);
         gl.vertexAttribPointer(SpriteBatch.TEXCOORD_ATTRIB, 2, gl.BYTE, false, 0, 0);
-        
 
-        // TODO: use glBufferSubData
-        
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB);
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+1);
         gl.enableVertexAttribArray(SpriteBatch.MATRIX_ATTRIB+2);
@@ -264,7 +260,6 @@ export default class SpriteBatch {
         gl.bindTexture(gl.TEXTURE_2D, this.lastTexture.glTexture);
 
         gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, this.count);
-
 
         gl.bindVertexArray(null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);

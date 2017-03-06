@@ -89,7 +89,9 @@ export default class WebGLSystem {
             alpha: false,
             antialias: false
         };
-        const gl = this.canvas.getContext('webgl2', opts) as WebGLRenderingContext || this.canvas.getContext('experimental-webgl2', opts) as WebGLRenderingContext;
+        const gl =
+            this.canvas.getContext('webgl2', opts) as WebGLRenderingContext ||
+            this.canvas.getContext('experimental-webgl2', opts) as WebGLRenderingContext;
         if (!gl) {
             console.error('Web GL Context could not be initialized');
             return;
