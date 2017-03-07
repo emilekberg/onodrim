@@ -28,15 +28,6 @@ export interface IAttribute {
     length: number;
 }
 
-export interface IAttributes {
-    indices: Uint8Array;
-    vertices: Int8Array;
-    texCoord: Uint8Array;
-    aMatrix: Float32Array;
-    aTexQuad: Float32Array;
-    aColor: Float32Array;
-}
-
 export default class SpriteBatch {
     public static MAX_BATCH_SIZE:number = 0b1000000000000000;
     public static BATCH_INCREASE_FACTOR:number = 0b10;
@@ -45,19 +36,17 @@ export default class SpriteBatch {
     public static VERTICES_PER_INSTANCE = 8;
     public static COLOR_PER_INSTANCE = 4;
 
-    public attributes:IAttributes;
-    public staticAttrib: {
-        vertex: IAttribute,
-        texCoord: IAttribute
-    }
-    public instanceAttrib: {
-        instanceTextureQuad: IAttribute,
-        instanceMatrix: IAttribute,
-        instanceColor: IAttribute
-    }; // TODO: Change to array when VAO is implemented.
+    public staticAttrib: IAttribute[];
+    public instanceAttrib: IAttribute[];
     public index: {
         buffer: WebGLBuffer|null,
         data: Uint8Array
+    };
+    // TODO: to be removed when using single instance buffer.
+    public data: {
+        matrix: Float32Array,
+        color: Float32Array,
+        texQuad: Float32Array
     };
     public count:number;
     public size:number;
@@ -79,34 +68,6 @@ export default class SpriteBatch {
         this._program = program;
         this.batchSize = startBatchSize;
         this.size = this.batchSize /* * 4 * 2*/;
-        this.attributes = {
-            // vertex buffer
-            vertices: new Int8Array([
-                -1, -1,
-                -1, 1,
-                1, 1,
-                1, -1
-            ]),
-            // index buffer
-            indices: new Uint8Array([
-                0, 1, 2,
-                0, 2, 3
-            ]),
-            // texcoord buffer
-            texCoord: new Uint8Array([
-                0, 0,
-                0, 1,
-                1, 1,
-                1, 0
-            ]),
-
-            // matrix buffer
-            aMatrix: new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE),
-            // Texture coordinate
-            aTexQuad: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
-            // Color
-            aColor: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE)
-        };
         this.count = 0;
         this._textureGroup = new TextureGroup();
     }
@@ -115,17 +76,37 @@ export default class SpriteBatch {
         this.batchSize *= SpriteBatch.BATCH_INCREASE_FACTOR;
         this.size = this.batchSize;
 
-        const oldMatrix = this.instanceAttrib.instanceMatrix.data;
-        this.instanceAttrib.instanceMatrix.data = new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE);
-        this.instanceAttrib.instanceMatrix.data.set(oldMatrix);
+        for(let i = 0; i < this.instanceAttrib.length; i++) {
+            const attrib = this.instanceAttrib[i];
+            const oldData = attrib.data;
+            const arraySize = this.size * attrib.size * attrib.length;
+            attrib.data = this.getNewArrayOfType(attrib.type, arraySize);
+            attrib.data.set(oldData);
+            for(const k in this.data) {
+                if (!this.data.hasOwnProperty(k)) {
+                    continue;
+                }
+                // TODO: worst hack in the world, this is solved when using single buffer.
+                if((this.data as {[k:string]: Float32Array})[k] === oldData) {
+                    (this.data as {[k:string]: Float32Array|Uint8Array|Int8Array})[k] = attrib.data;
+                }
+            }
+        }
+    }
 
-        const oldColor = this.instanceAttrib.instanceColor.data;
-        this.instanceAttrib.instanceColor.data = new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE);
-        this.instanceAttrib.instanceColor.data.set(oldColor);
+    public getNewArrayOfType(type: number, size: number) {
+        const gl = this._gl;
+        switch(type) {
+            default:
+            case gl.FLOAT:
+                return new Float32Array(size);
 
-        const oldTexQuad = this.instanceAttrib.instanceTextureQuad.data;
-        this.instanceAttrib.instanceTextureQuad.data = new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE);
-        this.instanceAttrib.instanceTextureQuad.data.set(oldTexQuad);
+            case gl.UNSIGNED_BYTE:
+                return new Uint8Array(size);
+
+            case gl.BYTE:
+                return new Int8Array(size);
+        }
     }
 
     public createBuffers() {
@@ -137,8 +118,8 @@ export default class SpriteBatch {
             ]),
             buffer: gl.createBuffer()
         };
-        this.staticAttrib = {
-            vertex: {
+        this.staticAttrib = [
+            {
                 data: new Int8Array([
                     -1, -1,
                     -1, 1,
@@ -155,7 +136,7 @@ export default class SpriteBatch {
                 length: 1,
                 divisor: 0
             },
-            texCoord: {
+            {
                 data: new Uint8Array([
                     0, 0,
                     0, 1,
@@ -172,10 +153,15 @@ export default class SpriteBatch {
                 length: 1,
                 divisor: 0
             }
+        ];
+        this.data = {
+            texQuad: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
+            matrix: new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE),
+            color: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
         };
-        this.instanceAttrib = {
-            instanceTextureQuad: {
-                data: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
+        this.instanceAttrib = [
+            {
+                data: this.data.texQuad,
                 buffer: gl.createBuffer(),
                 index: gl.getAttribLocation(this._program, 'instanceTextureQuad'),
                 size: 4,
@@ -186,8 +172,8 @@ export default class SpriteBatch {
                 length: 1,
                 divisor: 1
             },
-            instanceMatrix: {
-                data: new Float32Array(this.size * SpriteBatch.MATRIX_PER_INSTANCE),
+            {
+                data: this.data.matrix,
                 buffer: gl.createBuffer(),
                 index: gl.getAttribLocation(this._program, 'instanceMatrix'),
                 size: 3,
@@ -198,8 +184,8 @@ export default class SpriteBatch {
                 length: 3,
                 divisor: 1
             },
-            instanceColor: {
-                data: new Float32Array(this.size * SpriteBatch.COLOR_PER_INSTANCE),
+            {
+                data: this.data.color,
                 buffer: gl.createBuffer(),
                 index: gl.getAttribLocation(this._program, 'instanceColor'),
                 size: 4,
@@ -210,32 +196,24 @@ export default class SpriteBatch {
                 length: 1,
                 divisor: 1
             }
-        };
+        ];
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index.buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.index.data, gl.DYNAMIC_DRAW);
-        
 
         this._vao = gl.createVertexArray();
         gl.bindVertexArray(this._vao);
-        for(const k in this.staticAttrib) {
-            if (!this.staticAttrib.hasOwnProperty(k)) {
-                continue;
-            }
-            const a = this.staticAttrib[k];
+        this.staticAttrib.forEach((a) => {
             gl.bindBuffer(gl.ARRAY_BUFFER, a.buffer);
             gl.bufferData(gl.ARRAY_BUFFER, a.data as Float32Array, gl.DYNAMIC_DRAW);
+
             gl.enableVertexAttribArray(a.index);
             gl.vertexAttribPointer(a.index, a.size, a.type, a.normalized, a.stride, a.offset);
             gl.vertexAttribDivisor(a.index, a.divisor);
-        }
-        for(const k in this.instanceAttrib) {
-            if (!this.instanceAttrib.hasOwnProperty(k)) {
-                continue;
-            }
-            const a = this.instanceAttrib[k];
+        });
+
+        this.instanceAttrib.forEach((a) => {
             gl.bindBuffer(gl.ARRAY_BUFFER, a.buffer);
-            // gl.bufferData(gl.ARRAY_BUFFER, a.data as Float32Array, gl.DYNAMIC_DRAW);
             for(let i = 0; i < a.length; i++) {
                 gl.enableVertexAttribArray(a.index + i);
             }
@@ -245,10 +223,12 @@ export default class SpriteBatch {
             for(let i = 0; i < a.length; i++) {
                 gl.vertexAttribDivisor(a.index + i, a.divisor);
             }
-        }
+        });
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index.buffer);
         gl.bindVertexArray(null);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
 
     public canRenderTexture(texture: Texture): boolean {
@@ -258,9 +238,9 @@ export default class SpriteBatch {
     public add(matrix:Matrix3, texture: Texture, texCoord:Rect,color:Color):boolean {
         this.lastTexture = texture;
 
-        this.instanceAttrib.instanceMatrix.data.set(matrix.values, this.count * SpriteBatch.MATRIX_PER_INSTANCE);
-        this.instanceAttrib.instanceTextureQuad.data.set(texCoord.array, this.count * 4);
-        this.instanceAttrib.instanceColor.data.set(color.array, this.count * 4);
+        this.data.matrix.set(matrix.values, this.count * SpriteBatch.MATRIX_PER_INSTANCE);
+        this.data.texQuad.set(texCoord.array, this.count * 4);
+        this.data.color.set(color.array, this.count * 4);
 
         return ++this.count !== this.batchSize;
     }
@@ -282,11 +262,9 @@ export default class SpriteBatch {
         gl.bindVertexArray(this._vao);
 
         // Set data;
-        for(const k in this.instanceAttrib) {
-            if (!this.instanceAttrib.hasOwnProperty(k)) {
-                continue;
-            }
-            const a = this.instanceAttrib[k];
+        const l = this.instanceAttrib.length;
+        for(let i = 0; i < l; ++i) {
+            const a = this.instanceAttrib[i];
             gl.bindBuffer(gl.ARRAY_BUFFER, a.buffer);
             gl.bufferData(gl.ARRAY_BUFFER, a.data as Float32Array, gl.DYNAMIC_DRAW);
         }
