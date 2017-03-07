@@ -1,6 +1,6 @@
 node_modules
 npm-debug.log
-assets
+example
 .DS_Store
 .vscode
 test
