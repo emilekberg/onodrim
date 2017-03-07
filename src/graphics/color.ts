@@ -10,31 +10,53 @@ export default class Color {
         return color;
     }
 
-    public r: number;
-    public g: number;
-    public b: number;
-    public a: number;
+    public get r(): number {
+        return this.array[0];
+    }
+    public set r(value) {
+        this.array[0] = value;
+    }
+    public get g(): number{
+        return this.array[1];
+    }
+    public set g(value) {
+        this.array[1] = value;
+    }
+    public get b(): number{
+        return this.array[2];
+    }
+    public set b(value) {
+        this.array[2] = value;
+    }
+    public get a(): number{
+        return this.array[3];
+    }
+    public set a(value) {
+        this.array[3] = value;
+    }
+
+    public readonly array: Float32Array;
     constructor(r: number, g: number, b: number, a: number) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this.array = new Float32Array([r,g,b,a]);
     }
 
     public setRGBA(r: number, g: number, b: number, a: number = this.a): void {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this.array[0] = r;
+        this.array[1] = g;
+        this.array[2] = b;
+        this.array[3] = a;
     }
 
     public setHEX(hexColor: number) {
-        this.r = ((hexColor >> 16) & 0xFF) / 255;
-        this.g = ((hexColor >> 8) & 0xFF) / 255;
-        this.b = ((hexColor) & 0xFF) / 255;
+        this.array[0] = ((hexColor >> 16) & 0xFF) / 255;
+        this.array[1] = ((hexColor >> 8) & 0xFF) / 255;
+        this.array[2] = ((hexColor) & 0xFF) / 255;
     }
 
     public toNumber():number {
-        return ((this.a * 255) << 24) + ((this.r * 255) << 16) + ((this.g * 255) << 8) + (this.b * 255);
+        return ((this.array[3] * 255) << 24) +
+            ((this.array[0] * 255) << 16) +
+            ((this.array[1] * 255) << 8) +
+            (this.array[2] * 255);
     }
 }

@@ -65,9 +65,11 @@ export default class Sprite extends RenderComponent {
         if(!this._renderState.wasDirty) {
             return;
         }
+        // TODO: scale with 0.5 should probably be removed from here, investigy why it needs to be there :)
         this._renderState.matrix
             .identity()
-            .translate(-this._texture.rect.w * (this._offset.x - 0.5), -this._texture.rect.h * (this._offset.y - 0.5))
+            .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
+            .translate(-this._texture.rect.w * (this._offset.x - 1), -this._texture.rect.h * (this._offset.y - 1))
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
             .translate(
@@ -82,26 +84,13 @@ export default class Sprite extends RenderComponent {
         this._h = this._texture.image.height;
     }
 
-    public setVerticeBufferData(gl:WebGLRenderingContext, x:number, y:number, width:number, height:number) {
-        const x1 = x;
-        const x2 = x + width;
-        const y1 = y;
-        const y2 = y + height;
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            x1, y1,
-            x2, y1,
-            x1, y2,
-            x1, y2,
-            x2, y1,
-            x2, y2
-        ]), gl.STATIC_DRAW);
-    }
-
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         this.interpolateRenderMatrix(delta);
-
-        if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this.texture.rect, this._color)) {
-            batch.render(gl);
+        if (!batch.canRenderTexture(this.texture)) {
+            batch.render();
+        }
+        if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this._color)) {
+            batch.render();
         }
     }
 }

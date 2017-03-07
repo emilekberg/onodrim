@@ -100,6 +100,8 @@ export default class Matrix {
     }
 
     public copy(matrix:Matrix) {
+        this.values.set(matrix.values);
+        /*
         this.values[0] = matrix.values[0];
         this.values[1] = matrix.values[1];
         this.values[2] = matrix.values[2];
@@ -108,7 +110,7 @@ export default class Matrix {
         this.values[5] = matrix.values[5];
         this.values[6] = matrix.values[6];
         this.values[7] = matrix.values[7];
-        this.values[8] = matrix.values[8];
+        this.values[8] = matrix.values[8];*/
         return this;
     }
 
@@ -186,73 +188,5 @@ export default class Matrix {
             this.values[7] === matrix.values[7] &&
             this.values[8] === matrix.values[8]
         );
-    }
-
-    public toVertexData() {
-        const a = this.values[0];
-        const b = this.values[1];
-        const c = this.values[3];
-        const d = this.values[4];
-        const tx = this.values[6];
-        const ty = this.values[7];
-        const vertexData = new Float32Array(8);
-
-        const w0 = 1;       // should be texture width
-        const w1 = -1;
-
-        const h0 = 1;
-        const h1 = -1;
-
-        let i = -1;
-        // top left
-        vertexData[++i] = (a * w1) + (c * h1) + tx;
-        vertexData[++i] = (d * h1) + (b * w1) + ty;
-
-        // top right
-        vertexData[++i] = (a * w0) + (c * h1) + tx;
-        vertexData[++i] = (d * h1) + (b * w0) + ty;
-
-         // bottom right
-        vertexData[++i] = (a * w0) + (c * h0) + tx;
-        vertexData[++i] = (d * h0) + (b * w0) + ty;
-
-        // bottom left
-        vertexData[++i] = (a * w1) + (c * h0) + tx;
-        vertexData[++i] = (d * h0) + (b * w1) + ty;
-
-        return vertexData;
-    }
-
-    public setVertexData(target:Float32Array, offset:number, size:Rect) {
-        const a = this.values[0];
-        const b = this.values[1];
-        const c = this.values[3];
-        const d = this.values[4];
-        const tx = this.values[6];
-        const ty = this.values[7];
-
-        // should calculate from pixels to on screen coordinates
-        const w0 = size.w * 0.5;
-        const w1 = size.w * -0.5;
-
-        const h0 = size.h * 0.5;
-        const h1 = size.h * -0.5;
-
-        let i = -1;
-        // top left
-        target[offset + ++i] = (a * w1) + (c * h1) + tx;
-        target[offset + ++i] = (d * h1) + (b * w1) + ty;
-
-        // top right
-        target[offset + ++i] = (a * w0) + (c * h1) + tx;
-        target[offset + ++i] = (d * h1) + (b * w0) + ty;
-
-         // bottom right
-        target[offset + ++i] = (a * w0) + (c * h0) + tx;
-        target[offset + ++i] = (d * h0) + (b * w0) + ty;
-
-        // bottom left
-        target[offset + ++i] = (a * w1) + (c * h0) + tx;
-        target[offset + ++i] = (d * h0) + (b * w1) + ty;
     }
 }

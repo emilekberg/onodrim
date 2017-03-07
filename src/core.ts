@@ -7,6 +7,7 @@ import Input from './input';
 export interface CoreConfig {
     width?:number;
     height?:number;
+    canvas?:HTMLCanvasElement;
 }
 export default class Core {
     public static ENTITIES: Entity[] = [];
