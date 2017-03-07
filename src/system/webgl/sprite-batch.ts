@@ -14,7 +14,6 @@ import {Rect, Matrix3} from '../../math';
 import Texture from '../../resources/texture';
 import Color from '../../graphics/color';
 import BatchGroup from './batching/batch-group';
-import TextureGroup from './batching/texture-group';
 export interface IAttribute {
     data: Float32Array|Uint8Array|Int8Array;
     buffer: WebGLBuffer|null;
@@ -31,6 +30,8 @@ export interface IAttribute {
 export default class SpriteBatch {
     public static MAX_BATCH_SIZE:number = 0b1000000000000000;
     public static BATCH_INCREASE_FACTOR:number = 0b10;
+
+    // TODO: remove these when using single instance buffer.
     public static INDICES_PER_INSTANCE = 6;
     public static MATRIX_PER_INSTANCE = 3 * 3;
     public static VERTICES_PER_INSTANCE = 8;
@@ -53,8 +54,6 @@ export default class SpriteBatch {
     public batchSize:number;
     public lastTexture:Texture;
 
-    protected _textureGroup:TextureGroup;
-
     protected _texture:Texture;
     protected _gl:WebGLRenderingContext;
     protected _program:WebGLProgram;
@@ -67,9 +66,8 @@ export default class SpriteBatch {
         this._gl = gl;
         this._program = program;
         this.batchSize = startBatchSize;
-        this.size = this.batchSize /* * 4 * 2*/;
+        this.size = this.batchSize;
         this.count = 0;
-        this._textureGroup = new TextureGroup();
     }
 
     public createLargerBuffers() {
@@ -286,6 +284,5 @@ export default class SpriteBatch {
             this.createLargerBuffers();
         }
         this.count = 0;
-        this._textureGroup.reset();
     }
 }
