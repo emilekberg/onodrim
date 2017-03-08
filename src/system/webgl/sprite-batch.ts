@@ -1,5 +1,8 @@
-// http://stackoverflow.com/questions/15561871/the-fastest-way-to-batch-calls-in-webgl
-// https://jsfiddle.net/omsqo7v0/6/
+/**
+ * TODO: This file may need to be cleaned up.
+ * - Not sure if static attribs needs to be contained within lists, they can probably just be declared trhen ignored.
+ * - Some magic values needs to be calculated, like offsets in add().
+ */
 import {Rect, Matrix3} from '../../math';
 import Texture from '../../resources/texture';
 import Color from '../../graphics/color';
