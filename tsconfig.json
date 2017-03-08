@@ -21,6 +21,10 @@
             "es2015"
         ]
     },
+    "include": [
+        "src/**/*.ts",
+        "temp/**/*.d.ts"
+    ],
     "exclude": [
         "node_modules",
         "test",

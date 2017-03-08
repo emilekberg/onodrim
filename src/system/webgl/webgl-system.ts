@@ -39,7 +39,7 @@ export default class WebGLSystem {
         return shader;
     }
 
-    public gl:WebGLRenderingContext;
+    public gl:WebGL2RenderingContext;
     public canvas:HTMLCanvasElement;
     public width:number;
     public height:number;
@@ -90,8 +90,8 @@ export default class WebGLSystem {
             antialias: false
         };
         const gl =
-            this.canvas.getContext('webgl2', opts) as WebGLRenderingContext ||
-            this.canvas.getContext('experimental-webgl2', opts) as WebGLRenderingContext;
+            this.canvas.getContext('webgl2', opts) ||
+            this.canvas.getContext('experimental-webgl2', opts);
         if (!gl) {
             console.error('Web GL Context could not be initialized');
             return;
