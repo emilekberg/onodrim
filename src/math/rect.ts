@@ -29,9 +29,9 @@ export default class Rect implements RectTemplate{
     public set h(value: number) {
         this.array[3] = value;
     }
-    public readonly array: number[];
+    public readonly array: Float32Array;
     constructor(x:number = 0,y:number = 0,w:number = 0,h:number = 0) {
-        this.array = [];
+        this.array = new Float32Array(4);
         this.x = x;
         this.y = y;
         this.w = w;

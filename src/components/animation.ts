@@ -132,9 +132,7 @@ export default class Animation extends Sprite {
             rect.w/this.texture.rect.w,
             rect.h/this.texture.rect.h
         );
-        if (!batch.add(this._renderedMatrix, this.texture, texCoord, this._color)) {
-            batch.render();
-        }
+        batch.render(this._renderedMatrix, this.texture, texCoord, this._color);
     }
 
     public updateTransform() {

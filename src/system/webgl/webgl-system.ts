@@ -148,7 +148,7 @@ export default class WebGLSystem {
             }
             renderer.render(delta, gl, this.spriteBatch);
         }
-        this.spriteBatch.render();
+        this.spriteBatch.flush();
         gl.flush();
         if(resort) {
              this._renderComponents.sort((a, b) => {
