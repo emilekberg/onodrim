@@ -10,37 +10,51 @@ export default class MyGame extends Onodrim.Game {
     constructor() {
         super();
 
-        let particles = new GameObject();
+        const particles = new GameObject();
         particles.addComponent(new Onodrim.Graphics.ParticleComponent(particles, {
             system: new ParticleSystem()
         }));
-
-        let enemy = new Enemy();
-        enemy.transform.x = 200;
-        enemy.transform.y = 300;
+        const enemy = Onodrim.EntityFactory.create({
+            name: 'enemy',
+            components: [
+                {
+                    type: 'Transform2D'
+                },
+                {
+                    type: 'Animation',
+                    texture: {
+                        url: 'slime'
+                    },
+                    autoStart: true,
+                    fps: 24,
+                    framesFromRect: {x: 0, y: 0, w: 16, h: 16}
+                }
+            ]
+        });
+        const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
+        enemyTransform.x = 200;
+        enemyTransform.y = 300;
         this.addEntity(enemy);
 
-        let tile = new Tile();
-        tile.transform.x = 400;
-        tile.transform.y = 400;
-        this.tile = tile;
+        const tile = new Onodrim.Entity();
+        tile.addComponent(new Onodrim.Components.Transform2D(tile, {
+            position: {
+                x: 400,
+                y: 400
+            }
+        }));
+        tile.addComponent(new Onodrim.Components.Sprite(tile, {
+            texture: new Onodrim.Resources.Texture({url: 'tile'})
+        }));
         this.addEntity(tile);
 
-        let square = new Square();
+
+        const square = new Square();
         square.transform.x = 200;
         square.transform.y = 200;
-        this.addEntity(square);
-        square = new Square();
-        square.transform.x = 210;
-        square.transform.y = 10;
         this.addEntity(square);
 
         this.addEntity(particles);
         particles.getComponent(Onodrim.Graphics.ParticleComponent).system.start();
-    }
-
-    public fixedUpdate() {
-        // this.tile.transform.x += Math.sin(Onodrim.Time.now() * 0.5);
-        // this.tile.transform.rotation += Onodrim.Time.deltaTime;
     }
 }
