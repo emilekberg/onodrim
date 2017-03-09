@@ -68,6 +68,7 @@ export default class ParticleSystem extends Entity {
                     else {
                         this._pool.poolParticle(particle);
                         this.activeParticles.splice(this.activeParticles.indexOf(particle), 1);
+                        this.removeComponent(particle);
                         this._particleCount--;
                     }
 
@@ -81,21 +82,16 @@ export default class ParticleSystem extends Entity {
         }
     }
     protected _fireParticle():void {
-        let particle = this.activeParticles.shift();
-        if (particle) {
-            this._pool.poolParticle(particle);
-            particle = this._pool.requestParticle();
-        }
-        else {
-            particle = this._pool.requestParticle();
-            this._particleCount++;
-        }
+        const particle = this._pool.requestParticle(this);
+        this._particleCount++;
+
         this.activeParticles.push(particle);
+        this.addComponent(particle);
         this._initParticle(particle);
-        particle.renderComponent.visible = true;
+        particle.visible = true;
     }
     protected _initParticle(particle:Particle):void {
-        particle.reset(this);
+        particle.reset();
     }
     protected _shouldFireParticle():boolean {
         return this._particleCount < this._maxParticles;

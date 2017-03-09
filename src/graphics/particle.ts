@@ -1,35 +1,31 @@
 import Entity from '../entity';
 import Transform2D from '../components/transform2d';
-import Sprite from '../components/sprite';
+import Sprite, { SpriteTemplate } from '../components/sprite';
 import RenderComponent from '../components/render-component';
 import ParticleSystem from './particle-system';
-export default class Particle extends Entity {
+
+export default class Particle extends Sprite {
     public transform:Transform2D;
-    public renderComponent:RenderComponent;
-    constructor() {
-        super();
-        this.transform = new Transform2D(this);
-        this.addComponent(this.transform);
-        this.createRenderer();
+    constructor(entity: Entity, template: SpriteTemplate) {
+        super(entity, template);
+        const transform2D = entity.getComponent(Transform2D);
+        if(transform2D) {
+            this.transform = transform2D;
+        }
     }
 
-    public createRenderer() {
-        // this needs to be overriden
-        // this.renderComponent = new Sprite(this);
-        // this.addComponent(this.renderComponent);
+    public reset() {
+        super.reset();
+        this.init();
     }
 
-    public reset(owner:ParticleSystem) {
-        this.init(owner);
-        this.renderComponent.reset();
-    }
-
-    public init(owner:ParticleSystem) {
-        this.transform.x = 400;
-        this.transform.y = 200;
+    public init() {
+        this.x = 400;
+        this.y = 200;
     }
 
     public fixedUpdate():boolean {
+        super.fixedUpdate();
         return this._isAlive();
     }
 
