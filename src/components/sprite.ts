@@ -58,7 +58,7 @@ export default class Sprite extends RenderComponent {
             }
             this.setTexture(texture);
         }
-        this.reset();
+        // this.reset();
     }
 
     public updateTransform() {
