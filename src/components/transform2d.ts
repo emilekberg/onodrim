@@ -4,6 +4,8 @@ import Point, {PointTemplate} from '../math/point';
 import Entity from '../entity';
 import Transform, {TransformTemplate} from './transform';
 import Vector2 from '../math/vector2';
+import Matrix3 from '../math/matrix3';
+
 export interface Transform2DTemplate extends TransformTemplate {
     position?:PointTemplate;
     scale?:PointTemplate;
@@ -30,7 +32,8 @@ export default class Transform2D extends Transform {
     protected _sr:number;
     protected _isDirty:boolean;
 
-    private _parentCache:number[];
+    private _localMatrix:Matrix3;
+    public _globalMatrix:Matrix3;
 
     get parent():Transform2D {
         return this._parent as Transform2D;
@@ -96,19 +99,19 @@ export default class Transform2D extends Transform {
     }
 
     get worldX():number {
-        return this._parentCache[ParentCache.x] + this._position.x;
+        return this._globalMatrix.values[6];
     }
     get worldY():number {
-        return this._parentCache[ParentCache.y] + this._position.y;
+        return this._globalMatrix.values[7];
     }
     get worldScaleX():number {
-        return this._parentCache[ParentCache.scaleX] * this._scale.x;
+        return Math.sqrt(Math.pow(this._globalMatrix.values[0],2)+Math.pow(this._globalMatrix.values[1],2));
     }
     get worldScaleY():number {
-        return this._parentCache[ParentCache.scaleY] * this._scale.y;
+        return Math.sqrt(Math.pow(this._globalMatrix.values[3],2)+Math.pow(this._globalMatrix.values[4],2));
     }
     get worldRotation():number {
-        return this._parentCache[ParentCache.rotation] + this._rotation;
+        return Math.atan2(this._globalMatrix.values[3], this._globalMatrix.values[0]);
     }
 
     get isDirty():boolean {
@@ -124,26 +127,34 @@ export default class Transform2D extends Transform {
         this._parent = null;
         this._cr = 1;
         this._sr = 0;
+        this._localMatrix = new Matrix3();
+        this._globalMatrix = new Matrix3();
         this._isDirty = true;
         this.wasDirty = true;
-
-        this._parentCache = new Array<number>(5);
-        this._parentCache[ParentCache.x] = 0;
-        this._parentCache[ParentCache.y] = 0;
-        this._parentCache[ParentCache.scaleX] = 1;
-        this._parentCache[ParentCache.scaleY] = 1;
-        this._parentCache[ParentCache.rotation] = 0;
     }
 
     public fixedUpdate() {
-        if (this.parent && this.parent.isDirty) {
+        if(this.parent && this.parent.isDirty) {
             this._isDirty = true;
-            this._parentCache[ParentCache.x] = this.parent.worldX;
-            this._parentCache[ParentCache.y] = this.parent.worldY;
-            this._parentCache[ParentCache.scaleX] = this.parent.worldScaleX;
-            this._parentCache[ParentCache.scaleY] = this.parent.worldScaleY;
-            this._parentCache[ParentCache.rotation] = this.parent.worldRotation;
+            this._globalMatrix.copy(this.parent._globalMatrix);
         }
+        if(this._isDirty) {
+            this._localMatrix.identity()
+                .rotate(this._rotation)
+                .scale(this._scale.x,this.scale.y)
+                .translate(this.position.x, this.position.y);
+            
+            if(!this.parent) {
+                this._globalMatrix.copy(this._localMatrix);
+            }else {
+                let newMat = new Matrix3();
+                newMat.copy(this._localMatrix);
+                newMat.multiply(this._globalMatrix);
+                
+                this._globalMatrix.copy(newMat);
+            }
+        }
+        
         const numChildren = this._children.length;
         for(let i = 0; i < numChildren; ++i) {
             const child = this._children[i];

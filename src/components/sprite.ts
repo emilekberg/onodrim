@@ -6,6 +6,7 @@ import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
 import SpriteBatch from '../system/webgl/sprite-batch';
 import {Value} from '../math/matrix3';
+import Transform2D from '../components/transform2d';
 
 export interface SpriteTemplate extends RenderComponentTemplate {
     texture: TextureTemplate|Texture;
@@ -66,8 +67,8 @@ export default class Sprite extends RenderComponent {
             return;
         }
         // TODO: scale with 0.5 should probably be removed from here, investigy why it needs to be there :)
-        this._renderState.matrix
-            .identity()
+        this._renderState.matrix = this.getEntity().getComponent(Transform2D)._globalMatrix;
+            /*.identity()
             .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
             .translate(-this._texture.rect.w * (this._offset.x - 1), -this._texture.rect.h * (this._offset.y - 1))
             .rotate(this._transform.worldRotation)
@@ -75,7 +76,7 @@ export default class Sprite extends RenderComponent {
             .translate(
                 (this._transform.worldX + this.x) * this._transform.worldScaleX,
                 (this._transform.worldY + this.y) * this._transform.worldScaleY
-            );
+            );*/
     }
 
     public setTexture(texture:Texture) {
