@@ -56,6 +56,11 @@ export default class Resource {
     public getResponseType(): string {
         switch (this._extension) {
             case 'ogg':
+            case 'mp3':
+            case 'm4a':
+            case 'aac':
+            case 'webm':
+            case 'wav':
                 return 'arraybuffer';
             case 'png':
             case 'jpg':
@@ -74,6 +79,10 @@ export default class Resource {
         switch (this._extension) {
             case 'ogg':
                 return 'audio/vorbis';
+            case 'wav':
+                return 'audio/wave';
+            case 'webm':
+                return 'audio/webm';
             case 'png':
                 return 'image/png';
             case 'jpg':
