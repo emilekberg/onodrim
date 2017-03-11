@@ -173,4 +173,4 @@ export default class Transform2D extends Transform {
         this._isDirty = true;
     }
 }
-ComponentFactory.register(Transform2D);
+ComponentFactory.register(Transform2D, 'onodrim.transform2d');

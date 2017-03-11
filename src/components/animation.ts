@@ -165,4 +165,4 @@ export default class Animation extends Sprite {
         }
     }
 }
-ComponentFactory.register(Animation);
+ComponentFactory.register(Animation, 'onodrim.animation');

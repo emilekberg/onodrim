@@ -89,4 +89,4 @@ export default class Sprite extends RenderComponent {
         batch.render(this._renderedMatrix, this.texture, this.texture.glRect, this._color);
     }
 }
-ComponentFactory.register(Sprite);
+ComponentFactory.register(Sprite, 'onodrim.sprite');

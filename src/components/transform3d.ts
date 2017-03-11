@@ -188,4 +188,4 @@ export default class Transform3D extends Transform {
         this._isDirty = true;
     }
 }
-ComponentFactory.register(Transform3D);
+ComponentFactory.register(Transform3D, 'onodrim.transform3d');

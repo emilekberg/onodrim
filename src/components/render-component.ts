@@ -137,4 +137,4 @@ export default class RenderComponent extends Component {
         return this.visible && this.alpha > 0;
     }
 }
-ComponentFactory.register(RenderComponent);
+ComponentFactory.register(RenderComponent, 'onodrim.render-component');

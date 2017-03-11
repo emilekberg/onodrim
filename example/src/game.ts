@@ -1,15 +1,12 @@
 import * as Onodrim from 'onodrim';
 import GameObject from './gameObject';
-import Enemy from './enemy';
-import Tile from './tile';
 import Square from './square';
 import ParticleSystem from './particleSystem';
 
 export default class MyGame extends Onodrim.Game {
-    public tile: Tile;
+    private _tileTransform: Onodrim.Components.Transform2D;
     constructor() {
         super();
-
         const particles = new GameObject();
         particles.addComponent(new Onodrim.Graphics.ParticleComponent(particles, {
             system: new ParticleSystem()
@@ -18,10 +15,10 @@ export default class MyGame extends Onodrim.Game {
             name: 'enemy',
             components: [
                 {
-                    type: 'Transform2D'
+                    type: 'onodrim.transform2d'
                 },
                 {
-                    type: 'Animation',
+                    type: 'onodrim.animation',
                     texture: {
                         url: 'slime'
                     },
@@ -46,6 +43,7 @@ export default class MyGame extends Onodrim.Game {
         tile.addComponent(new Onodrim.Components.Sprite(tile, {
             texture: new Onodrim.Resources.Texture({url: 'tile'})
         }));
+        this._tileTransform = tile.getComponent(Onodrim.Components.Transform2D);
         this.addEntity(tile);
 
 
@@ -56,5 +54,10 @@ export default class MyGame extends Onodrim.Game {
 
         this.addEntity(particles);
         particles.getComponent(Onodrim.Graphics.ParticleComponent).system.start();
+    }
+
+    public fixedUpdate() {
+        this._tileTransform.rotation += Onodrim.Time.deltaTime;
+        
     }
 }

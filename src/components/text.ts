@@ -16,4 +16,4 @@ export default class Text extends Sprite {
 
 
 }
-ComponentFactory.register(Text);
+ComponentFactory.register(Text, 'onodrim.text');
