@@ -105,13 +105,7 @@ export default class RenderComponent extends Component {
     }
 
     public updateTransform() {
-        // TODO: Removed this since it should not be needed...
-        // this._renderState.wasDirty = true;
-        this._renderState.matrix
-            .identity()
-            .rotate(this._transform.worldRotation)
-            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
-            .translate(this._transform.worldX, this._transform.worldY);
+        this._renderState.matrix = this._transform.worldMatrix;
     }
 
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {

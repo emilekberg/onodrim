@@ -33,7 +33,7 @@ export default class Transform2D extends Transform {
     protected _isDirty:boolean;
 
     private _localMatrix:Matrix3;
-    public _globalMatrix:Matrix3;
+    public worldMatrix:Matrix3;
 
     get parent():Transform2D {
         return this._parent as Transform2D;
@@ -99,19 +99,19 @@ export default class Transform2D extends Transform {
     }
 
     get worldX():number {
-        return this._globalMatrix.values[6];
+        return this.worldMatrix.values[6];
     }
     get worldY():number {
-        return this._globalMatrix.values[7];
+        return this.worldMatrix.values[7];
     }
     get worldScaleX():number {
-        return Math.sqrt(Math.pow(this._globalMatrix.values[0],2)+Math.pow(this._globalMatrix.values[1],2));
+        return Math.sqrt(Math.pow(this.worldMatrix.values[0],2)+Math.pow(this.worldMatrix.values[1],2));
     }
     get worldScaleY():number {
-        return Math.sqrt(Math.pow(this._globalMatrix.values[3],2)+Math.pow(this._globalMatrix.values[4],2));
+        return Math.sqrt(Math.pow(this.worldMatrix.values[3],2)+Math.pow(this.worldMatrix.values[4],2));
     }
     get worldRotation():number {
-        return Math.atan2(this._globalMatrix.values[3], this._globalMatrix.values[0]);
+        return Math.atan2(this.worldMatrix.values[3], this.worldMatrix.values[0]);
     }
 
     get isDirty():boolean {
@@ -128,7 +128,7 @@ export default class Transform2D extends Transform {
         this._cr = 1;
         this._sr = 0;
         this._localMatrix = new Matrix3();
-        this._globalMatrix = new Matrix3();
+        this.worldMatrix = new Matrix3();
         this._isDirty = true;
         this.wasDirty = true;
     }
@@ -136,7 +136,6 @@ export default class Transform2D extends Transform {
     public fixedUpdate() {
         if(this.parent && this.parent.isDirty) {
             this._isDirty = true;
-            this._globalMatrix.copy(this.parent._globalMatrix);
         }
         if(this._isDirty) {
             this._localMatrix.identity()
@@ -144,14 +143,9 @@ export default class Transform2D extends Transform {
                 .scale(this._scale.x,this.scale.y)
                 .translate(this.position.x, this.position.y);
             
-            if(!this.parent) {
-                this._globalMatrix.copy(this._localMatrix);
-            }else {
-                let newMat = new Matrix3();
-                newMat.copy(this._localMatrix);
-                newMat.multiply(this._globalMatrix);
-                
-                this._globalMatrix.copy(newMat);
+            this.worldMatrix.copy(this._localMatrix);
+            if(this.parent) {
+                this.worldMatrix.multiply(this.parent.worldMatrix);
             }
         }
         
