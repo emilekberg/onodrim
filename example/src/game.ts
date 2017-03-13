@@ -19,6 +19,9 @@ export default class MyGame extends Onodrim.Game {
                     type: 'onodrim.transform2d'
                 },
                 {
+                    type: 'onodrim.camera2d'
+                },
+                {
                     type: 'onodrim.animation',
                     texture: {
                         url: 'slime'

@@ -4,6 +4,7 @@ import Time from './time';
 import SystemManager from './system/system-manager';
 import Game from './game';
 import Input from './input';
+import CameraSystem from './system/camera/camera-system';
 export interface CoreConfig {
     width?:number;
     height?:number;
@@ -24,6 +25,7 @@ export default class Core {
         this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
 
         SystemManager.addSystem(new WebGLSystem(config));
+        SystemManager.addSystem(new CameraSystem());
         const webglSystem = SystemManager.getSystem(WebGLSystem);
         if (!webglSystem) {
             console.error('WebGLSystem not created for some reason');
