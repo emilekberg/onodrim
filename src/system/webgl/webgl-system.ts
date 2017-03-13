@@ -164,13 +164,16 @@ export default class WebGLSystem {
     }
 
     private resize() {
+        const gl = this.gl;
         const ratio = window.devicePixelRatio || 1;
-        const canvas = this.gl.canvas;
+        const canvas = gl.canvas;
         const width = Math.floor(canvas.clientWidth * ratio);
         const height = Math.floor(canvas.clientHeight * ratio);
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
+            const resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
+            gl.uniform2f(resolutionLocation, width, height);
         }
     }
 }

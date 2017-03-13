@@ -21,6 +21,7 @@ export default class Audio {
         }
         if (template.useGainNode) {
             this._destination = AudioManager.context.createGain();
+            this._destination.connect(AudioManager.destination);
         }
         else {
             this._destination = AudioManager.destination;
@@ -32,10 +33,9 @@ export default class Audio {
     }
 
     public play() {
-        this._play()
-            .then((e) => {
-                this._destroy(e);
-            });
+        this._play().then((e) => {
+            this._destroy(e);
+        });
     }
 
     private _play(): Promise<Event> {
@@ -54,7 +54,6 @@ export default class Audio {
     }
     private _destroy(e: Event) {
         const source = e.target as AudioBufferSourceNode;
-        source.disconnect();
         const index = this._sources.indexOf(source);
         if (index > -1) {
             this._sources.slice(index, 1);

@@ -7,7 +7,8 @@ Onodrim.Loader
     .then((value) => {
     const core:Onodrim.Core = new Onodrim.Core({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
+        canvas: document.getElementById('game-view') as HTMLCanvasElement
     });
     const game:Game = new Game();
     core.start(game);

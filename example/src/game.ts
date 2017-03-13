@@ -59,7 +59,7 @@ export default class MyGame extends Onodrim.Game {
         this._audio = new Onodrim.Resources.Audio.Audio({
             name: 'laut'
         });
-         this._audio.play();
+        this._audio.play();
     }
 
     public fixedUpdate() {
