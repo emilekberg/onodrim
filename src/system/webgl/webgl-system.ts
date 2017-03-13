@@ -3,7 +3,9 @@ import RenderComponent from '../../components/render-component';
 import SpriteFrag from '../../shaders/sprite.frag';
 import SpriteVert from '../../shaders/sprite.vert';
 import SpriteBatch from './sprite-batch';
-import { System } from '../system';
+import System from '../system';
+import Camera2D from '../../components/camera2d';
+import CameraSystem from '../../system/camera/camera-system';
 export const enum ShaderType {
     vert, frag
 }
@@ -96,7 +98,6 @@ export default class WebGLSystem extends System<RenderComponent> {
     }
 
     public initShaders() {
-        // kolla upp https://github.com/mdn/webgl-examples/blob/gh-pages/tutorial/sample5/webgl-demo.js
         const gl = this.gl;
         const fragShader = WebGLSystem.createShader(SpriteFrag, ShaderType.frag, gl);
         const vertShader = WebGLSystem.createShader(SpriteVert, ShaderType.vert, gl);
@@ -114,8 +115,14 @@ export default class WebGLSystem extends System<RenderComponent> {
         }
         gl.useProgram(program);
 
-        const resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
-        gl.uniform2f(resolutionLocation, this.width, this.height);
+        // Hack because camera might not exist here yet. need to fix this :).
+        const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
+        gl.uniformMatrix3fv(projectionLocation, false, [
+            2 / this.width, 0, 0,
+            0, -2 / this.height, 0,
+            -1, 1, 1,
+        ]);
+
     }
 
     public render(delta:number) {
@@ -159,8 +166,9 @@ export default class WebGLSystem extends System<RenderComponent> {
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
-            const resolutionLocation = gl.getUniformLocation(this.shaderProgram, 'u_resolution');
-            gl.uniform2f(resolutionLocation, width, height);
+            CameraSystem.MAIN.setViewPort(width, height);
+            const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
+            gl.uniformMatrix3fv(projectionLocation, false, CameraSystem.MAIN.projectionMatrix.values);
         }
     }
 }
