@@ -1,15 +1,16 @@
 import System from './system';
+import Component from '../components/component';
 export class SystemManager {
-    protected _systems:System[];
+    protected _systems: Array<System<Component>>;
     constructor() {
-        this._systems = new Array<System>();
+        this._systems = [];
     }
 
-    public addSystem(system:System) {
+    public addSystem(system: System<Component>) {
         this._systems.push(system);
     }
 
-    public hasSystem(systemType:Function):boolean {
+    public hasSystem<T extends System<Component>>(systemType:{ new (...args:any[]):T;}):boolean {
         for(let i = 0; i < this._systems.length; ++i) {
             if(this._systems[i] instanceof (systemType)) {
                 return true;
@@ -18,7 +19,7 @@ export class SystemManager {
         return false;
     }
 
-    public getSystem<T extends System>(systemType:{ new (...args:any[]):T;}):T|null {
+    public getSystem<T extends System<Component>>(systemType:{ new (...args:any[]):T;}):T|null {
         for(let i = 0; i < this._systems.length; ++i) {
             if(this._systems[i] instanceof (systemType)) {
                 return this._systems[i] as T;
@@ -27,7 +28,7 @@ export class SystemManager {
         return null;
     }
 
-    public getAllSystems():System[] {
+    public getAllSystems():Array<System<Component>> {
         return this._systems;
     }
 }

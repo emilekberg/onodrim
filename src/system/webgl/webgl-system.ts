@@ -3,11 +3,11 @@ import RenderComponent from '../../components/render-component';
 import SpriteFrag from '../../shaders/sprite.frag';
 import SpriteVert from '../../shaders/sprite.vert';
 import SpriteBatch from './sprite-batch';
+import { System } from '../system';
 export const enum ShaderType {
     vert, frag
 }
-export default class WebGLSystem {
-    public static SYSTEM_TYPE:string = 'renderer';
+export default class WebGLSystem extends System<RenderComponent> {
     public static GL:WebGLRenderingContext;
     public static PROGRAM:WebGLProgram;
     public static isWebGLSupported() {
@@ -43,7 +43,6 @@ export default class WebGLSystem {
     public canvas:HTMLCanvasElement;
     public width:number;
     public height:number;
-    public systemType:string;
     public shaderProgram:WebGLProgram;
 
     public rectVerticesBuffer:WebGLBuffer;
@@ -52,9 +51,8 @@ export default class WebGLSystem {
 
     public spriteBatch:SpriteBatch;
 
-    protected _renderComponents: RenderComponent[];
     constructor(config:CoreConfig = {}) {
-        this.systemType = WebGLSystem.SYSTEM_TYPE;
+        super();
         this.width = config.width || 800;
         this.height = config.height || 300;
         if (!config.canvas) {
@@ -66,20 +64,9 @@ export default class WebGLSystem {
         }
         this.initGL();
         this.initShaders();
-        this._renderComponents = [];
 
         this.spriteBatch = new SpriteBatch(this.gl, this.shaderProgram);
         this.spriteBatch.createBuffers();
-    }
-
-    public addComponentInstance(component:RenderComponent):void {
-        this._renderComponents.push(component);
-    }
-    public removeComponentInstance(component:RenderComponent):void {
-        const index = this._renderComponents.indexOf(component);
-        if (index !== -1) {
-            this._renderComponents.splice(index, 1);
-        }
     }
 
     public initGL():void {
@@ -139,9 +126,9 @@ export default class WebGLSystem {
         // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         let resort = false;
-        const numComponents = this._renderComponents.length;
+        const numComponents = this._componentInstances.length;
         for(let i = 0; i < numComponents; ++i) {
-            const renderer = this._renderComponents[i];
+            const renderer = this._componentInstances[i];
             if(renderer.requireDepthSort) {
                 resort = true;
                 renderer.requireDepthSort = false;
@@ -151,7 +138,7 @@ export default class WebGLSystem {
         this.spriteBatch.flush();
         gl.flush();
         if(resort) {
-             this._renderComponents.sort((a, b) => {
+             this._componentInstances.sort((a, b) => {
                  if(a.depth > b.depth) {
                      return 1;
                  }
