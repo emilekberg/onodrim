@@ -5,6 +5,7 @@ import ParticleSystem from './particleSystem';
 
 export default class MyGame extends Onodrim.Game {
     private _tileTransform: Onodrim.Components.Transform2D;
+    private _enemyTransform: Onodrim.Components.Transform2D;
     private _audio: Onodrim.Resources.Audio.Audio;
     constructor() {
         super();
@@ -35,6 +36,7 @@ export default class MyGame extends Onodrim.Game {
         const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
         enemyTransform.x = 200;
         enemyTransform.y = 300;
+        this._enemyTransform = enemyTransform;
         this.addEntity(enemy);
 
         const tile = new Onodrim.Entity();
@@ -62,10 +64,11 @@ export default class MyGame extends Onodrim.Game {
         this._audio = new Onodrim.Resources.Audio.Audio({
             name: 'laut'
         });
-        this._audio.play();
+        // this._audio.play();
     }
 
     public fixedUpdate() {
         this._tileTransform.rotation += Onodrim.Time.deltaTime;
+        this._enemyTransform.x += Onodrim.Time.deltaTime;
     }
 }
