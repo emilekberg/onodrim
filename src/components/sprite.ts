@@ -4,7 +4,7 @@ import Entity from '../entity';
 import Texture, {TextureTemplate} from '../resources/texture';
 import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import SpriteBatch from '../system/webgl/batching/sprite-batch';
 import {Value} from '../math/matrix3';
 
 export interface SpriteTemplate extends RenderComponentTemplate {

@@ -4,7 +4,7 @@ import Transform2D from './transform2d';
 import Entity from '../entity';
 import Matrix3, {Value} from '../math/matrix3';
 import WebGLSystem from '../system/webgl/webgl-system';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import RenderBatch from '../system/webgl/batching/render-batch';
 import SystemManager from '../system/system-manager';
 import {interpolate, extrapolate} from '../math/interpolation';
 import Color from '../graphics/color';
@@ -114,7 +114,7 @@ export default class RenderComponent extends Component {
             .translate(this._transform.worldX, this._transform.worldY);
     }
 
-    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
+    public render(delta:number, gl:WebGLRenderingContext, batch:RenderBatch) {
         this.interpolateRenderMatrix(delta);
     }
 

@@ -2,7 +2,7 @@ import { CoreConfig } from '../../core';
 import RenderComponent from '../../components/render-component';
 import SpriteFrag from '../../shaders/sprite.frag';
 import SpriteVert from '../../shaders/sprite.vert';
-import SpriteBatch from './sprite-batch';
+import SpriteBatch from './batching/sprite-batch';
 import System from '../system';
 import Camera2D from '../../components/camera2d';
 import CameraSystem from '../../system/camera/camera-system';
@@ -46,12 +46,9 @@ export default class WebGLSystem extends System<RenderComponent> {
     public width:number;
     public height:number;
     public shaderProgram:WebGLProgram;
-
-    public rectVerticesBuffer:WebGLBuffer;
-    public rectVerticeColorBuffer:WebGLBuffer;
-    public cubeVertexIndexBuffer:WebGLBuffer;
-
     public spriteBatch:SpriteBatch;
+
+    private _projectionMatrixLocation: WebGLUniformLocation;
 
     constructor(config:CoreConfig = {}) {
         super();
@@ -68,7 +65,9 @@ export default class WebGLSystem extends System<RenderComponent> {
         this.initShaders();
 
         this.spriteBatch = new SpriteBatch(this.gl, this.shaderProgram);
-        this.spriteBatch.createBuffers();
+        this.spriteBatch.init();
+        // this.spriteBatch.createBuffers();
+        // this.spriteBatch.initVAO();
     }
 
     public initGL():void {
@@ -86,15 +85,13 @@ export default class WebGLSystem extends System<RenderComponent> {
             return;
         }
         WebGLSystem.GL = this.gl = gl;
-        canvas.width = this.width;
-        canvas.height = this.height;
         gl.clearColor(0,0,0,1);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
         gl.enable( gl.BLEND );
         gl.blendEquation( gl.FUNC_ADD );
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.viewport(0, 0, this.width, this.height);
+        gl.viewport(0, 0, canvas.width, canvas.height);
     }
 
     public initShaders() {
@@ -117,12 +114,14 @@ export default class WebGLSystem extends System<RenderComponent> {
 
         // Hack because camera might not exist here yet. need to fix this :).
         const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
-        gl.uniformMatrix3fv(projectionLocation, false, [
-            2 / this.width, 0, 0,
-            0, -2 / this.height, 0,
-            -1, 1, 1,
-        ]);
-
+        if (projectionLocation) {
+            this._projectionMatrixLocation = projectionLocation;
+            gl.uniformMatrix3fv(this._projectionMatrixLocation, false, [
+                2 / gl.canvas.width, 0, 0,
+                0, -2 / gl.canvas.height, 0,
+                -1, 1, 1,
+            ]);
+        }
     }
 
     public render(delta:number) {
@@ -142,7 +141,7 @@ export default class WebGLSystem extends System<RenderComponent> {
             }
             renderer.render(delta, gl, this.spriteBatch);
         }
-        this.spriteBatch.flush();
+        this.spriteBatch.doFlush();
         gl.flush();
         if(resort) {
              this._componentInstances.sort((a, b) => {

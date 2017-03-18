@@ -1,6 +1,6 @@
 import ComponentFactory from './component-factory';
 import Sprite, {SpriteTemplate} from './sprite';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import SpriteBatch from '../system/webgl/batching/sprite-batch';
 import Entity from '../entity';
 import Rect, { RectTemplate } from '../math/rect';
 import Texture, {TextureTemplate} from '../resources/texture';
