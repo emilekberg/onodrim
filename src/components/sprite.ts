@@ -62,6 +62,19 @@ export default class Sprite extends RenderComponent {
         // this.reset();
     }
 
+    /**
+     * TODO: Check if this is too slow. This is a solution to the texture scaling problem
+     * Might be faster to upload size to GPU
+     */
+    public updateTransform()
+    {
+        this._renderState.matrix
+            .identity()
+            .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
+            .multiply(this._transform.worldMatrix)
+            .translate(this.x, this.y);
+    }
+
     public setTexture(texture:Texture) {
         this._texture = texture;
         this._w = this._texture.image.width;

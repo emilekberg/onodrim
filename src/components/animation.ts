@@ -147,15 +147,13 @@ export default class Animation extends Sprite {
         batch.render(this._renderedMatrix, this.texture, texCoord, this._color);
     }
 
-    public updateTransform() {
+    public updateTransform()
+    {
         const rect = this._frames[this._currentFrame];
         this._renderState.matrix
             .identity()
             .scale(rect.w * 0.5, rect.h * 0.5)
-            .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)
-            .rotate(this._transform.worldRotation)
-            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
-            .translate(this._transform.worldX, this._transform.worldY);
+            .multiply(this._transform.worldMatrix);
     }
 
     protected _playing() {
