@@ -68,11 +68,13 @@ export default class Sprite extends RenderComponent {
      */
     public updateTransform()
     {
-        this._renderState.matrix
-            .identity()
-            .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
-            .multiply(this._transform.worldMatrix)
-            .translate(this.x, this.y);
+        if (this._transform.wasDirty) {
+            this._renderState.matrix
+                .identity()
+                .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
+                .multiply(this._transform.worldMatrix)
+                .translate(this.x, this.y);
+        }
     }
 
     public setTexture(texture:Texture) {

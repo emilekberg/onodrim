@@ -70,6 +70,7 @@ export default class Animation extends Sprite {
     protected _nextFrameTime:number;
     protected _frameTime:number;
     protected _state:State;
+    protected _needsTransformUpdate: boolean;
 
     set fps(value:number) {
         this._fps = value;
@@ -101,6 +102,7 @@ export default class Animation extends Sprite {
         this._state = State.STOPPED;
         this._currentFrame = 0;
         this.loop = false;
+        this._needsTransformUpdate = false;
         if(template.autoStart) {
             this.play();
         }
@@ -122,6 +124,7 @@ export default class Animation extends Sprite {
     public play() {
         this._state = State.PLAYING;
         this._nextFrameTime = Time.now() + this._frameTime;
+        this._needsTransformUpdate = true;
     }
     public pause() {
         this._state = State.PAUSED;
@@ -149,17 +152,21 @@ export default class Animation extends Sprite {
 
     public updateTransform()
     {
-        const rect = this._frames[this._currentFrame];
-        this._renderState.matrix
-            .identity()
-            .scale(rect.w * 0.5, rect.h * 0.5)
-            .multiply(this._transform.worldMatrix);
+        if (this._needsTransformUpdate || this._transform.wasDirty) {
+            const rect = this._frames[this._currentFrame];
+            this._renderState.matrix
+                .identity()
+                .scale(rect.w * 0.5, rect.h * 0.5)
+                .multiply(this._transform.worldMatrix);
+            this._needsTransformUpdate = false;
+        }
     }
 
     protected _playing() {
         while(Time.now() >= this._nextFrameTime) {
             this._currentFrame = ((this._currentFrame + 1) % this._numberOfFrames);
             this._nextFrameTime += this._frameTime;
+            this._needsTransformUpdate = true;
         }
     }
 }
