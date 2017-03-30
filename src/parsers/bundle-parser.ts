@@ -12,7 +12,7 @@ export interface Asset {
 }
 export default class BundleParser extends Parser {
     public canParse(resource: Resource): boolean {
-        const isJSON = /json/.test(resource.extension);
+        const isJSON = /json$/.test(resource.extension);
         const isBundle = resource.getData<{}>().hasOwnProperty('bundle');
         return isJSON && isBundle;
     }

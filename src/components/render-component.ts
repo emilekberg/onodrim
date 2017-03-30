@@ -4,7 +4,7 @@ import Transform2D from './transform2d';
 import Entity from '../entity';
 import Matrix3, {Value} from '../math/matrix3';
 import WebGLSystem from '../system/webgl/webgl-system';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import RenderBatch from '../system/webgl/batching/render-batch';
 import SystemManager from '../system/system-manager';
 import {interpolate, extrapolate} from '../math/interpolation';
 import Color from '../graphics/color';
@@ -108,7 +108,7 @@ export default class RenderComponent extends Component {
         this._renderState.matrix = this._transform.worldMatrix;
     }
 
-    public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
+    public render(delta:number, gl:WebGLRenderingContext, batch:RenderBatch) {
         this.interpolateRenderMatrix(delta);
     }
 
@@ -131,4 +131,4 @@ export default class RenderComponent extends Component {
         return this.visible && this.alpha > 0;
     }
 }
-ComponentFactory.register(RenderComponent);
+ComponentFactory.register(RenderComponent, 'onodrim.render-component');

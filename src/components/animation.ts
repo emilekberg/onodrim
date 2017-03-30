@@ -1,8 +1,8 @@
 import ComponentFactory from './component-factory';
 import Sprite, {SpriteTemplate} from './sprite';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import SpriteBatch from '../system/webgl/batching/sprite-batch';
 import Entity from '../entity';
-import Rect from '../math/rect';
+import Rect, { RectTemplate } from '../math/rect';
 import Texture, {TextureTemplate} from '../resources/texture';
 import Time from '../time';
 export interface AnimationTemplate extends SpriteTemplate {
@@ -10,6 +10,7 @@ export interface AnimationTemplate extends SpriteTemplate {
     frames?: Rect[];
     autoStart?:boolean;
     loop?:boolean;
+    framesFromRect?: RectTemplate;
 }
 export const enum State {
     STOPPED,
@@ -18,7 +19,7 @@ export const enum State {
 }
 export default class Animation extends Sprite {
     public static CreateFrames(texture:Texture|TextureTemplate|undefined,
-                               frameSize:Rect|undefined,
+                               frameSize:RectTemplate|undefined,
                                margin:number = 0,
                                frameStart:number=0,
                                numberOfFrames=-1):Rect[]|undefined {
@@ -28,14 +29,17 @@ export default class Animation extends Sprite {
         if(!frameSize) {
             return undefined;
         }
-
+        let textureResource: Texture;
         if (!(texture instanceof Texture)) {
-            return undefined;
+            textureResource = new Texture(texture);
         }
-
+        else {
+            textureResource = texture;
+        }
+        
         const frames:Rect[] = [];
-        for(let y = 0; y < texture.image.height; y+= frameSize.h + margin) {
-            for(let x = 0; x < texture.image.width; x+= frameSize.w + margin) {
+        for(let y = 0; y < textureResource.image.height; y+= frameSize.h + margin) {
+            for(let x = 0; x < textureResource.image.width; x+= frameSize.w + margin) {
                 if(y*x + x < frameStart) {
                     continue;
                 }
@@ -50,7 +54,7 @@ export default class Animation extends Sprite {
 
     public static CreateFromRect(entity:Entity,
                                  template:AnimationTemplate,
-                                 frameSize:Rect,
+                                 frameSize:RectTemplate,
                                  margin:number = 0,
                                  frameStart:number=0,
                                  numberOfFrames=-1):Animation {
@@ -85,7 +89,15 @@ export default class Animation extends Sprite {
         super(entity, template);
 
         this.fps = template.fps || 24;
-        this.frames = template.frames || [];
+        if (template.framesFromRect) {
+            const frames = Animation.CreateFrames(template.texture, template.framesFromRect);
+            if (frames) {
+                this.frames = frames;
+            }
+        }
+        else {
+            this.frames = template.frames || [];
+        }
         this._state = State.STOPPED;
         this._currentFrame = 0;
         this.loop = false;
@@ -132,15 +144,14 @@ export default class Animation extends Sprite {
             rect.w/this.texture.rect.w,
             rect.h/this.texture.rect.h
         );
-        if (!batch.add(this._renderedMatrix, this.texture, texCoord, this._color)) {
-            batch.render();
-        }
+        batch.render(this._renderedMatrix, this.texture, texCoord, this._color);
     }
 
     public updateTransform() {
         const rect = this._frames[this._currentFrame];
         this._renderState.matrix
             .identity()
+            .scale(rect.w * 0.5, rect.h * 0.5)
             .translate(-rect.w*this._offset.x, -rect.h*this._offset.y)
             .rotate(this._transform.worldRotation)
             .scale(this._transform.worldScaleX,this._transform.worldScaleY)
@@ -154,4 +165,4 @@ export default class Animation extends Sprite {
         }
     }
 }
-ComponentFactory.register(Animation);
+ComponentFactory.register(Animation, 'onodrim.animation');

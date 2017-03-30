@@ -1,9 +1,14 @@
 {
   "name": "onodrim",
-  "version": "1.0.0",
-  "description": "",
-  "main": "bin/index.js",
-  "types": "types/index.d.ts",
+  "version": "0.0.2",
+  "description": "Entity-Component-System game enginge running webgl2",
+  "bugs": "https://github.com/emilekberg/onodrim/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emilekberg/onodrim.git"
+  },
+  "main": "./bin/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "build": "cd node_modules/typescript/bin && tsc",
     "watch": "cd node_modules/typescript/bin && tsc -w",
@@ -12,7 +17,7 @@
     "dev": "npm run watch",
     "gulp": "./node_modules/gulp/bin/gulp.js"
   },
-  "author": "",
+  "author": "Emil Ekberg",
   "license": "ISC",
   "devDependencies": {
     "gulp": "github:gulpjs/gulp#4.0",

@@ -59,6 +59,21 @@ export default class Entity {
         }
     }
 
+    public removeComponent(component: Component) {
+        let index = this._components.indexOf(component);
+        if (index > -1) {
+            this._components.splice(index, 1);
+            index = this._updateComponent.indexOf(component as UpdateComponent);
+            if (index > -1) {
+                this._updateComponent.splice(index, 1);
+            }
+            index = this._fixedUpdateComponent.indexOf(component as UpdateComponent);
+            if (index > -1) {
+                this._fixedUpdateComponent.splice(index, 1);
+            }
+        }
+    }
+
     public hasComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):boolean {
         for(let i = 0; i < this._components.length; ++i) {
             if(this._components[i] instanceof (componentType)) {

@@ -1,0 +1,13 @@
+{
+    "audio": {
+        "name": "laut",
+        "url": "FX Short 01 Cassette A L&R.wav",
+
+        "description": {
+            "buffer": "laut",
+            "name": "laut",
+            "start": 0,
+            "end:": 37
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "bundle": [
+        {"name": "star", "url": "star.png"},
+        {"name": "slime", "url": "SlimeA.png"},
+        {"name": "square", "url": "square.png"},
+        {"name": "tile", "url": "tile.png"},
+        {"name": "colors", "url": "colors.png" },
+        {"name": "audio", "url": "audio.json" }
+    ]
+}

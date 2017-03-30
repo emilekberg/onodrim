@@ -1,7 +1,7 @@
 import {Graphics, Time} from 'onodrim';
 import * as Onodrim from 'onodrim';
 import Particle from './particle';
-const fireRate:number = 0.001;
+const fireRate:number = 0.1;
 export default class ParticleSystem extends Graphics.ParticleSystem {
     public delta:number;
     private _timer: number;

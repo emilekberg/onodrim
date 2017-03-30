@@ -10,7 +10,7 @@ export class Loader {
     private readonly _loadedAssets: Resource[];
     private readonly _loadingAssets: Resource[];
 
-    private _resolve: Function;
+    private _resolve: () => void;
     constructor() {
         this._assetsToLoad = [];
         this._parsers = [];

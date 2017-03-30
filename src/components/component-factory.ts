@@ -6,8 +6,8 @@ export class ComponentFactory {
         this._componentTypes = {};
     }
 
-    public register<T extends Component>(componentType:{ new (...args:any[]):T;}):void {
-        this._componentTypes[componentType.name] = componentType;
+    public register<T extends Component>(componentType:{ new (...args:any[]):T;}, name?: string):void {
+        this._componentTypes[name || componentType.name] = componentType;
     }
 
     public create(entity: Entity, template: Template): Component|null {

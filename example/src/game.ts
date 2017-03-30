@@ -1,46 +1,74 @@
 import * as Onodrim from 'onodrim';
 import GameObject from './gameObject';
-import Enemy from './enemy';
-import Tile from './tile';
 import Square from './square';
 import ParticleSystem from './particleSystem';
 
 export default class MyGame extends Onodrim.Game {
-    public tile: Tile;
+    private _tileTransform: Onodrim.Components.Transform2D;
+    private _enemyTransform: Onodrim.Components.Transform2D;
+    private _audio: Onodrim.Resources.Audio.Audio;
     constructor() {
         super();
-
-        let particles = new GameObject();
+        const particles = new GameObject();
         particles.addComponent(new Onodrim.Graphics.ParticleComponent(particles, {
             system: new ParticleSystem()
         }));
-
-        let enemy = new Enemy();
-        enemy.transform.x = 200;
-        enemy.transform.y = 300;
+        const enemy = Onodrim.EntityFactory.create({
+            name: 'enemy',
+            components: [
+                {
+                    type: 'onodrim.transform2d'
+                },
+                {
+                    type: 'onodrim.camera2d'
+                },
+                {
+                    type: 'onodrim.animation',
+                    texture: {
+                        url: 'slime'
+                    },
+                    autoStart: true,
+                    fps: 24,
+                    framesFromRect: {x: 0, y: 0, w: 16, h: 16}
+                }
+            ]
+        });
+        const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
+        enemyTransform.x = 200;
+        enemyTransform.y = 300;
+        this._enemyTransform = enemyTransform;
         this.addEntity(enemy);
 
-        let tile = new Tile();
-        tile.transform.x = 400;
-        tile.transform.y = 400;
-        this.tile = tile;
+        const tile = new Onodrim.Entity();
+        tile.addComponent(new Onodrim.Components.Transform2D(tile, {
+            position: {
+                x: 400,
+                y: 400
+            }
+        }));
+        tile.addComponent(new Onodrim.Components.Sprite(tile, {
+            texture: new Onodrim.Resources.Texture({url: 'tile'})
+        }));
+        this._tileTransform = tile.getComponent(Onodrim.Components.Transform2D);
         this.addEntity(tile);
 
-        let square = new Square();
+
+        const square = new Square();
         square.transform.x = 200;
         square.transform.y = 200;
-        this.addEntity(square);
-        square = new Square();
-        square.transform.x = 210;
-        square.transform.y = 10;
         this.addEntity(square);
 
         this.addEntity(particles);
         particles.getComponent(Onodrim.Graphics.ParticleComponent).system.start();
+
+        this._audio = new Onodrim.Resources.Audio.Audio({
+            name: 'laut'
+        });
+        // this._audio.play();
     }
 
     public fixedUpdate() {
-        // this.tile.transform.x += Math.sin(Onodrim.Time.now() * 0.5);
-        // this.tile.transform.rotation += Onodrim.Time.deltaTime;
+        this._tileTransform.rotation += Onodrim.Time.deltaTime;
+        this._enemyTransform.x += Onodrim.Time.deltaTime;
     }
 }

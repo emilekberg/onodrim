@@ -4,7 +4,7 @@ import Entity from '../entity';
 import Texture, {TextureTemplate} from '../resources/texture';
 import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
-import SpriteBatch from '../system/webgl/sprite-batch';
+import SpriteBatch from '../system/webgl/batching/sprite-batch';
 import {Value} from '../math/matrix3';
 import Transform2D from '../components/transform2d';
 
@@ -59,7 +59,7 @@ export default class Sprite extends RenderComponent {
             }
             this.setTexture(texture);
         }
-        this.reset();
+        // this.reset();
     }
 
     public setTexture(texture:Texture) {
@@ -70,12 +70,7 @@ export default class Sprite extends RenderComponent {
 
     public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
         this.interpolateRenderMatrix(delta);
-        if (!batch.canRenderTexture(this.texture)) {
-            batch.render();
-        }
-        if (!batch.add(this._renderedMatrix, this.texture, this.texture.glRect, this._color)) {
-            batch.render();
-        }
+        batch.render(this._renderedMatrix, this.texture, this.texture.glRect, this._color);
     }
 }
-ComponentFactory.register(Sprite);
+ComponentFactory.register(Sprite, 'onodrim.sprite');

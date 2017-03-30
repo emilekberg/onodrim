@@ -9,5 +9,9 @@
         "outDir": "./bin",
         "skipDefaultLibCheck": true,
         "forceConsistentCasingInFileNames": true
-    }
+    },
+    "include": [
+        "src/**/*.ts",
+        "../temp/**/*.d.ts"
+    ]
 }

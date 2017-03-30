@@ -10,7 +10,9 @@ export default class Square extends GameObject {
             x: 0,
             y: 0,
             depth: -1,
-            texture: new Resources.Texture('assets/square.png')
+            texture: new Resources.Texture({
+                url: 'colors'
+            })
         });
         this.addComponent(this._sprite);
         this.transform.scaleX = 1;

@@ -1,4 +1,5 @@
 import Particle from './particle';
+import Entity from '../entity';
 export default class ParticlePool {
     public static pool:{[id:string]:ParticlePool} = {};
     public static createPool<T extends Particle>(particleType:{ new (...args:any[]):T}, count:number) {
@@ -17,10 +18,10 @@ export default class ParticlePool {
         this._particles = new Array<Particle>();
     }
 
-    public requestParticle():Particle {
+    public requestParticle(entity: Entity):Particle {
         const p = this._particles.shift();
         if (!p) {
-            return new this._particleConstructor();
+            return new this._particleConstructor(entity);
         }
         return p;
     }
