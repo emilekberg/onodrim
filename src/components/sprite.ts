@@ -6,6 +6,7 @@ import Point, {PointTemplate} from '../math/point';
 import WebGLSystem from '../system/webgl/webgl-system';
 import SpriteBatch from '../system/webgl/batching/sprite-batch';
 import {Value} from '../math/matrix3';
+import Transform2D from '../components/transform2d';
 
 export interface SpriteTemplate extends RenderComponentTemplate {
     texture: TextureTemplate|Texture;
@@ -61,21 +62,19 @@ export default class Sprite extends RenderComponent {
         // this.reset();
     }
 
-    public updateTransform() {
-        if(!this._renderState.wasDirty) {
-            return;
+    /**
+     * TODO: Check if this is too slow. This is a solution to the texture scaling problem
+     * Might be faster to upload size to GPU
+     */
+    public updateTransform()
+    {
+        if (this._transform.wasDirty) {
+            this._renderState.matrix
+                .identity()
+                .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
+                .multiply(this._transform.worldMatrix)
+                .translate(this.x, this.y);
         }
-        // TODO: scale with 0.5 should probably be removed from here, investigy why it needs to be there :)
-        this._renderState.matrix
-            .identity()
-            .scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
-            .translate(-this._texture.rect.w * (this._offset.x - 1), -this._texture.rect.h * (this._offset.y - 1))
-            .rotate(this._transform.worldRotation)
-            .scale(this._transform.worldScaleX,this._transform.worldScaleY)
-            .translate(
-                (this._transform.worldX + this.x) * this._transform.worldScaleX,
-                (this._transform.worldY + this.y) * this._transform.worldScaleY
-            );
     }
 
     public setTexture(texture:Texture) {
