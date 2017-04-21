@@ -31,20 +31,4 @@ export default class Game {
     public start():void {
         // implement
     }
-
-    public end():void {
-        // implement
-    }
-
-    public update() {
-        // free fps update
-    }
-
-    public fixedUpdate() {
-        // 30 fps update
-    }
-
-    public render() {
-        // render
-    }
 }

@@ -5,8 +5,8 @@ import SystemManager from './system/system-manager';
 import Game from './game';
 import Input from './input';
 import CameraSystem from './system/camera/camera-system';
-import UpdateSystem from './system/update-system';
-import FixedUpdateSystem from './system/fixed-update-system';
+import UpdateSystem from './system/update/update-system';
+import FixedUpdateSystem from './system/update/fixed-update-system';
 export interface CoreConfig {
     width?:number;
     height?:number;

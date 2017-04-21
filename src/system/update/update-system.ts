@@ -1,6 +1,6 @@
-import System, { TickSystem } from './system';
-import { UpdateComponent } from '../components/component';
-import Time from '../time';
+import System, { TickSystem } from '../system';
+import { UpdateComponent } from '../../components/component';
+import Time from '../../time';
 
 export default class UpdateSystem extends System<UpdateComponent> implements TickSystem<UpdateComponent> {
 
