@@ -70,6 +70,10 @@ export default class WebGLSystem extends System<RenderComponent> {
         // this.spriteBatch.initVAO();
     }
 
+    public canProcessComponent(component: RenderComponent): boolean {
+      return component instanceof RenderComponent;
+   }
+
     public initGL():void {
         const canvas = this.canvas;
         const opts:WebGLContextAttributes = {
@@ -132,8 +136,8 @@ export default class WebGLSystem extends System<RenderComponent> {
         // clear buffer
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         let resort = false;
-        const numComponents = this._componentInstances.length;
-        for(let i = 0; i < numComponents; ++i) {
+        const l = this._componentInstances.length;
+        for(let i = 0; i < l; ++i) {
             const renderer = this._componentInstances[i];
             if(renderer.requireDepthSort) {
                 resort = true;

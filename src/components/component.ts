@@ -1,5 +1,6 @@
 import Entity from '../entity';
 import ComponentFactory from './component-factory';
+import SystemManager from '../system/system-manager';
 export interface Template {
     type?: string;
 }
@@ -9,10 +10,12 @@ export interface UpdateComponent extends Component{
 }
 export default class Component {
     protected _entity:Entity;
-    protected _requiredComponents:Function[];
+    protected _requiredComponents:Array<new () => Component>;
     constructor(entity:Entity) {
         this._requiredComponents = [];
         this.setEntity(entity);
+
+        SystemManager.addComponentInstance(this);
     }
 
     public setEntity(entity:Entity):void {
@@ -22,25 +25,6 @@ export default class Component {
 
     public getEntity():Entity {
         return this._entity;
-    }
-
-    /*
-    public fixedUpdate():void {
-        // TODO: implement this
-    }
-
-    public update():void {
-        // TODO: implement this
-    }
-    */
-
-    public parseJSON(json:Object):void {
-        // TODO: implement this
-    }
-    public getJSON():Object {
-        return {
-            // TODO: implement this
-        };
     }
 
     /*private _checkRequiredComponents():void {

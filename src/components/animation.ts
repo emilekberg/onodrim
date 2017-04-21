@@ -36,7 +36,6 @@ export default class Animation extends Sprite {
         else {
             textureResource = texture;
         }
-        
         const frames:Rect[] = [];
         for(let y = 0; y < textureResource.image.height; y+= frameSize.h + margin) {
             for(let x = 0; x < textureResource.image.width; x+= frameSize.w + margin) {

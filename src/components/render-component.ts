@@ -71,10 +71,6 @@ export default class RenderComponent extends Component {
             this._transform = transform;
         }
         this.requireDepthSort = true;
-        const webglSystem = SystemManager.getSystem(WebGLSystem);
-        if (webglSystem) {
-            webglSystem.addComponentInstance(this);
-        }
     }
 
     public destroy():void {

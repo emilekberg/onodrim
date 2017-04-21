@@ -1,13 +1,29 @@
-import System from './system';
+import System, { TickSystem } from './system';
 import Component from '../components/component';
+
 export class SystemManager {
     protected _systems: Array<System<Component>>;
+    protected _tickSystems: Array<TickSystem<Component>>;
     constructor() {
         this._systems = [];
+        this._tickSystems = [];
+    }
+
+    public addComponentInstance(component: Component) {
+       const l = this._systems.length;
+       for(let i = 0; i < l; ++i) {
+           const system = this._systems[i];
+           if(system.canProcessComponent(component)) {
+              system.addComponentInstance(component);
+         }
+       }
     }
 
     public addSystem(system: System<Component>) {
         this._systems.push(system);
+        if ((system as TickSystem<Component>).tick) {
+           this._tickSystems.push(system as TickSystem<Component>);
+        }
     }
 
     public hasSystem<T extends System<Component>>(systemType:{ new (...args:any[]):T;}):boolean {
@@ -30,6 +46,13 @@ export class SystemManager {
 
     public getAllSystems():Array<System<Component>> {
         return this._systems;
+    }
+
+    public tick() {
+       const l = this._tickSystems.length;
+       for(let i = 0; i < l; ++i) {
+          this._tickSystems[i].tick();
+       }
     }
 }
 const systemManager = new SystemManager();

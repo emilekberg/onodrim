@@ -19,8 +19,6 @@ export default class Entity {
 
     protected _id:number;
     protected _components:Component[];
-    protected _updateComponent: UpdateComponent[];
-    protected _fixedUpdateComponent: UpdateComponent[];
     protected _name:string;
     protected _isInWorld:boolean;
 
@@ -28,8 +26,6 @@ export default class Entity {
         this._id = Entity.ENTITIES_CREATED++;
         this._name = 'entity' + this._id;
         this._components = [];
-        this._updateComponent = [];
-        this._fixedUpdateComponent = [];
         this._isInWorld = false;
         if (template) {
             EntityFactory.parseTemplate(this, template);
@@ -51,26 +47,12 @@ export default class Entity {
     public addComponent(component:Component) {
         component.setEntity(this);
         this._components.push(component);
-        if((component as UpdateComponent).update) {
-            this._updateComponent.push(component as UpdateComponent);
-        }
-        if((component as UpdateComponent).fixedUpdate) {
-            this._fixedUpdateComponent.push(component as UpdateComponent);
-        }
     }
 
     public removeComponent(component: Component) {
-        let index = this._components.indexOf(component);
+        const index = this._components.indexOf(component);
         if (index > -1) {
             this._components.splice(index, 1);
-            index = this._updateComponent.indexOf(component as UpdateComponent);
-            if (index > -1) {
-                this._updateComponent.splice(index, 1);
-            }
-            index = this._fixedUpdateComponent.indexOf(component as UpdateComponent);
-            if (index > -1) {
-                this._fixedUpdateComponent.splice(index, 1);
-            }
         }
     }
 
@@ -104,23 +86,5 @@ export default class Entity {
 
     public getAllComponents():Component[] {
         return this._components;
-    }
-
-    public getAllUpdateComponents(): UpdateComponent[] {
-        return this._updateComponent;
-    }
-
-    public getAllFixedUpdateComponents(): UpdateComponent[] {
-        return this._fixedUpdateComponent;
-    }
-
-    // Called at 30fps
-    public fixedUpdate() {
-        // TODO: implement
-    }
-
-    // Called at render speed
-    public update() {
-        // TODO: implement
     }
 }

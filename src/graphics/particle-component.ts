@@ -13,8 +13,4 @@ export default class ParticleComponent extends Component {
     public fixedUpdate() {
         this.system.fixedUpdate();
     }
-
-    public update() {
-        this.system.update();
-    }
 }

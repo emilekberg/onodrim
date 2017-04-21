@@ -19,10 +19,11 @@ const enum ParentCache {
     scaleX,
     scaleY,
     rotation
-};
+}
 
 export default class Transform2D extends Transform {
     public wasDirty:boolean;
+    public worldMatrix:Matrix3;
     protected _position:Point;
     protected _origo:Point;
     protected _scale:Point;
@@ -31,9 +32,7 @@ export default class Transform2D extends Transform {
     protected _cr:number;
     protected _sr:number;
     protected _isDirty:boolean;
-
     private _localMatrix:Matrix3;
-    public worldMatrix:Matrix3;
 
     get parent():Transform2D {
         return this._parent as Transform2D;
@@ -142,36 +141,13 @@ export default class Transform2D extends Transform {
                 .rotate(this._rotation)
                 .scale(this._scale.x,this.scale.y)
                 .translate(this.position.x, this.position.y);
-            
             this.worldMatrix.copy(this._localMatrix);
             if(this.parent) {
                 this.worldMatrix.multiply(this.parent.worldMatrix);
             }
         }
-        
-        const numChildren = this._children.length;
-        for(let i = 0; i < numChildren; ++i) {
-            const child = this._children[i];
-            const components = child.getEntity().getAllFixedUpdateComponents();
-            const numComponents = components.length;
-            for(let j = 0; j < numComponents; ++j) {
-                components[j].fixedUpdate();
-            }
-        }
         this.wasDirty = this._isDirty;
         this._isDirty = false;
-    }
-
-    public update() {
-        const numChildren = this._children.length;
-        for(let i = 0; i < numChildren; ++i) {
-            const child = this._children[i];
-            const components = child.getEntity().getAllUpdateComponents();
-            const numComponents = components.length;
-            for(let j = 0; j < numComponents; ++j) {
-                components[j].update();
-            }
-        }
     }
 
     public setDirty() {

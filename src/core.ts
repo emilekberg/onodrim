@@ -5,6 +5,8 @@ import SystemManager from './system/system-manager';
 import Game from './game';
 import Input from './input';
 import CameraSystem from './system/camera/camera-system';
+import UpdateSystem from './system/update-system';
+import FixedUpdateSystem from './system/fixed-update-system';
 export interface CoreConfig {
     width?:number;
     height?:number;
@@ -13,17 +15,13 @@ export interface CoreConfig {
 export default class Core {
     public static ENTITIES: Entity[] = [];
     public renderSystem:WebGLSystem;
-    public currentFixedUpdateTime:number;
-    public nextFixedUpdateTime:number;
-    public fixedUpdateTime:number;
+    public fixedUpdateSystem: FixedUpdateSystem;
     public game:Game;
 
-    protected _gameLoop:()=>void;
     constructor(config?:CoreConfig) {
-        this.fixedUpdateTime = 1/30;
-        this.currentFixedUpdateTime = Time.now();
-        this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
-
+        SystemManager.addSystem(new UpdateSystem());
+        this.fixedUpdateSystem = new FixedUpdateSystem();
+        SystemManager.addSystem(this.fixedUpdateSystem);
         SystemManager.addSystem(new WebGLSystem(config));
         SystemManager.addSystem(new CameraSystem());
         const webglSystem = SystemManager.getSystem(WebGLSystem);
@@ -33,62 +31,24 @@ export default class Core {
         else {
             this.renderSystem = webglSystem;
         }
-
-        this._gameLoop = () => {
-            this.gameLoop();
-        };
     }
 
     public start(game:Game = new Game()) {
         this.game = game;
         this.game.start();
-        this.currentFixedUpdateTime = Time.now();
-        this.nextFixedUpdateTime = Time.now() + this.fixedUpdateTime;
-        requestAnimationFrame(this._gameLoop);
+        requestAnimationFrame(this.tick);
     }
 
-    public gameLoop() {
-        Time.setFixedUpdateTime(this.fixedUpdateTime);
-        while(Time.now() >= this.nextFixedUpdateTime) {
-            this._fixedUpdate();
-            this.currentFixedUpdateTime = this.nextFixedUpdateTime;
-            this.nextFixedUpdateTime += this.fixedUpdateTime;
-        }
-        Time.update();
-        this._update();
+    public tick = () => {
+        SystemManager.tick();
         this._render();
         Input.fixedUpdate();
-        requestAnimationFrame(this._gameLoop);
+        requestAnimationFrame(this.tick);
     }
 
-    protected _fixedUpdate() {
-        this.game.fixedUpdate();
-        for(let i = 0; i < this.game.entities.length; ++i) {
-            const entity = this.game.entities[i];
-            entity.fixedUpdate();
-            const components = entity.getAllFixedUpdateComponents();
-            const numComponents = components.length;
-            for(let j = 0; j < numComponents; ++j) {
-                components[j].fixedUpdate();
-            }
-        }
-    }
-
-    protected _update() {
-        this.game.update();
-        for(let i = 0; i < this.game.entities.length; ++i) {
-            const entity = this.game.entities[i];
-            entity.update();
-            const components = entity.getAllUpdateComponents();
-            const numComponents = components.length;
-            for(let j = 0; j < numComponents; ++j) {
-                components[j].update();
-            }
-        }
-    }
-
+    // TODO: fix this hack.
     protected _render() {
-        const delta = (Time.now()-this.currentFixedUpdateTime)/this.fixedUpdateTime;
+        const delta = (Time.now()-this.fixedUpdateSystem.currentUpdateTime)/this.fixedUpdateSystem.updateRate;
         this.renderSystem.render(delta);
     }
-};
+}

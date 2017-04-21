@@ -1,8 +1,14 @@
 import Component from '../components/component';
+export interface TickSystem<T extends Component> extends System<T> {
+   tick(): void;
+}
 export abstract class System<T extends Component> {
     protected _componentInstances: T[];
     constructor() {
         this._componentInstances = [];
+    }
+    public canProcessComponent(component: Component): boolean {
+       return false;
     }
     public addComponentInstance(componentInstance:T) {
         this._componentInstances.push(componentInstance);

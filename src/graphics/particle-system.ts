@@ -8,6 +8,8 @@ export const enum State {
     STOPPING,
     PAUSED
 }
+// TODO: make ParticleSystem be a component instead of an entity.
+// TODO: ParticleSystem could use a good rewrite, it's a bit chaotic as of now...
 export default class ParticleSystem extends Entity {
     public transform:Transform2D;
     public activeParticles:Particle[];
@@ -52,31 +54,31 @@ export default class ParticleSystem extends Entity {
     public fixedUpdate():void {
         switch(this._state) {
             case State.STARTED:
-                while(this._shouldFireParticle()) {
-                    this._fireParticle();
-                }
-                if(this._shouldStop()) {
-                    this._state = State.STOPPING;
-                }
+               this.transform.setDirty();
+               while(this._shouldFireParticle()) {
+                  this._fireParticle();
+               }
+               if(this._shouldStop()) {
+                   this._state = State.STOPPING;
+               }
             case State.STOPPING:
-                for(let i = 0; i < this._particleCount;) {
-                    const particle:Particle = this.activeParticles[i];
+               for(let i = 0; i < this._particleCount;) {
+                   const particle:Particle = this.activeParticles[i];
+                   if(particle.fixedUpdate()) {
+                     ++i;
+                  }
+                  else {
+                     this._pool.poolParticle(particle);
+                     this.activeParticles.splice(this.activeParticles.indexOf(particle), 1);
+                     this.removeComponent(particle);
+                     this._particleCount--;
+                  }
 
-                    if(particle.fixedUpdate()) {
-                        ++i;
-                    }
-                    else {
-                        this._pool.poolParticle(particle);
-                        this.activeParticles.splice(this.activeParticles.indexOf(particle), 1);
-                        this.removeComponent(particle);
-                        this._particleCount--;
-                    }
-
-                }
-                if(!this._isAlive()) {
-                    this._state = State.IDLE;
-                }
-                break;
+               }
+               if(!this._isAlive()) {
+                   this._state = State.IDLE;
+               }
+               break;
             default:
                 break;
         }
