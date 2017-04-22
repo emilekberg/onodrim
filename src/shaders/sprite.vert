@@ -10,9 +10,9 @@ out vec4 v_textureQuad;
 uniform mat3 u_projection;
 
 void main(void) {
-    vec3 units = instanceMatrix * vec3(vertex, 1);
-    gl_Position = vec4(u_projection * units, 1);
-    v_texCoord = texCoord;
-    v_color = instanceColor;
-    v_textureQuad = instanceTextureQuad;
+	vec3 units = instanceMatrix * vec3(vertex, 1);
+	gl_Position = vec4(u_projection * units, 1);
+	v_texCoord = texCoord;
+	v_color = instanceColor;
+	v_textureQuad = instanceTextureQuad;
 }

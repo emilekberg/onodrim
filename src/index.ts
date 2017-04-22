@@ -10,13 +10,13 @@ import * as Resources from './resources';
 import * as System from './system';
 import * as Parsers from './parsers';
 export {
-    Components,
-    Graphics,
-    Math,
-    Resources,
-    System,
-    Parsers
-}
+	Components,
+	Graphics,
+	Math,
+	Resources,
+	System,
+	Parsers
+};
 
 // Root Files
 import {default as Core, CoreConfig} from './core';
@@ -27,11 +27,11 @@ import {default as Game} from './game';
 import {default as Time} from './time';
 import {default as Loader} from './loader';
 export {
-    Core, CoreConfig,
-    Entity, EntityTemplate,
-    EntityFactory,
-    Input, KeyCode,
-    Game,
-    Time,
-    Loader
-}
+	Core, CoreConfig,
+	Entity, EntityTemplate,
+	EntityFactory,
+	Input, KeyCode,
+	Game,
+	Time,
+	Loader
+};

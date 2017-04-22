@@ -6,9 +6,9 @@ in vec4 v_color;
 in vec4 v_textureQuad;
 out vec4 fragmentColor;
 void main(void) {
-    vec2 coord = vec2(v_texCoord);
-    coord.xy *= v_textureQuad.zw;
-    coord.xy += v_textureQuad.xy;
-    vec4 color1 = texture(u_image, coord);
-    fragmentColor = v_color * color1;
+	vec2 coord = vec2(v_texCoord);
+	coord.xy *= v_textureQuad.zw;
+	coord.xy += v_textureQuad.xy;
+	vec4 color1 = texture(u_image, coord);
+	fragmentColor = v_color * color1;
 }

@@ -1,8 +1,8 @@
 // index
 import * as WebGL from './webgl';
 export {
-    WebGL
-}
+	WebGL
+};
 
 // root
 export { default as System } from './system';

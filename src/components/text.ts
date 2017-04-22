@@ -5,14 +5,14 @@ export interface TextTemplate extends SpriteTemplate {
 
 }
 export default class Text extends Sprite {
-    protected _text: string;
-    protected _width: number;
-    protected _height: number;
+	protected _text: string;
+	protected _width: number;
+	protected _height: number;
 
-    constructor(entity: Entity, template: TextTemplate) {
-        // template.texture = new Texture();
-        super(entity, template);
-    }
+	constructor(entity: Entity, template: TextTemplate) {
+		// template.texture = new Texture();
+		super(entity, template);
+	}
 
 
 }

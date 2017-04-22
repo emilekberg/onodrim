@@ -4,7 +4,7 @@ export interface RectTemplate {
 	w: number;
 	h: number;
 }
-export default class Rect implements RectTemplate{
+export default class Rect implements RectTemplate {
 	public get x():number {
 		return this.array[0];
 	}

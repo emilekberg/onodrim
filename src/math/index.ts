@@ -9,5 +9,5 @@ export { default as Range } from './range';
 export { default as Rect } from './rect';
 export { default as Vector2 } from './vector2';
 export {
-    Interpolation
-}
+	Interpolation
+};

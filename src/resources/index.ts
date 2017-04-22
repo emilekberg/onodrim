@@ -1,6 +1,6 @@
 import * as Audio from './audio';
 export {
-    Audio
+	Audio
 };
 
 export { default as ResourceManager, ImageLoadedEvent } from './resource-manager';
