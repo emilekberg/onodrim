@@ -13,7 +13,5 @@ export default class Text extends Sprite {
 		// template.texture = new Texture();
 		super(entity, template);
 	}
-
-
 }
 ComponentFactory.register(Text, 'onodrim.text');

@@ -28,4 +28,4 @@ export default class AudioDescription implements IAudioDescription {
 		this.loopEnd = description.loopEnd || this.end;
 		this.loopDuration = this.loopEnd - this.loopStart;
 	}
-};
+}

@@ -104,7 +104,7 @@ export default class InstanceBatch extends RenderBatch {
 
 		const totalInstanceBufferSize = Float32Array.BYTES_PER_ELEMENT * this._instanceBufferSize * this._batchSize;
 		const old = this._instanceBufferView;
-		this._instanceArrayBuffer = new ArrayBuffer(totalInstanceBufferSize)
+		this._instanceArrayBuffer = new ArrayBuffer(totalInstanceBufferSize);
 		this._instanceBufferView = new Float32Array(this._instanceArrayBuffer);
 		this._instanceBufferView.set(old);
 
