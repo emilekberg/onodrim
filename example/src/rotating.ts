@@ -9,6 +9,6 @@ export default class Rotating extends Onodrim.Components.Component {
    }
 
    public fixedUpdate() {
-      this._transform.rotation += 10 * Onodrim.Time.deltaTime;
+      this._transform.rotation += 2 * Onodrim.Time.deltaTime;
    }
 }

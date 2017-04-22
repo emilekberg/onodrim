@@ -64,6 +64,20 @@ export default class MyGame extends Onodrim.Game {
         this._tileTransform = tile.getComponent(Onodrim.Components.Transform2D);
         this.addEntity(tile);
 
+        const tile2 = new Onodrim.Entity();
+        tile2.addComponent(new Onodrim.Components.Transform2D(tile2, {
+            position: {
+                x: 0,
+                y: 40
+            }
+        }));
+        tile2.addComponent(new Onodrim.Components.Sprite(tile2, {
+            texture: new Onodrim.Resources.Texture({url: 'tile'})
+        }));
+        const tileTransform2 = tile2.getComponent(Onodrim.Components.Transform2D);
+        this._tileTransform.addChild(tileTransform2);
+        this.addEntity(tile2);
+
         const square = new Square();
         square.transform.x = 200;
         square.transform.y = 200;

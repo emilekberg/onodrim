@@ -133,7 +133,7 @@ export default class Transform2D extends Transform {
     }
 
     public fixedUpdate() {
-        if(this.parent && this.parent.isDirty) {
+        if(this.parent && this.parent.wasDirty) {
             this._isDirty = true;
         }
         if(this._isDirty) {
