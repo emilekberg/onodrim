@@ -1,5 +1,5 @@
 export default class Time {
-public static update() {
+	public static update() {
 		const now = performance.now();
 		this._deltaTimeMS = now - this._lastUpdateTime;
 		this._deltaTime = this._deltaTimeMS * 0.001;
@@ -24,5 +24,4 @@ public static update() {
 	public static get FPS():number {
 		return 1/this.deltaTime;
 	}
-
 }
