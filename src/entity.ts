@@ -5,7 +5,15 @@ export interface EntityTemplate {
 	components?: any[];
 }
 export default class Entity {
-	private static ENTITIES_CREATED: number = 0;
+	public static getByName(name: string): Entity|undefined {
+		const e = Entity._ENTITIES.find((entity) => {
+			return entity.name === name;
+		});
+		return e;
+	}
+	private static _ENTITIES_CREATED: number = 0;
+	private static _ENTITIES: Entity[] = [];
+
 	public get name(): string {
 		return this._name;
 	}
@@ -23,8 +31,9 @@ export default class Entity {
 	protected _isInWorld:boolean;
 
 	constructor(template?: EntityTemplate) {
-		this._id = Entity.ENTITIES_CREATED++;
-		this._name = 'entity' + this._id;
+		Entity._ENTITIES.push(this);
+		this._id = Entity._ENTITIES_CREATED++;
+		this._name = `entity${this._id}`;
 		this._components = [];
 		this._isInWorld = false;
 		if (template) {
