@@ -27,6 +27,10 @@
             true, "single", "avoid-escape"
         ],
         "prefer-for-of": false,
-        "no-empty-interface": false
+        "no-empty-interface": false,
+		  "indent": [
+			  true,
+			  "tabs"
+		  ]
     }
 }
