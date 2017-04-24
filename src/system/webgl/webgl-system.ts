@@ -71,8 +71,8 @@ export default class WebGLSystem extends System<RenderComponent> {
 	}
 
 	public canProcessComponent(component: RenderComponent): boolean {
-	return component instanceof RenderComponent;
-}
+		return component instanceof RenderComponent;
+	}
 
 	public initGL():void {
 		const canvas = this.canvas;
@@ -130,7 +130,10 @@ export default class WebGLSystem extends System<RenderComponent> {
 
 	public render(delta:number) {
 		const gl = this.gl;
-		this.resize();
+		if (this.resize() || CameraSystem.MAIN.isDirty) {
+			CameraSystem.MAIN.interpolateMatrix(delta);
+			this.updateViewMatrix();
+		}
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
 		// clear buffer
@@ -140,27 +143,27 @@ export default class WebGLSystem extends System<RenderComponent> {
 		for(let i = 0; i < l; ++i) {
 			const renderer = this._componentInstances[i];
 			if(renderer.requireDepthSort) {
-					resort = true;
-					renderer.requireDepthSort = false;
+				resort = true;
+				renderer.requireDepthSort = false;
 			}
 			renderer.render(delta, gl, this.spriteBatch);
 		}
 		this.spriteBatch.doFlush();
 		gl.flush();
 		if(resort) {
-				this._componentInstances.sort((a, b) => {
-					if(a.depth > b.depth) {
-						return 1;
-					}
-					if(a.depth < b.depth) {
-						return -1;
-					}
-					return 0;
-				});
+			this._componentInstances.sort((a, b) => {
+				if(a.depth > b.depth) {
+					return 1;
+				}
+				if(a.depth < b.depth) {
+					return -1;
+				}
+				return 0;
+			});
 		}
 	}
 
-	private resize() {
+	private resize(): boolean {
 		const gl = this.gl;
 		const ratio = window.devicePixelRatio || 1;
 		const canvas = gl.canvas;
@@ -169,9 +172,15 @@ export default class WebGLSystem extends System<RenderComponent> {
 		if (canvas.width !== width || canvas.height !== height) {
 			canvas.width = width;
 			canvas.height = height;
-			CameraSystem.MAIN.setViewPort(width, height);
-			const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
-			gl.uniformMatrix3fv(projectionLocation, false, CameraSystem.MAIN.projectionMatrix.values);
+			CameraSystem.MAIN.setViewport(width, height);
+			return true;
 		}
+		return false;
+	}
+
+	private updateViewMatrix() {
+		const gl = this.gl;
+		const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
+		gl.uniformMatrix3fv(projectionLocation, false, CameraSystem.MAIN.matrix.values);
 	}
 }
