@@ -12,3 +12,4 @@ export default class Rotating extends Onodrim.Components.Component {
 		this._transform.rotation += 2 * Onodrim.Time.deltaTime;
 	}
 }
+Onodrim.Components.ComponentFactory.register(Rotating, 'rotating');

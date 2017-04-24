@@ -3,6 +3,7 @@ import GameObject from './gameObject';
 import Square from './square';
 import ParticleSystem from './particleSystem';
 import Rotating from './rotating';
+import PlayerController from './playerController';
 
 export default class MyGame extends Onodrim.Game {
 	private _tileTransform: Onodrim.Components.Transform2D;
@@ -18,23 +19,24 @@ export default class MyGame extends Onodrim.Game {
 		const enemy = Onodrim.EntityFactory.create({
 			name: 'enemy',
 			components: [
-					{
-						type: 'onodrim.transform2d'
+				{
+					type: 'onodrim.transform2d'
+				},
+				{
+					type: 'onodrim.camera2d'
+				},
+				{
+					type: 'onodrim.animation',
+					texture: {
+						url: 'slime'
 					},
-					{
-						type: 'onodrim.camera2d'
-					},
-					{
-						type: 'onodrim.animation',
-						texture: {
-							url: 'slime'
-						},
-						autoStart: true,
-						fps: 24,
-						framesFromRect: {x: 0, y: 0, w: 16, h: 16}
-					}
+					autoStart: true,
+					fps: 24,
+					framesFromRect: {x: 0, y: 0, w: 16, h: 16}
+				}
 			]
 		});
+		enemy.addComponent(new PlayerController(enemy));
 		const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
 		enemyTransform.x = 200;
 		enemyTransform.y = 300;
@@ -53,8 +55,8 @@ export default class MyGame extends Onodrim.Game {
 		const tile = new Onodrim.Entity();
 		tile.addComponent(new Onodrim.Components.Transform2D(tile, {
 			position: {
-					x: 400,
-					y: 400
+				x: 400,
+				y: 400
 			}
 		}));
 		tile.addComponent(new Onodrim.Components.Sprite(tile, {
@@ -67,8 +69,8 @@ export default class MyGame extends Onodrim.Game {
 		const tile2 = new Onodrim.Entity();
 		tile2.addComponent(new Onodrim.Components.Transform2D(tile2, {
 			position: {
-					x: 0,
-					y: 40
+				x: 0,
+				y: 40
 			}
 		}));
 		tile2.addComponent(new Onodrim.Components.Sprite(tile2, {
