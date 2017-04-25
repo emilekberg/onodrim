@@ -21,6 +21,20 @@ export default class PlayerController extends Onodrim.Components.Component {
 		else if (Onodrim.Input.isDown(Onodrim.KeyCode.Right)) {
 			this._transform.x += 100 * Onodrim.Time.deltaTime;
 		}
+		if (Onodrim.Input.isDown(Onodrim.KeyCode.Q)) {
+			this._transform.rotation += Onodrim.Time.deltaTime;
+		}
+		else if (Onodrim.Input.isDown(Onodrim.KeyCode.E)) {
+			this._transform.rotation -= Onodrim.Time.deltaTime;
+		}
+		if (Onodrim.Input.isDown(Onodrim.KeyCode.Z)) {
+			this._transform.scaleX += Onodrim.Time.deltaTime;
+			this._transform.scaleY += Onodrim.Time.deltaTime;
+		}
+		else if (Onodrim.Input.isDown(Onodrim.KeyCode.X)) {
+			this._transform.scaleX -= Onodrim.Time.deltaTime;
+			this._transform.scaleY -= Onodrim.Time.deltaTime;
+		}
 	}
 }
 Onodrim.Components.ComponentFactory.register(PlayerController, 'PlayerController');

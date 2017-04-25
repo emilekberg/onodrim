@@ -20,10 +20,11 @@ export default class MyGame extends Onodrim.Game {
 			name: 'enemy',
 			components: [
 				{
-					type: 'onodrim.transform2d'
-				},
-				{
-					type: 'onodrim.camera2d'
+					type: 'onodrim.transform2d',
+					position: {
+						x: 200,
+						y: 300
+					}
 				},
 				{
 					type: 'onodrim.animation',
@@ -36,22 +37,19 @@ export default class MyGame extends Onodrim.Game {
 				}
 			]
 		});
-		enemy.addComponent(new PlayerController(enemy));
-		const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
-		enemyTransform.x = 200;
-		enemyTransform.y = 300;
-		this._enemyTransform = enemyTransform;
 		this.addEntity(enemy);
+		const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
 
-		/*
-		this.addEntity(Onodrim.EntityFactory.create({
+		const camera = Onodrim.EntityFactory.create({
 			name: 'camera',
 			components: [
-				{type: 'onodrim.transform2d'},
-				{type: 'onodrim.camera2d'}
+				{ type: 'onodrim.transform2d' },
+				{ type: 'onodrim.camera2d' }
 			]
-		}));
-		*/
+		});
+		camera.addComponent(new PlayerController(camera));
+		enemyTransform.addChild(camera.getComponent(Onodrim.Components.Transform2D));
+
 		const tile = new Onodrim.Entity();
 		tile.addComponent(new Onodrim.Components.Transform2D(tile, {
 			position: {
