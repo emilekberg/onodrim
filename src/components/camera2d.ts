@@ -10,7 +10,7 @@ import { interpolateMatrix } from '../math/interpolation';
 
 export default class Camera2D extends Component {
 	public readonly matrix: Matrix;
-	private readonly _matrix: Matrix;
+	private readonly _currentMatrix: Matrix;
 	private readonly _previousMatrix: Matrix;
 	private readonly _projectionMatrix: Matrix;
 	private readonly _viewMatrix: Matrix;
@@ -24,7 +24,7 @@ export default class Camera2D extends Component {
 	constructor(entity: Entity) {
 		super(entity);
 		this.matrix = new Matrix();
-		this._matrix = new Matrix();
+		this._currentMatrix = new Matrix();
 		this._previousMatrix = new Matrix();
 		this._projectionMatrix = new Matrix();
 		this._viewMatrix = new Matrix();
@@ -41,10 +41,10 @@ export default class Camera2D extends Component {
 	}
 
 	public fixedUpdate() {
-		this._previousMatrix.copy(this._matrix);
+		this._previousMatrix.copy(this._currentMatrix);
 		if (this.isDirty) {
 			this.updateViewMatrix();
-			this._matrix.copy(this._viewMatrix)
+			this._currentMatrix.copy(this._viewMatrix)
 				.translate(this._viewport.x * 0.5, this._viewport.y * 0.5);
 		}
 	}
@@ -56,7 +56,7 @@ export default class Camera2D extends Component {
 	}
 
 	public interpolateMatrix(delta: number) {
-		interpolateMatrix(this.matrix, this._previousMatrix, this._matrix, delta);
+		interpolateMatrix(this.matrix, this._previousMatrix, this._currentMatrix, delta);
 		this.matrix.multiply(this._projectionMatrix);
 	}
 

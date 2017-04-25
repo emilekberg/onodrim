@@ -1,16 +1,11 @@
 import Component, {Template} from './component';
 import Entity from '../entity';
-export class ComponentFactory {
-	protected _componentTypes: {[key: string]: { new (...args:any[]):Component;}};
-	constructor() {
-		this._componentTypes = {};
-	}
-
-	public register<T extends Component>(componentType:{ new (...args:any[]):T;}, name?: string):void {
+export default class ComponentFactory {
+	public static register<T extends Component>(componentType:{ new (...args:any[]):T;}, name?: string):void {
 		this._componentTypes[name || componentType.name] = componentType;
 	}
 
-	public create(entity: Entity, template: Template): Component|null {
+	public static create(entity: Entity, template: Template): Component|null {
 		if (!template.type) {
 			return null;
 		}
@@ -19,6 +14,6 @@ export class ComponentFactory {
 		entity.addComponent(component);
 		return component;
 	}
+
+	protected static _componentTypes: {[key: string]: { new (...args:any[]):Component;}} = {};
 }
-const componentFactory = new ComponentFactory();
-export default componentFactory;

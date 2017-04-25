@@ -6,7 +6,7 @@ import Matrix3, {Value} from '../math/matrix3';
 import WebGLSystem from '../system/webgl/webgl-system';
 import RenderBatch from '../system/webgl/batching/render-batch';
 import SystemManager from '../system/system-manager';
-import {interpolate, extrapolate} from '../math/interpolation';
+import { interpolateMatrix } from '../math/interpolation';
 import Color from '../graphics/color';
 export interface RenderComponentTemplate extends Template {
 	alpha?:number;
@@ -112,15 +112,7 @@ export default class RenderComponent extends Component {
 		if(!this._renderState.wasDirty && !this._oldRenderState.wasDirty) {
 			return;
 		}
-		const m1 = this._oldRenderState.matrix.values;
-		const m2 = this._renderState.matrix.values;
-
-		this._renderedMatrix.values[Value.a] = interpolate(m1[Value.a], m2[Value.a], delta);
-		this._renderedMatrix.values[Value.b] = interpolate(m1[Value.b], m2[Value.b], delta);
-		this._renderedMatrix.values[Value.c] = interpolate(m1[Value.c], m2[Value.c], delta);
-		this._renderedMatrix.values[Value.d] = interpolate(m1[Value.d], m2[Value.d], delta);
-		this._renderedMatrix.values[Value.tx] = interpolate(m1[Value.tx], m2[Value.tx], delta) | 0;
-		this._renderedMatrix.values[Value.ty] = interpolate(m1[Value.ty], m2[Value.ty], delta) | 0;
+		interpolateMatrix(this._renderedMatrix, this._oldRenderState.matrix, this._renderState.matrix, delta);
 	}
 
 	public isVisible():boolean {
