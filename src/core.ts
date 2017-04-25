@@ -30,6 +30,7 @@ export default class Core {
 		}
 		else {
 			this.renderSystem = webglSystem;
+			Input.registerEvents(webglSystem.canvas);
 		}
 	}
 

@@ -1,16 +1,44 @@
+import Point from './math/point';
+
 export class Input {
-	private _currentKeyState: {[key: string]: boolean};
-	private _previousKeyState: {[key: string]: boolean};
+	private readonly _currentKeyState: {[key: string]: boolean};
+	private readonly _previousKeyState: {[key: string]: boolean};
+	private readonly _mousePosition: Point;
+
+	public get mouseX(): number {
+		return this._mousePosition.x;
+	}
+
+	public get mouseY(): number {
+		return this._mousePosition.y;
+	}
+
 	constructor() {
 		this._currentKeyState = {};
 		this._previousKeyState = {};
+		this._mousePosition = new Point();
+	}
+
+	public registerEvents(element: HTMLCanvasElement) {
 		window.addEventListener('keydown', (e) => {
 			this._currentKeyState[e.keyCode] = true;
 		});
 		window.addEventListener('keyup', (e) => {
 			this._currentKeyState[e.keyCode] = false;
 		});
+		element.addEventListener('mousedown', (e) => {
+			this._currentKeyState[e.button] = true;
+		});
+		element.addEventListener('mouseup', (e) => {
+			this._currentKeyState[e.button] = false;
+		});
+		element.addEventListener('mousemove', (e) => {
+			this._mousePosition.x = e.clientX;
+			this._mousePosition.y = e.clientY;
+		});
+		element.addEventListener('contextmenu', (e) => e.preventDefault());
 	}
+
 	public isDown(key: KeyCode): boolean {
 		return this._currentKeyState[key];
 	}
@@ -44,6 +72,10 @@ const instance = new Input();
 export default instance;
 
 export const enum KeyCode {
+	MouseLeft=0,
+	MouseMiddle=1,
+	MouseRight=2,
+
 	Backspace=8,
 	Tab=9,
 	Enter=13,

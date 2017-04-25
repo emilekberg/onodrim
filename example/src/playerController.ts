@@ -35,6 +35,9 @@ export default class PlayerController extends Onodrim.Components.Component {
 			this._transform.scaleX -= Onodrim.Time.deltaTime;
 			this._transform.scaleY -= Onodrim.Time.deltaTime;
 		}
+		if (Onodrim.Input.isDown(Onodrim.KeyCode.MouseLeft)) {
+			console.log(Onodrim.Input.mouseX, Onodrim.Input.mouseY);
+		}
 	}
 }
 Onodrim.Components.ComponentFactory.register(PlayerController, 'PlayerController');
