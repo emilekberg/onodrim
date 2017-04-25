@@ -15,7 +15,7 @@ export class SystemManager {
 			const system = this._systems[i];
 			if(system.canProcessComponent(component)) {
 				system.addComponentInstance(component);
-		}
+			}
 		}
 	}
 

@@ -36,7 +36,9 @@ export default class Camera2D extends Component {
 		const cameraSystem = SystemManager.getSystem(CameraSystem);
 		if (cameraSystem) {
 			cameraSystem.addComponentInstance(this);
-			CameraSystem.MAIN = this;
+			if (!CameraSystem.MAIN) {
+				CameraSystem.MAIN = this;
+			}
 		}
 	}
 
