@@ -79,70 +79,70 @@ export default class SpriteBatch extends InstanceBatch {
 
 		this._staticAttrib = [
 			{
-					data: new Int8Array([
-						-1, -1,
-						-1, 1,
-						1, 1,
-						1, -1
-					]),
-					buffer: gl.createBuffer(),
-					index: gl.getAttribLocation(this._program, 'vertex'),
-					size: 2,
-					type: gl.BYTE,
-					normalized: false,
-					stride: 0,
-					offset: 0,
-					length: 1,
-					divisor: 0
+				data: new Int8Array([
+					-1, -1,
+					-1, 1,
+					1, 1,
+					1, -1
+				]),
+				buffer: gl.createBuffer(),
+				index: gl.getAttribLocation(this._program, 'vertex'),
+				size: 2,
+				type: gl.BYTE,
+				normalized: false,
+				stride: 0,
+				offset: 0,
+				length: 1,
+				divisor: 0
 			},
 			{
-					data: new Uint8Array([
-						0, 0,
-						0, 1,
-						1, 1,
-						1, 0
-					]),
-					buffer: gl.createBuffer(),
-					index: gl.getAttribLocation(this._program, 'texCoord'),
-					size: 2,
-					type: gl.UNSIGNED_BYTE,
-					normalized: false,
-					stride: 0,
-					offset: 0,
-					length: 1,
-					divisor: 0
+				data: new Uint8Array([
+					0, 0,
+					0, 1,
+					1, 1,
+					1, 0
+				]),
+				buffer: gl.createBuffer(),
+				index: gl.getAttribLocation(this._program, 'texCoord'),
+				size: 2,
+				type: gl.UNSIGNED_BYTE,
+				normalized: false,
+				stride: 0,
+				offset: 0,
+				length: 1,
+				divisor: 0
 			}
 		];
 		this._instanceAttrib = [
 			{
-					index: gl.getAttribLocation(this._program, 'instanceMatrix'),
-					size: 3,
-					type: gl.FLOAT,
-					normalized: false,
-					stride: 36,
-					offset: 12,
-					length: 3,
-					divisor: 1
+				index: gl.getAttribLocation(this._program, 'instanceMatrix'),
+				size: 3,
+				type: gl.FLOAT,
+				normalized: false,
+				stride: 36,
+				offset: 12,
+				length: 3,
+				divisor: 1
 			},
 			{
-					index: gl.getAttribLocation(this._program, 'instanceTextureQuad'),
-					size: 4,
-					type: gl.FLOAT,
-					normalized: false,
-					stride: 16,
-					offset: 16,
-					length: 1,
-					divisor: 1
+				index: gl.getAttribLocation(this._program, 'instanceTextureQuad'),
+				size: 4,
+				type: gl.FLOAT,
+				normalized: false,
+				stride: 16,
+				offset: 16,
+				length: 1,
+				divisor: 1
 			},
 			{
-					index: gl.getAttribLocation(this._program, 'instanceColor'),
-					size: 4,
-					type: gl.FLOAT,
-					normalized: false,
-					stride: 16,
-					offset: 16,
-					length: 1,
-					divisor: 1
+				index: gl.getAttribLocation(this._program, 'instanceColor'),
+				size: 4,
+				type: gl.FLOAT,
+				normalized: false,
+				stride: 16,
+				offset: 16,
+				length: 1,
+				divisor: 1
 			}
 		];
 

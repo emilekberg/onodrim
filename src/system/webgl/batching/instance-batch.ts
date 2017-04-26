@@ -29,15 +29,15 @@ export default class InstanceBatch extends RenderBatch {
 		gl.bindVertexArray(this._vao);
 		{   // used to make the scope of the vertex array a bit more clear
 			this._staticAttrib.forEach((a) => {
-					if (!a.buffer) {
-						return;
-					}
-					gl.bindBuffer(gl.ARRAY_BUFFER, a.buffer);
-					gl.bufferData(gl.ARRAY_BUFFER, a.data as Float32Array, gl.STATIC_DRAW);
+				if (!a.buffer) {
+					return;
+				}
+				gl.bindBuffer(gl.ARRAY_BUFFER, a.buffer);
+				gl.bufferData(gl.ARRAY_BUFFER, a.data as Float32Array, gl.STATIC_DRAW);
 
-					gl.enableVertexAttribArray(a.index);
-					gl.vertexAttribPointer(a.index, a.size, a.type, a.normalized, a.stride, a.offset);
-					gl.vertexAttribDivisor(a.index, a.divisor);
+				gl.enableVertexAttribArray(a.index);
+				gl.vertexAttribPointer(a.index, a.size, a.type, a.normalized, a.stride, a.offset);
+				gl.vertexAttribDivisor(a.index, a.divisor);
 			});
 
 			// Store the offset between each packed vertex attribute
@@ -48,21 +48,21 @@ export default class InstanceBatch extends RenderBatch {
 			}, 0);
 			gl.bindBuffer(gl.ARRAY_BUFFER, this._instanceBuffer);
 			this._instanceAttrib.forEach((a) => {
-					for(let i = 0; i < a.length; i++) {
-						gl.enableVertexAttribArray(a.index + i);
-					}
-					for(let i = 0; i < a.length; i++) {
-						const currentOffset = offset + (a.offset * i);
-						gl.vertexAttribPointer(a.index + i, a.size, a.type, a.normalized, totalStride, currentOffset);
-					}
-					for(let i = 0; i < a.length; i++) {
-						gl.vertexAttribDivisor(a.index + i, a.divisor);
-					}
-					offset += a.stride;
+				for(let i = 0; i < a.length; i++) {
+					gl.enableVertexAttribArray(a.index + i);
+				}
+				for(let i = 0; i < a.length; i++) {
+					const currentOffset = offset + (a.offset * i);
+					gl.vertexAttribPointer(a.index + i, a.size, a.type, a.normalized, totalStride, currentOffset);
+				}
+				for(let i = 0; i < a.length; i++) {
+					gl.vertexAttribDivisor(a.index + i, a.divisor);
+				}
+				offset += a.stride;
 			});
 
 			if (this._indexBuffer) {
-					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer);
+				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer);
 			}
 		}
 		gl.bindVertexArray(null);
