@@ -83,7 +83,7 @@ export default class Sprite extends RenderComponent {
 		this._h = this._texture.image.height;
 	}
 
-	public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
+	public render(delta:number, gl:WebGL2RenderingContext, batch:SpriteBatch) {
 		this.interpolateRenderMatrix(delta);
 		batch.render(this._renderedMatrix, this.texture, this.texture.glRect, this._color);
 	}

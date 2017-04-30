@@ -1,44 +1,36 @@
-export interface ResourceData {
-	name: string;
-	url: string;
-}
+import { ResourceData } from './resource-data';
+
 export default class Resource {
 	public get extension() {
 		return this._extension;
 	}
 	public get url() {
-		return this._url;
+		return this._resourceData.url;
 	}
 	public get name() {
-		return this._name;
+		return this._resourceData.name;
 	}
-	private _url: string;
-	private _name: string;
+	private readonly _resourceData: ResourceData;
 	private _data: any;
-	private _mimeType: string;
-	private _responseType: string;
-	private _extension: string;
+	private readonly _mimeType: string;
+	private readonly _responseType: XMLHttpRequestResponseType;
+	private readonly _extension: string;
 	constructor(data: ResourceData) {
-		this._url = data.url;
-		this._name = data.name;
-
-		const result = /(?=.)\w*$/g.exec(this._url);
-		if(result) {
-			this._extension = result[0];
-		}
+		this._resourceData = data;
+		const result = /(?=.)\w*$/g.exec(this.url);
+		this._extension = result ? result[0] : '';
 		this._mimeType = this.getMimeType();
 		this._responseType = this.getResponseType();
 	}
 
-	public load(): Promise<{}> {
-		const request = new XMLHttpRequest();
-		request.responseType = this._responseType;
-		request.open('GET', this._url);
-
+	public load(): Promise<Resource> {
 		return new Promise((resolve, reject) => {
+			const request = new XMLHttpRequest();
+			request.responseType = this._responseType;
+			request.open('GET', this.url);
 			request.addEventListener('load', (e) => {
-					this.onLoad(e);
-					resolve();
+				this.onLoad(e);
+				resolve(this);
 			});
 			request.send();
 		});
@@ -53,7 +45,7 @@ export default class Resource {
 		return this._data as T;
 	}
 
-	public getResponseType(): string {
+	public getResponseType(): XMLHttpRequestResponseType {
 		switch (this._extension) {
 			case 'ogg':
 			case 'mp3':
@@ -71,7 +63,7 @@ export default class Resource {
 			case 'json':
 					return 'json';
 			default:
-					return '';
+					return 'text';
 		}
 	}
 

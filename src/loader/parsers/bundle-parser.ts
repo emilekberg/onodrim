@@ -1,7 +1,7 @@
 import Parser from './parser';
-import Resource from '../resources/resource';
+import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../resources/resource-manager';
+import ResourceManager from '../../resources/resource-manager';
 export interface Bundle {
 	bundle: Asset[];
 }
@@ -20,12 +20,12 @@ export default class BundleParser extends Parser {
 		const data = resource.getData<Bundle>();
 		data.bundle.forEach((asset) => {
 			if (asset.data) {
-					const url = this.formatUrl(resource.url, asset.url);
-					console.warn('BundleParser.parse  - Asset.data not yet implemented');
+				const url = this.formatUrl(resource.url, asset.url);
+				console.warn('BundleParser.parse  - Asset.data not yet implemented');
 			}
 			else {
-					const url = this.formatUrl(resource.url, asset.url);
-					Loader.add(url, asset.name);
+				const url = this.formatUrl(resource.url, asset.url);
+				Loader.add(url, asset.name);
 			}
 		});
 		return new Promise((resolve, reject) => {

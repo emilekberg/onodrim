@@ -1,8 +1,8 @@
 import Parser from './parser';
-import Resource from '../resources/resource';
+import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../resources/resource-manager';
-import AudioManager from '../resources/audio/audio-manager';
+import ResourceManager from '../../resources/resource-manager';
+import AudioManager from '../../resources/audio/audio-manager';
 export default class AudioParser extends Parser {
 	public canParse(resource :Resource): boolean {
 		return /(mp3|ogg|webm|m4a|aac|wav)$/.test(resource.extension);

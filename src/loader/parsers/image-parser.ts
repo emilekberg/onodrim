@@ -1,10 +1,11 @@
 import Parser from './parser';
-import Resource from '../resources/resource';
+import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../resources/resource-manager';
+import ResourceManager from '../../resources/resource-manager';
 export default class ImageParser extends Parser {
+	private static FORMATS_REGEX = /(png|jpg|jpeg|bmp|gif)$/;
 	public canParse(resource :Resource): boolean {
-		return /(png|jpg|jpeg|bmp|gif)$/.test(resource.extension);
+		return ImageParser.FORMATS_REGEX.test(resource.extension);
 	}
 	public parse(resource: Resource): Promise<{}> {
 		const data = resource.getData<Blob>();

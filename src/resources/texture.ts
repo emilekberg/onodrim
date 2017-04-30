@@ -52,7 +52,7 @@ export default class Texture {
 		this.glRect.h = h/this.image.height;
 	}
 
-	protected createGLTexture(gl:WebGLRenderingContext) {
+	protected createGLTexture(gl:WebGL2RenderingContext) {
 		this.glTexture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, this.glTexture);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

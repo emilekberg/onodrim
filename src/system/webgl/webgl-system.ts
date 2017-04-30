@@ -10,7 +10,7 @@ export const enum ShaderType {
 	vert, frag
 }
 export default class WebGLSystem extends System<RenderComponent> {
-	public static GL:WebGLRenderingContext;
+	public static GL:WebGL2RenderingContext;
 	public static PROGRAM:WebGLProgram;
 	public static isWebGLSupported() {
 		try{
@@ -23,7 +23,7 @@ export default class WebGLSystem extends System<RenderComponent> {
 			return false;
 		}
 	}
-	public static createShader(shaderSource:string, shaderType:ShaderType, gl:WebGLRenderingContext):WebGLShader|null {
+	public static createShader(shaderSource:string, shaderType:ShaderType, gl:WebGL2RenderingContext):WebGLShader|null {
 		let shader:WebGLShader|null = null;
 		if (shaderType === ShaderType.frag) {
 			shader = gl.createShader(gl.FRAGMENT_SHADER);

@@ -104,7 +104,7 @@ export default class RenderComponent extends Component {
 		this._renderState.matrix = this._transform.worldMatrix;
 	}
 
-	public render(delta:number, gl:WebGLRenderingContext, batch:RenderBatch) {
+	public render(delta:number, gl:WebGL2RenderingContext, batch:RenderBatch) {
 		this.interpolateRenderMatrix(delta);
 	}
 

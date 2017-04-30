@@ -138,7 +138,7 @@ export default class Animation extends Sprite {
 		this._currentFrame = 0;
 	}
 
-	public render(delta:number, gl:WebGLRenderingContext, batch:SpriteBatch) {
+	public render(delta:number, gl:WebGL2RenderingContext, batch:SpriteBatch) {
 		this.interpolateRenderMatrix(delta);
 		batch.render(this._renderedMatrix, this.texture, this._textureCoordinates, this._color);
 	}
