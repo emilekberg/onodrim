@@ -11,15 +11,15 @@ export default class AudioParser extends Parser {
 		const data = resource.getData<ArrayBuffer>();
 		return this.decode(data)
 			.then((buffer: AudioBuffer) => {
-					AudioManager.addBuffer(resource.name, buffer);
-					return {};
+				AudioManager.addBuffer(resource.name, buffer);
+				return {};
 			});
 	}
 
 	private decode(buffer: ArrayBuffer): Promise<{}> {
 		if (!AudioManager.isSupported()) {
 			return new Promise((resolve) => {
-					resolve();
+				resolve();
 			});
 		}
 		return AudioManager.context.decodeAudioData(buffer);

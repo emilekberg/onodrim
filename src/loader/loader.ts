@@ -49,18 +49,17 @@ export class Loader {
 	}
 
 	private parse(resource: Resource): Promise<Resource> {
-		let done = 0;
+		const parsers = this._parsers.filter((parser) => {
+			return parser.canParse(resource);
+		});
+		if (!parsers.length) {
+			return Promise.resolve(resource);
+		}
+		let parsed = 0;
 		return new Promise((resolve, reject) => {
-			const parsers = this._parsers.filter((parser) => {
-				return parser.canParse(resource);
-			});
-			if (parsers.length === 0) {
-				resolve(resource);
-				return;
-			}
 			parsers.forEach((parser) => {
 				parser.parse(resource).then(() => {
-					if (parsers.length === ++done) {
+					if (parsers.length === ++parsed) {
 						resolve(resource);
 					}
 				});
