@@ -3,5 +3,5 @@ export {
 	Audio
 };
 
-export { default as ResourceManager, ImageLoadedEvent } from './resource-manager';
+export { default as ResourceManager, ImageLoadedEvent } from './image-manager';
 export { default as Texture } from './texture';

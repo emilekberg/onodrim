@@ -1,7 +1,7 @@
 import Parser from './parser';
 import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../../resources/resource-manager';
+import ImageManager from '../../resources/image-manager';
 export default class ImageParser extends Parser {
 	private static FORMATS_REGEX = /(png|jpg|jpeg|bmp|gif)$/;
 	public canParse(resource :Resource): boolean {
@@ -10,7 +10,7 @@ export default class ImageParser extends Parser {
 	public parse(resource: Resource): Promise<{}> {
 		const data = resource.getData<Blob>();
 		const urlData = window.URL.createObjectURL(data);
-		return ResourceManager.loadImage(resource.name, urlData);
+		return ImageManager.loadImage(resource.name, urlData);
 	}
 }
 Loader.addParser(new ImageParser());

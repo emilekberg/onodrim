@@ -1,7 +1,6 @@
 import Parser from './parser';
 import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../../resources/resource-manager';
 import AudioManager from '../../resources/audio/audio-manager';
 import AudioDescription, {IAudioDescription} from '../../resources/audio/audio-description';
 export interface AudioJson {

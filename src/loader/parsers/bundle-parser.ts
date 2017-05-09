@@ -1,7 +1,6 @@
 import Parser from './parser';
 import Resource from '../resource';
 import Loader from '../loader';
-import ResourceManager from '../../resources/resource-manager';
 export interface Bundle {
 	bundle: Asset[];
 }
