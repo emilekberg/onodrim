@@ -1,6 +1,6 @@
-import Parser from './parser';
+import Parser from '../../parser';
 import Resource from '../resource';
-import Loader from '../loader';
+import Loader from '../../loader';
 import AudioManager from '../../resources/audio/audio-manager';
 export default class AudioParser extends Parser {
 	public canParse(resource :Resource): boolean {

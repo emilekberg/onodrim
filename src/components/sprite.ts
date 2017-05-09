@@ -52,10 +52,10 @@ export default class Sprite extends RenderComponent {
 		if(template.texture) {
 			let texture: Texture;
 			if (template.texture instanceof Texture) {
-					texture = template.texture;
+				texture = template.texture;
 			}
 			else {
-					texture = new Texture(template.texture);
+				texture = new Texture(template.texture);
 			}
 			this.setTexture(texture);
 		}
@@ -70,10 +70,10 @@ export default class Sprite extends RenderComponent {
 	{
 		if (this._transform.wasDirty) {
 			this._renderState.matrix
-					.identity()
-					.scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
-					.multiply(this._transform.worldMatrix)
-					.translate(this.x, this.y);
+				.identity()
+				.scale(this._texture.rect.w * 0.5, this._texture.rect.h * 0.5)
+				.multiply(this._transform.worldMatrix)
+				.translate(this.x, this.y);
 		}
 	}
 

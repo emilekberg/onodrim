@@ -1,6 +1,6 @@
-import Parser from './parser';
+import Parser from '../../parser';
 import Resource from '../resource';
-import Loader from '../loader';
+import Loader from '../../loader';
 import ImageManager from '../../resources/image-manager';
 export default class ImageParser extends Parser {
 	private static FORMATS_REGEX = /(png|jpg|jpeg|bmp|gif)$/;

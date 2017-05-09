@@ -1,6 +1,6 @@
-import Resource from './resource';
-import Parser from './parsers/image-parser';
-import { ResourceData } from './resource-data';
+import Resource from './resources/resource';
+import Parser from './parser';
+import { ResourceData } from './resources/resource-data';
 
 export class Loader {
 	private readonly _parsers: Parser[];

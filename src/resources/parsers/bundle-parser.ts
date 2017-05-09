@@ -1,6 +1,6 @@
-import Parser from './parser';
+import Parser from '../../parser';
 import Resource from '../resource';
-import Loader from '../loader';
+import Loader from '../../loader';
 export interface Bundle {
 	bundle: Asset[];
 }

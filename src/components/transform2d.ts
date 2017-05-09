@@ -138,12 +138,12 @@ export default class Transform2D extends Transform {
 		}
 		if(this._isDirty) {
 			this._localMatrix.identity()
-					.rotate(this._rotation)
-					.scale(this._scale.x,this.scale.y)
-					.translate(this.position.x, this.position.y);
+				.rotate(this._rotation)
+				.scale(this._scale.x,this.scale.y)
+				.translate(this.position.x, this.position.y);
 			this.worldMatrix.copy(this._localMatrix);
 			if(this.parent) {
-					this.worldMatrix.multiply(this.parent.worldMatrix);
+				this.worldMatrix.multiply(this.parent.worldMatrix);
 			}
 		}
 		this.wasDirty = this._isDirty;
