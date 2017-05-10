@@ -77,7 +77,7 @@ export default class Entity {
 	public getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T|null {
 		for(let i = 0; i < this._components.length; ++i) {
 			if(this._components[i] instanceof (componentType)) {
-					return this._components[i] as T;
+				return this._components[i] as T;
 			}
 		}
 		return null;
@@ -87,7 +87,7 @@ export default class Entity {
 		const components = new Array<T>();
 		for(let i = 0; i < this._components.length; ++i) {
 			if(this._components[i] instanceof (componentType)) {
-					components.push(this._components[i] as T);
+				components.push(this._components[i] as T);
 			}
 		}
 		return components;
