@@ -4,9 +4,9 @@ import SystemManager from '../system/system-manager';
 export interface Template {
 	type?: string;
 }
-export interface UpdateComponent extends Component{
+export interface UpdateComponent extends Component {
 	update: () => void;
-	fixedUpdate: () => void;
+	fixedUpdate: (compensated: boolean) => void;
 }
 export default class Component {
 	protected _entity:Entity;

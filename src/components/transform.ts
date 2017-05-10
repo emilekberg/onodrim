@@ -14,7 +14,7 @@ abstract class Transform extends Component {
 		// TODO: implement
 	}
 
-	public fixedUpdate(): void {
+	public fixedUpdate(extra: boolean): void {
 		// TODO: implement
 	}
 	public update(): void {

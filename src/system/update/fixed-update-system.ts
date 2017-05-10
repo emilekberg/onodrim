@@ -17,12 +17,18 @@ export default class FixedUpdateSystem extends System<UpdateComponent> implement
 		return component.fixedUpdate !== undefined;
 	}
 
+	/**
+	 * Updates the components added to this System. Also notifies if the system was compensated.
+	 * TODO: Come up with a better solution. One solution would be to reset dirty flag after each
+	 * game loop, however that would cause another loop of all the transformComponents...
+	 */
 	public tick(): void {
 		Time.setFixedUpdateTime(this.updateRate);
+		let numberOfFixedUpdates = 0;
 		while(Time.now() >= this.nextUpdateTime) {
 			const l = this._componentInstances.length;
 			for(let i = 0; i < l; ++i) {
-				this._componentInstances[i].fixedUpdate();
+				this._componentInstances[i].fixedUpdate(numberOfFixedUpdates++ > 0);
 			}
 			this.currentUpdateTime = this.nextUpdateTime;
 			this.nextUpdateTime += this.updateRate;

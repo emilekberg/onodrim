@@ -16,9 +16,10 @@ export default class Camera2D extends Component {
 	private readonly _viewMatrix: Matrix;
 	private _viewport: Point;
 	private _transform: Transform2D;
+	private _isDirty: boolean;
 
 	public get isDirty(): boolean {
-		return this._transform.isDirty || this._transform.wasDirty;
+		return this._transform.wasDirty || this._isDirty;
 	}
 
 	constructor(entity: Entity) {
@@ -40,6 +41,7 @@ export default class Camera2D extends Component {
 				CameraSystem.MAIN = this;
 			}
 		}
+		this._isDirty = true;
 	}
 
 	public fixedUpdate() {
@@ -48,10 +50,13 @@ export default class Camera2D extends Component {
 			this.updateViewMatrix();
 			this._currentMatrix.copy(this._viewMatrix)
 				.translate(this._viewport.x * 0.5, this._viewport.y * 0.5);
+
+			this._isDirty = false;
 		}
 	}
 
 	public setViewport(width: number, height: number) {
+		this._isDirty = true;
 		this._viewport.set(width, height);
 		this.updateProjectionMatrix();
 		this.updateViewMatrix();

@@ -132,21 +132,21 @@ export default class Transform2D extends Transform {
 		this.wasDirty = true;
 	}
 
-	public fixedUpdate() {
+	public fixedUpdate(compensated: boolean) {
 		if(this.parent && this.parent.wasDirty) {
 			this._isDirty = true;
 		}
 		if(this._isDirty) {
 			this._localMatrix.identity()
 				.rotate(this._rotation)
-				.scale(this._scale.x,this.scale.y)
+				.scale(this._scale.x, this.scale.y)
 				.translate(this.position.x, this.position.y);
 			this.worldMatrix.copy(this._localMatrix);
 			if(this.parent) {
 				this.worldMatrix.multiply(this.parent.worldMatrix);
 			}
 		}
-		this.wasDirty = this._isDirty;
+		this.wasDirty = compensated && this.wasDirty ? this.wasDirty : this._isDirty;
 		this._isDirty = false;
 	}
 

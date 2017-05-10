@@ -11,7 +11,6 @@
         "**/.DS_Store": true
     },
     "files.trimTrailingWhitespace": false,
-    "typescript.tsdk": "./node_modules/typescript/lib",
     "tslint.configFile": "./tslint.json",
     "tslint.exclude": [
         "./test/**/*.ts",

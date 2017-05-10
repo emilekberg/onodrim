@@ -47,7 +47,10 @@ export default class Core {
 		requestAnimationFrame(this.tick);
 	}
 
-	// TODO: fix this hack.
+	/**
+	 * TODO: remove this render from here. it would be best if rendersystem could call it by itself
+	 * through the SystemManager, and make sure it's always called after update systems.
+	 */
 	protected _render() {
 		const delta = (Time.now()-this.fixedUpdateSystem.currentUpdateTime)/this.fixedUpdateSystem.updateRate;
 		this.renderSystem.render(delta);
