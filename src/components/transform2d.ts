@@ -1,16 +1,18 @@
 // heavily based upon https://github.com/pixijs/pixi.js/blob/master/src/core/display/DisplayObject.js
 import ComponentFactory from './component-factory';
 import Point, {PointTemplate} from '../math/point';
-import Entity from '../entity';
+import Entity, {EntityTemplate} from '../entity';
 import Transform, {TransformTemplate} from './transform';
 import Vector2 from '../math/vector2';
 import Matrix3 from '../math/matrix3';
+import EntityFactory from '../entity-factory';
 
 export interface Transform2DTemplate extends TransformTemplate {
 	position?:PointTemplate;
 	scale?:PointTemplate;
 	origo?:PointTemplate;
 	rotation?:number;
+	children?:EntityTemplate[];
 }
 
 const enum ParentCache {
@@ -118,16 +120,41 @@ export default class Transform2D extends Transform {
 	}
 	constructor(entity:Entity, template:Transform2DTemplate = {}) {
 		super(entity, template);
-		this._position = template.position ? Vector2.fromTemplate(template.position) : new Vector2(0,0);
-		this._origo = template.origo ? Vector2.fromTemplate(template.origo) : new Vector2(0,0);
-		this._scale = template.scale ? Vector2.fromTemplate(template.scale) : new Vector2(1,1);
-		this._rotation = template.rotation || 0;
+		this._position = new Vector2(0,0);
+		this._origo = new Vector2(0,0);
+		this._scale = new Vector2(1,1);
+		this._rotation = 0;
 		this._rotationCache = 0;
 		this._parent = null;
 		this._cr = 1;
 		this._sr = 0;
 		this._localMatrix = new Matrix3();
 		this.worldMatrix = new Matrix3();
+		this._isDirty = true;
+		this.wasDirty = true;
+		this.parseTemplate(template);
+	}
+
+	public parseTemplate(template: Transform2DTemplate) {
+		if(template.position) {
+			this._position.parseTemplate(template.position);
+		}
+		if(template.scale) {
+			this._scale.parseTemplate(template.scale);
+		}
+		if(template.origo) {
+			this._origo.parseTemplate(template.origo);
+		}
+		if(template.children) {
+			// Not 100% sure about this position here. might want to check this at another place.
+			template.children.forEach((child) => {
+				const childEntity = EntityFactory.create(child);
+				this.addChildEntity(childEntity);
+			});
+		}
+		if(template.rotation) {
+			this._rotation = template.rotation;
+		}
 		this._isDirty = true;
 		this.wasDirty = true;
 	}
@@ -152,6 +179,14 @@ export default class Transform2D extends Transform {
 
 	public setDirty() {
 		this._isDirty = true;
+	}
+
+	public addChildEntity(entity: Entity) {
+		const transform = entity.getComponent(Transform2D);
+		if (!transform) {
+			return;
+		}
+		this.addChild(transform);
 	}
 }
 ComponentFactory.register(Transform2D, 'onodrim.transform2d');

@@ -10,6 +10,10 @@ export default class Point implements PointTemplate {
 		this.y = y;
 	}
 
+	public parseTemplate(template:PointTemplate) {
+		this.set(template.x, template.y);
+	}
+
 	public isZero():boolean {
 		return !(this.x || this.y);
 	}

@@ -26,8 +26,6 @@ abstract class Transform extends Component {
 	}
 
 	public addChild(child:Transform): void {
-		// TODO: Find out why not, it seems to work...
-		// console.warn('Transform.addChild(): is not fully implemented yet');
 		if(this.isChild(child)) {
 			return;
 		}

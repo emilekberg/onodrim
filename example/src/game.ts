@@ -3,7 +3,7 @@ import GameObject from './gameObject';
 import Square from './square';
 import ParticleSystem from './particleSystem';
 import Rotating from './rotating';
-import PlayerController from './playerController';
+import './playerController'; // included only for side effects.
 
 export default class MyGame extends Onodrim.Game {
 	private _tileTransform: Onodrim.Components.Transform2D;
@@ -24,7 +24,17 @@ export default class MyGame extends Onodrim.Game {
 					position: {
 						x: 200,
 						y: 300
-					}
+					},
+					children: [
+						{
+							name: 'camera',
+							components: [
+								{ type: 'onodrim.transform2d' },
+								{ type: 'onodrim.camera2d' },
+								{ type: 'PlayerController' }
+							]
+						}
+					]
 				},
 				{
 					type: 'onodrim.animation',
@@ -39,17 +49,6 @@ export default class MyGame extends Onodrim.Game {
 		});
 		this.addEntity(enemy);
 		const enemyTransform = enemy.getComponent(Onodrim.Components.Transform2D);
-
-		const camera = Onodrim.EntityFactory.create({
-			name: 'camera',
-			components: [
-				{ type: 'onodrim.transform2d' },
-				{ type: 'onodrim.camera2d' }
-			]
-		});
-		camera.addComponent(new PlayerController(camera));
-		enemyTransform.addChild(camera.getComponent(Onodrim.Components.Transform2D));
-
 		const tile = new Onodrim.Entity();
 		tile.addComponent(new Onodrim.Components.Transform2D(tile, {
 			position: {
