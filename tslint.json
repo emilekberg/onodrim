@@ -28,9 +28,12 @@
         ],
         "prefer-for-of": false,
         "no-empty-interface": false,
-		  "indent": [
-			  true,
-			  "tabs"
-		  ]
+		"indent": [
+			true,
+			"tabs"
+		],
+		"no-console": [
+			true, "log"
+		]
     }
 }

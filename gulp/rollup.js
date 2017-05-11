@@ -11,16 +11,16 @@ exports.bundle = function bundle() {
 		plugins: [
 			rollupSourcemaps(),
 			string({
-					include: [
-						'./bin/shaders/*.frag',
-						'./bin/shaders/*.vert'
-					]
+				include: [
+					'./bin/shaders/*.frag',
+					'./bin/shaders/*.vert'
+				]
 			}),
 			nodeResolve({
-					main: true,
-					extensions: [
-						'.js'
-					]
+				main: true,
+				extensions: [
+					'.js'
+				]
 			})
 		]
 	})
