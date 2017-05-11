@@ -4,21 +4,13 @@ export interface TransformTemplate extends Template {
 
 }
 abstract class Transform extends Component {
-	protected _children:Transform[];
+	protected readonly _children:Transform[];
 	protected _parent:Transform|null;
 	constructor(entity:Entity, template: TransformTemplate) {
 		super(entity);
 
-		this._children = new Array<Transform>();
+		this._children = [];
 		this._parent = null;
-		// TODO: implement
-	}
-
-	public fixedUpdate(extra: boolean): void {
-		// TODO: implement
-	}
-	public update(): void {
-		// TODO: implement
 	}
 
 	public get parent():Transform|null {

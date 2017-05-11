@@ -180,7 +180,6 @@ export default class WebGLSystem extends System<RenderComponent> {
 
 	private updateViewMatrix() {
 		const gl = this.gl;
-		const projectionLocation = gl.getUniformLocation(this.shaderProgram, 'u_projection');
-		gl.uniformMatrix3fv(projectionLocation, false, CameraSystem.MAIN.matrix.values);
+		gl.uniformMatrix3fv(this._projectionMatrixLocation, false, CameraSystem.MAIN.matrix.values);
 	}
 }

@@ -15,14 +15,6 @@ export interface Transform2DTemplate extends TransformTemplate {
 	children?:EntityTemplate[];
 }
 
-const enum ParentCache {
-	x,
-	y,
-	scaleX,
-	scaleY,
-	rotation
-}
-
 export default class Transform2D extends Transform {
 	public wasDirty:boolean;
 	public worldMatrix:Matrix3;
