@@ -121,9 +121,9 @@ export default class WebGLSystem extends System<RenderComponent> {
 		if (projectionLocation) {
 			this._projectionMatrixLocation = projectionLocation;
 			gl.uniformMatrix3fv(this._projectionMatrixLocation, false, [
-					2 / gl.canvas.width, 0, 0,
-					0, -2 / gl.canvas.height, 0,
-					-1, 1, 1,
+				2 / gl.canvas.width, 0, 0,
+				0, -2 / gl.canvas.height, 0,
+				-1, 1, 1,
 			]);
 		}
 	}

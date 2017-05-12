@@ -6,9 +6,16 @@
         "**/dist": true
     },
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.DS_Store": true
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/bin": true,
+		"dist": true,
+		"types": true,
+		".vscode": true,
+		"node_modules": true
     },
     "files.trimTrailingWhitespace": false,
     "tslint.configFile": "./tslint.json",

@@ -18,9 +18,9 @@ export interface Transform2DTemplate extends TransformTemplate {
 export default class Transform2D extends Transform {
 	public wasDirty:boolean;
 	public worldMatrix:Matrix3;
-	protected _position:Point;
-	protected _origo:Point;
-	protected _scale:Point;
+	protected _position:Vector2;
+	protected _origo:Vector2;
+	protected _scale:Vector2;
 	protected _rotation:number;
 	protected _rotationCache:number;
 	protected _cr:number;
@@ -34,10 +34,10 @@ export default class Transform2D extends Transform {
 	get entity():Entity {
 		return this._entity;
 	}
-	get position():Point {
+	get position():Vector2 {
 		return this._position;
 	}
-	set position(value:Point) {
+	set position(value:Vector2) {
 		this._position = value;
 		this.setDirty();
 	}
@@ -55,10 +55,10 @@ export default class Transform2D extends Transform {
 		this._position.y = value;
 		this.setDirty();
 	}
-	get scale():Point {
+	get scale():Vector2 {
 		return this._scale;
 	}
-	set scale(value:Point) {
+	set scale(value:Vector2) {
 		this._scale = value;
 		this.setDirty();
 	}
@@ -76,10 +76,10 @@ export default class Transform2D extends Transform {
 		this._scale.y = value;
 		this.setDirty();
 	}
-	get origo():Point {
+	get origo():Vector2 {
 		return this._origo;
 	}
-	set origo(value:Point) {
+	set origo(value:Vector2) {
 		this._origo = value;
 		this.setDirty();
 	}

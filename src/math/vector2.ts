@@ -19,25 +19,38 @@ export default class Vector2 extends Point {
 		return this.x === vector.x && this.y === vector.y;
 	}
 
-	public add(vector:Vector2):Vector2 {
+	public normalize(): Vector2 {
+		const length = this.length();
+		this.x = this.x / length;
+		this.y = this.y / length;
+		return this;
+	}
+
+	public add(vector:PointTemplate):Vector2 {
 		this.x += vector.x;
 		this.y += vector.y;
 		return this;
 	}
 
-	public sub(vector:Vector2):Vector2 {
+	public sub(vector:PointTemplate):Vector2 {
 		this.x -= vector.x;
 		this.y -= vector.y;
 		return this;
 	}
 
-	public multiply(vector:Vector2):Vector2 {
+	public multiply(factor: number):Vector2 {
+		this.x *= factor;
+		this.y *= factor;
+		return this;
+	}
+
+	public scale(vector:PointTemplate):Vector2 {
 		this.x *= vector.x;
 		this.y *= vector.y;
 		return this;
 	}
 
-	public divide(vector:Vector2):Vector2 {
+	public divide(vector:PointTemplate):Vector2 {
 		this.x /= vector.x;
 		this.y /= vector.y;
 		return this;
