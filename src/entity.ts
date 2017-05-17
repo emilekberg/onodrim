@@ -2,7 +2,7 @@ import Component, {Template, UpdateComponent } from './components/component';
 import EntityFactory from './entity-factory';
 export interface EntityTemplate {
 	name?: string;
-	components?: any[];
+	components?: Template[];
 }
 export default class Entity {
 	public static getByName(name: string): Entity|undefined {
@@ -76,7 +76,7 @@ export default class Entity {
 
 	public getComponent<T extends Component>(componentType:{ new (...args:any[]):T;}):T|null {
 		for(let i = 0; i < this._components.length; ++i) {
-			if(this._components[i] instanceof (componentType)) {
+			if(this._components[i] instanceof componentType) {
 				return this._components[i] as T;
 			}
 		}

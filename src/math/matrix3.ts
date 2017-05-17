@@ -62,7 +62,7 @@ export default class Matrix {
 			a20 * b02 + a21 * b12 + a22 * b22
 		]);
 	}
-	private static tmp:Matrix = new Matrix();
+	private static readonly temp:Matrix = new Matrix();
 
 	public values:Float32Array;
 
@@ -148,32 +148,32 @@ export default class Matrix {
 	}
 
 	public scale(x:number, y:number): Matrix {
-		Matrix.tmp.set(
+		Matrix.temp.set(
 			x, 0, 0,
 			0, y, 0,
 			0, 0, 1
 		);
-		return this.multiply(Matrix.tmp);
+		return this.multiply(Matrix.temp);
 	}
 
 	public rotate(rotation:number):Matrix {
 		const s = Math.sin(rotation);
 		const c = Math.cos(rotation);
-		Matrix.tmp.set(
+		Matrix.temp.set(
 			c, -s, 0,
 			s, c, 0,
 			0, 0, 1
 		);
-		return this.multiply(Matrix.tmp);
+		return this.multiply(Matrix.temp);
 	}
 
 	public translate(x:number,y:number):Matrix {
-		Matrix.tmp.set(
+		Matrix.temp.set(
 			1, 0, 0,
 			0, 1, 0,
 			x, y, 1
 		);
-		return this.multiply(Matrix.tmp);
+		return this.multiply(Matrix.temp);
 	}
 
 	public equals(matrix:Matrix) {

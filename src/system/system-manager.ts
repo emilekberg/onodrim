@@ -19,6 +19,16 @@ export class SystemManager {
 		}
 	}
 
+	public removeComponentInstance(component: Component) {
+		const l = this._systems.length;
+		for(let i = 0; i < l; ++i) {
+			const system = this._systems[i];
+			if(system.canProcessComponent(component)) {
+				system.removeComponentInstance(component);
+			}
+		}
+	}
+
 	public addSystem(system: System<Component>) {
 		this._systems.push(system);
 		if ((system as TickSystem<Component>).tick) {

@@ -10,11 +10,16 @@ export interface UpdateComponent extends Component {
 }
 export default class Component {
 	protected _entity:Entity;
-	protected _requiredComponents:Array<new () => Component>;
+	private readonly _requiredComponents:Array<new () => Component>;
+	private _isActive:boolean;
+
+	public get isActive(): boolean {
+		return this._isActive;
+	}
 	constructor(entity:Entity) {
 		this._requiredComponents = [];
 		this.setEntity(entity);
-
+		this.activate();
 		SystemManager.addComponentInstance(this);
 	}
 
@@ -25,6 +30,20 @@ export default class Component {
 
 	public getEntity():Entity {
 		return this._entity;
+	}
+
+	public activate(): void {
+		this._isActive = true;
+	}
+
+	public deactivate(): void {
+		this._isActive = false;
+	}
+
+	public destroy(): void {
+		this.deactivate();
+		this._entity.removeComponent(this);
+		SystemManager.removeComponentInstance(this);
 	}
 
 	/*private _checkRequiredComponents():void {

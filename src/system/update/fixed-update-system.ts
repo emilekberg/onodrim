@@ -26,9 +26,11 @@ export default class FixedUpdateSystem extends System<UpdateComponent> implement
 		Time.setFixedUpdateTime(this.updateRate);
 		let numberOfFixedUpdates = 0;
 		while(Time.now() >= this.nextUpdateTime) {
-			const l = this._componentInstances.length;
+			const l = this._components.length;
 			for(let i = 0; i < l; ++i) {
-				this._componentInstances[i].fixedUpdate(numberOfFixedUpdates++ > 0);
+				if (this._components[i].isActive) {
+					this._components[i].fixedUpdate(numberOfFixedUpdates++ > 0);
+				}
 			}
 			this.currentUpdateTime = this.nextUpdateTime;
 			this.nextUpdateTime += this.updateRate;

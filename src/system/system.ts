@@ -3,20 +3,26 @@ export interface TickSystem<T extends Component> extends System<T> {
 	tick(): void;
 }
 export abstract class System<T extends Component> {
-	protected _componentInstances: T[];
+	protected _components: T[];
 	constructor() {
-		this._componentInstances = [];
+		this._components = [];
 	}
+
 	public canProcessComponent(component: Component): boolean {
 		return false;
 	}
-	public addComponentInstance(componentInstance:T) {
-		this._componentInstances.push(componentInstance);
+
+	public addComponentInstance(component:T) {
+		const index = this._components.indexOf(component);
+		if (index === -1) {
+			this._components.push(component);
+		}
 	}
-	public removeComponentInstance(componentInstance:T):void {
-		const index = this._componentInstances.indexOf(componentInstance);
+
+	public removeComponentInstance(component:T):void {
+		const index = this._components.indexOf(component);
 		if (index !== -1) {
-			this._componentInstances.splice(index, 1);
+			this._components.splice(index, 1);
 		}
 	}
 }

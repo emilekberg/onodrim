@@ -10,9 +10,11 @@ export default class UpdateSystem extends System<UpdateComponent> implements Tic
 
 	public tick(): void {
 		Time.update();
-		const l = this._componentInstances.length;
+		const l = this._components.length;
 		for(let i = 0; i < l; ++i) {
-			this._componentInstances[i].update();
+			if (this._components[i].isActive) {
+				this._components[i].update();
+			}
 		}
 	}
 }

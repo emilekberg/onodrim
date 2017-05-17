@@ -139,9 +139,12 @@ export default class WebGLSystem extends System<RenderComponent> {
 		// clear buffer
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		let resort = false;
-		const l = this._componentInstances.length;
+		const l = this._components.length;
 		for(let i = 0; i < l; ++i) {
-			const renderer = this._componentInstances[i];
+			const renderer = this._components[i];
+			if (!renderer.isActive) {
+				continue;
+			}
 			if(renderer.requireDepthSort) {
 				resort = true;
 				renderer.requireDepthSort = false;
@@ -151,7 +154,7 @@ export default class WebGLSystem extends System<RenderComponent> {
 		this.spriteBatch.doFlush();
 		gl.flush();
 		if(resort) {
-			this._componentInstances.sort((a, b) => {
+			this._components.sort((a, b) => {
 				if(a.depth > b.depth) {
 					return 1;
 				}
