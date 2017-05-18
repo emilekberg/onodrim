@@ -1,5 +1,6 @@
 export { default as Animation, AnimationTemplate } from './animation';
 export { default as Camera2D} from './camera2d';
+export { default as Collider} from './collider';
 export { default as Component, Template} from './component';
 export { default as ComponentFactory } from './component-factory';
 export { default as RenderComponent } from './render-component';

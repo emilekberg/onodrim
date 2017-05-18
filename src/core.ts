@@ -7,6 +7,8 @@ import Input from './input';
 import CameraSystem from './system/camera/camera-system';
 import UpdateSystem from './system/update/update-system';
 import FixedUpdateSystem from './system/update/fixed-update-system';
+import CollisionSystem from './system/collision/collision-system';
+
 export interface CoreConfig {
 	width?:number;
 	height?:number;
@@ -20,6 +22,7 @@ export default class Core {
 
 	constructor(config?:CoreConfig) {
 		SystemManager.addSystem(new UpdateSystem());
+		SystemManager.addSystem(new CollisionSystem());
 		this.fixedUpdateSystem = new FixedUpdateSystem();
 		SystemManager.addSystem(this.fixedUpdateSystem);
 		SystemManager.addSystem(new WebGLSystem(config));

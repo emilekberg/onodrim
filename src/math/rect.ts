@@ -45,4 +45,11 @@ export default class Rect implements RectTemplate {
 		this.array[3] = h;
 		return this;
 	}
+
+	public parseTemplate(template: RectTemplate) {
+		this.x = template.x;
+		this.y = template.y;
+		this.w = template.w;
+		this.h = template.h;
+	}
 }

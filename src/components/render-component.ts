@@ -45,9 +45,9 @@ export default class RenderComponent extends Component {
 
 	constructor(entity:Entity, template:RenderComponentTemplate = {}) {
 		super(entity);
-		this._depth  =  template.depth || 0;
-		this.alpha   =  template.alpha || 1;
-		this.visible =	template.visible || true;
+		this._depth = template.depth || 0;
+		this.alpha = template.alpha || 1;
+		this.visible = template.visible || true;
 		this._renderedMatrix = new Matrix3();
 		this._oldRenderState = {
 			matrix: new Matrix3(),
