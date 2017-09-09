@@ -31,13 +31,8 @@ export default class Animation extends Sprite {
 			if(!frameSize) {
 				return undefined;
 			}
-			let textureResource: Texture;
-			if (!(texture instanceof Texture)) {
-				textureResource = new Texture(texture);
-			}
-			else {
-				textureResource = texture;
-			}
+			const textureResource = !(texture instanceof Texture) ? new Texture(texture) : texture;
+
 			const frames:Rect[] = [];
 			for(let y = 0; y < textureResource.image.height; y+= frameSize.h + margin) {
 				for(let x = 0; x < textureResource.image.width; x+= frameSize.w + margin) {

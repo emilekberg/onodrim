@@ -1,16 +1,31 @@
 import Point from './math/point';
+import CameraSystem from './system/camera/camera-system';
 
 export class Input {
 	private readonly _currentKeyState: {[key: string]: boolean};
 	private readonly _previousKeyState: {[key: string]: boolean};
 	private readonly _mousePosition: Point;
 
+	/**
+	 * Returns the mouse X position in raw screen coordinates.
+	 */
 	public get mouseX(): number {
 		return this._mousePosition.x;
 	}
 
+	/**
+	 * Returns the mouse Y position in raw screen coordinates.
+	 */
 	public get mouseY(): number {
 		return this._mousePosition.y;
+	}
+
+	public get mouseWorldX(): number {
+		return CameraSystem.MAIN.matrix.values[6] - this._mousePosition.x;
+	}
+
+	public get mouseWorldY(): number {
+		return CameraSystem.MAIN.matrix.values[7] - this._mousePosition.y;
 	}
 
 	constructor() {

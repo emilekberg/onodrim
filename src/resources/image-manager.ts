@@ -5,22 +5,23 @@ export interface ImageLoadedEvent {
 export default class ImageManager {
 
 	public static loadImage(id: string, url:string = id):Promise<ImageLoadedEvent> {
-		if (this.has(id)) {
+		const image = this.get(id);
+		if (image) {
 			return Promise.resolve({
 				url,
-				image: this.get(id)
+				image
 			});
 		}
 		return new Promise((resolve) => {
-			const image = new Image();
-			image.addEventListener('load', () => {
+			const imageToLoad = new Image();
+			imageToLoad.addEventListener('load', () => {
 				resolve({
 					url,
-					image
+					image: imageToLoad
 				});
 			});
-			image.src = url;
-			this.map.set(id, image);
+			imageToLoad.src = url;
+			this.map.set(id, imageToLoad);
 		});
 	}
 	public static loadImages(urls:string[]):Promise<ImageLoadedEvent[]> {

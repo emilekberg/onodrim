@@ -50,13 +50,7 @@ export default class Sprite extends RenderComponent {
 		this._w = 0;
 		this._h = 0;
 		if(template.texture) {
-			let texture: Texture;
-			if (template.texture instanceof Texture) {
-				texture = template.texture;
-			}
-			else {
-				texture = new Texture(template.texture);
-			}
+			const texture = template.texture instanceof Texture ? template.texture : new Texture(template.texture);
 			this.setTexture(texture);
 		}
 		// this.reset();

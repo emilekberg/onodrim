@@ -92,8 +92,8 @@ export default class WebGLSystem extends System<RenderComponent> {
 		gl.clearColor(0,0,0,1);
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LEQUAL);
-		gl.enable( gl.BLEND );
-		gl.blendEquation( gl.FUNC_ADD );
+		gl.enable(gl.BLEND);
+		gl.blendEquation(gl.FUNC_ADD);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		gl.viewport(0, 0, canvas.width, canvas.height);
 	}
